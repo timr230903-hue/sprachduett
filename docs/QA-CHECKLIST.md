@@ -1,40 +1,40 @@
 # QA-Checkliste
 
-Vor jedem TestFlight-Upload. Automatisch prüft `swift test` den Fachkern. Der Simulator prüft die Navigation (`SprachduettUITests`). Der Rest steht hier, damit er nicht nur im Kopf bleibt.
+Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simulator prüft Start, Runde und Zurück. Was ein Mikrofon oder eine echte Stimme braucht, steht unten offen.
 
 ## Navigation
 
-- [x] Start, Einstellungen, Runde, Alltags-Check, Tutorial, Duo und Feedback haben Schließen, Fertig oder Zurück.
-- [x] Die Runde fragt „Runde pausieren?“ und der Start bietet danach Weiterspielen oder Neue Runde.
-- [x] Wischen vom Rand ist auf Runde und Alltags-Check wieder an (`SwipeBackEnabler`).
-- [x] Leerer Lernpfad erzeugt keine Runde und keinen Absturz (`testEmptyPathStaysOnTheHomeLabel`).
-- [x] Simulator: Zusammen spielen → Zurück → Weiterspielen, und Einstellungen → Fertig.
+- [x] Start, Einstellungen, Runde, Alltags-Check, Tutorial, Duo, Feedback, Ton-Duell, Schrift, eigene Sätze, Reise, Rollenspiel und die Teilkarte haben Zurück, Fertig oder Schließen.
+- [x] Die Runde fragt „Runde pausieren?“ und der Start bietet Weiterspielen.
+- [x] Wischen vom Rand ist auf Runde und Alltags-Check an.
+- [x] Leerer Lernpfad und leere Tonpaare zeigen einen Satz, keinen Absturz.
+- [x] Hör & Zeig erklärt den Ablauf in einem Satz, nennt die aktive Person, gibt das Handy weiter und wertet nur gemeinsam.
 
 ## Sprache
 
-- [x] `Info.plist` enthält `NSSpeechRecognitionUsageDescription` und `NSMicrophoneUsageDescription`.
-- [x] Erlaubnis für Spracherkennung und Mikrofon, Locale `th-TH`, on-device, sonst Server.
-- [x] Vor dem Aufnehmen stoppt die Stimme, die Session geht auf `.playAndRecord` / `.measurement` / Lautsprecher.
-- [x] Der Tap nutzt das Format des Mikrofons, nachdem die Session aktiv ist. Sample-Rate 0 bricht mit einer Meldung ab.
-- [x] Leise oder leere Aufnahme ist „Nichts gehört“ und rot, nie ein Treffer. Husten und fremde Wörter sind `.miss`.
-- [x] Langsam ist `Minimum + 0.15`, normal `Default × 0.9`. Der Test verlangt, dass langsam höchstens halb so schnell ist.
-- [ ] Am Gerät: Dialoge, Pegel, Live-Text, grün/gelb/rote Silben, Haptik, und dass langsam hörbar langsamer ist.
+- [x] Info.plist bittet um Spracherkennung und Mikrofon.
+- [x] Locale `th-TH`, on-device, sonst Server. Leise oder fremde Laute sind rot, nie ein Treffer.
+- [x] Langsam ist höchstens halb so schnell wie normal (`SpeechPace`).
+- [x] Liegt `Audio/<id>.m4a` im Bundle, spielt sie im normalen Tempo. Langsam und fehlende Dateien nutzen die Synthese. Die 300 Sätze stehen in `docs/AUDIO-SCRIPT.csv`. Es sind keine erfundenen Aufnahmen im Bundle.
+- [ ] Am Gerät: Pegel, Live-Text, Silbenfarben, Haptik, hörbar langsames Tempo, und ob eine echte Aufnahme die Stimme ersetzt.
 
-## Aussehen
+## Aussehen und Zugang
 
-- [x] Farben nur in `Theme.swift`. Creme und Karte hell, Nachtblau dunkel. Gold ist im Hellen dunkelbronze (Text), im Dunkeln hell.
-- [x] Knöpfe sind durchgehend Nachtblau mit weißer Schrift, damit der Kontrast in beiden Modi über 4,5:1 liegt.
-- [x] Titel und Knöpfe nutzen Textstile und `minimumScaleFactor`, damit Dynamic Type nicht abschneidet. Emoji bleiben fest, sonst sprengen sie die Zeile.
-- [ ] Am Gerät: Heller und dunkler Modus, größte Dynamic-Type-Stufe, kein abgeschnittener Satz.
+- [x] Farben nur in `Theme.swift`. Creme hell, Nacht dunkel, Gold als Text im Hellen dunkel und im Dunkeln hell. Knöpfe Nachtblau mit weißer Schrift.
+- [x] Titel nutzen Textstile und `minimumScaleFactor`. Schilder und Emoji bleiben fest, damit sie wie ein Bild wirken.
+- [x] Banner, Bilder, Schilder und das Wort des Tages haben VoiceOver-Namen. Die Bildwahl sagt „Bild 1“ und nicht die Lösung.
+- [x] Die Übergabe im Duett blendet mit einer Feder, außer Bewegung reduzieren ist an.
+- [ ] Am Gerät: heller und dunkler Modus, größte Schrift, VoiceOver einmal durch Start und Hör & Zeig.
 
-## Inhalt und Tutorial
+## Inhalt
 
-- [x] Eine Seite: „Ihr spielt zu zweit auf einem Handy. Hört zu, sprecht laut, tippt.“ Die vier Coach-Karten sind Zuhören, Tippen, Sagen, Mini-Dialog.
-- [x] Links und rechts haben ผม/ครับ oder ฉัน/ค่ะ. Die Umschrift blendet nach acht sicheren Wiederholungen aus.
-- [x] Kein อรุณสวัสดิ์, kein ราตรีสวัสดิ์, kein ดิฉัน. ข้าว ist fallend `khâao`, ข่าว bleibt tief `khàao`.
+- [x] Tutorial ist ein Satz und vier Karten, die zum Sagen-und-Zeigen passen.
+- [x] Links und rechts wählen ผม/ครับ oder ฉัน/ค่ะ. Die Umschrift blendet aus, wenn das Wort sitzt.
+- [x] Alltagssprache: kein อรุณสวัสดิ์, kein ราตรีสวัสดิ์, kein ดิฉัน. ข้าว ist `khâao`.
+- [x] Ton-Duell, Schrift pro Tag, Reise offline, eigene Karten, erzeugte Geräusche, Teilkarte, Abend-Hinweis ohne Serienverlust, nur Thai als Sprache.
 
 ## Vor dem Upload
 
 - [x] `swift test` grün.
 - [x] Diese Liste gegen den Stand gelesen.
-- [ ] Simulator-Navigation in CI grün (läuft im TestFlight-Workflow, nicht auf Linux).
+- [ ] Simulator-Navigation in CI grün.

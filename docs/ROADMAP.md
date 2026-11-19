@@ -44,5 +44,7 @@ Jeder Punkt bekommt einen eigenen TestFlight-Stand, ohne Bezahlschranke. Thai bl
 6. Abend-Erinnerung lokal: „Partner hat heute schon gespielt, jetzt du?“ Kein Serien-Verlust.
 7. Rollenspiel mit erzeugter Umgebungsfläche (Markt, Massage, Tuk-Tuk), nichts Lizenziertes.
 8. Teilbare Fortschrittskarte, zum Beispiel „Wir können jetzt im Restaurant bestellen“.
-9. Widget „Wort des Tages“ über WidgetKit und App Group. Dafür braucht es eine neue Bundle-ID und ein Profil. Solange das Profil fehlt, bleibt das Widget aus dem signierten Archiv.
+9. Widget „Wort des Tages“. Die Auswahl steckt in `WordOfDay` und steht auf dem Startbildschirm. Die WidgetKit-Extension (`SprachduettWidget/WordOfDayWidget.swift`) ist absichtlich nicht im signierten Archiv.
+
+   Tim braucht dafür: eine App-ID `de.timroot.sprachduett.widget`, eine App Group `group.de.timroot.sprachduett`, ein App-Store-Profil für die Extension und das bestehende Profil der App um die App Group erweitert. Ohne diese Profile bricht das TestFlight-Archiv, deshalb bleibt die Extension draußen.
 10. Sprachpakete: der Katalog hängt an einer Sprache. Ausgeliefert wird weiter nur Thai.

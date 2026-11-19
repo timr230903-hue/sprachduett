@@ -19,32 +19,64 @@ final class RoundController: ObservableObject {
     var beat: Beat? { RoundEngine.beat(plan, cursor) }
     var done: Bool { cursor.finished }
 
-    var instruction: String {
+    var bannerTitle: String {
         switch beat {
-        case .intro(_): return "Hör zu und sprecht nach."
-        case .listen(_): return "Wer tippt zuerst richtig?"
-        case .say(_) where cursor.phase == .speak: return "Sag das Thai-Wort laut."
-        case .say(_): return "War es richtig?"
-        case .dialog(_): return "Lies deinen Satz laut vor."
-        case nil: return "Geschafft."
+        case .listen(let item):
+            switch cursor.listenPhase {
+            case .speak: return "\(display(item.speakerID)): sag das Wort!"
+            case .point: return "\(display(item.listenerID)): zeig das passende Bild!"
+            case .handoff: return item.speakerID == item.listenerID ? "Jetzt das Bild" : "Handy weitergeben"
+            case .result:
+                if cursor.speechUnderstood && cursor.pictureRight { return "Punkt für beide" }
+                if !cursor.speechUnderstood { return "Kein Punkt: das Wort kam nicht an" }
+                return "Kein Punkt: das Bild war ein anderes"
+            case .explain, .pending:
+                return "Hör & Zeig"
+            }
+        case .say(let turn): return display(turn.speakerID)
+        case .dialog(let turn): return display(turn.speakerID)
+        case .intro, nil:
+            return mode == .solo ? leftName : "\(leftName)  ·  \(rightName)"
         }
     }
 
-    var turnName: String {
+    var bannerDetail: String {
         switch beat {
-        case .intro(_), .listen(_), nil:
-            return mode == .solo ? leftName : "\(leftName)  ·  \(rightName)"
-        case .say(let turn): return display(turn.speakerID)
-        case .dialog(let turn): return display(turn.speakerID)
+        case .intro: return "Hör zu und sprecht nach."
+        case .listen where cursor.listenPhase == .explain || cursor.listenPhase == .pending:
+            return "Eine Person sagt das Wort, die andere hört nur zu und tippt das Bild, und den Punkt gibt es nur für beide zusammen."
+        case .listen where cursor.listenPhase == .handoff && (beatSpeaker == beatListener):
+            return "Schau nicht noch einmal auf das Wort."
+        case .listen where cursor.listenPhase == .handoff:
+            return "\(display(beatListener)) hört nur zu. Das Wort nicht zeigen."
+        case .say where cursor.phase == .speak: return "Sag das Thai-Wort laut."
+        case .say: return "War es richtig?"
+        case .dialog: return "Lies deinen Satz laut vor."
+        case nil: return "Geschafft."
+        default: return ""
         }
     }
 
     var turnIsLeft: Bool {
+        let id: String
         switch beat {
-        case .say(let turn): return turn.speakerID != "p2" && turn.speakerID != partnerID
-        case .dialog(let turn): return turn.speakerID != "p2" && turn.speakerID != partnerID
+        case .listen(let item):
+            id = cursor.listenPhase == .point || cursor.listenPhase == .handoff ? item.listenerID : item.speakerID
+        case .say(let turn): id = turn.speakerID
+        case .dialog(let turn): id = turn.speakerID
         default: return true
         }
+        return id != "p2" && id != partnerID
+    }
+
+    private var beatListener: String {
+        if case .listen(let item) = beat { return item.listenerID }
+        return "p2"
+    }
+
+    private var beatSpeaker: String {
+        if case .listen(let item) = beat { return item.speakerID }
+        return "p1"
     }
 
     func points(left: Bool) -> Int {
@@ -84,12 +116,13 @@ final class RoundController: ObservableObject {
         localID = saved.localID
         partnerID = saved.partnerID
         showCoach = saved.showCoach
+        cursor = RoundEngine.prepare(cursor, plan: plan)
         coach = nil
         presentCoachIfNeeded()
     }
 
     func start(units: [LearnUnit], stats: [String: WordStat], together: Bool, partnerConnected: Bool,
-               left: String, right: String, localID: String, partnerID: String, coach: Bool) {
+               left: String, right: String, localID: String, partnerID: String, coach: Bool, extras: [PathWord] = []) {
         self.stats = stats
         self.localID = localID
         self.partnerID = partnerID
@@ -98,12 +131,13 @@ final class RoundController: ObservableObject {
         mode = PlayMode.resolve(together: together, partnerConnected: partnerConnected)
         leftName = left
         rightName = right
-        cursor = RoundCursor()
         plan = RoundBuilder.build(
             units: units, stats: stats,
             seed: UInt64(Date().timeIntervalSince1970),
-            together: mode != .solo
+            together: mode != .solo,
+            extras: extras
         )
+        cursor = RoundEngine.prepare(RoundCursor(), plan: plan)
         self.coach = nil
         presentCoachIfNeeded()
     }
@@ -116,19 +150,35 @@ final class RoundController: ObservableObject {
 
     func nextIntro() { move(RoundEngine.advance(cursor, plan: plan), nil) }
 
-    func tap(player: String, choice: String) {
-        guard case .listen(let item)? = beat else { return }
-        let who = mode == .twoPhones ? localID : player
-        let seats = listenSeats
-        let (next, grade) = RoundEngine.listenTap(cursor, plan: plan, playerID: who, choiceID: choice, seats: seats)
-        if mode == .twoPhones { onClaim?(item.id, who, choice) }
+    func acceptExplain() {
+        cursor = RoundEngine.beginSpeaking(cursor, plan: plan)
+    }
+
+    func noteListenSpeech(_ grade: SpeechGrade) {
+        if case .listen(let item) = beat {
+            stats = RoundEngine.applySpeech(stats, wordID: item.answer.id, grade: grade)
+        }
+        cursor = RoundEngine.noteSpeech(cursor, plan: plan, understood: grade != .miss)
+    }
+
+    func confirmHandoff() {
+        cursor = RoundEngine.confirmHandoff(cursor, plan: plan)
+    }
+
+    func choosePicture(_ choice: String) {
+        let understood = cursor.speechUnderstood
+        let (next, grade) = RoundEngine.point(cursor, plan: plan, choiceID: choice)
         move(next, grade)
+        if understood && next.pictureRight { Haptics.success() } else { Haptics.warning() }
+    }
+
+    func finishListen() {
+        move(RoundEngine.advance(cursor, plan: plan), nil)
     }
 
     func applyRemote(itemID: String, player: String, choice: String) {
         guard mode == .twoPhones, case .listen(let item) = beat, item.id == itemID, player != localID else { return }
-        let (next, grade) = RoundEngine.listenTap(cursor, plan: plan, playerID: player, choiceID: choice, seats: [localID, player])
-        move(next, grade)
+        choosePicture(choice)
     }
 
     func saidIt() { cursor = RoundEngine.revealSay(cursor, plan: plan) }
@@ -156,16 +206,8 @@ final class RoundController: ObservableObject {
 
     func understood() { move(RoundEngine.confirmDialog(cursor, plan: plan), nil) }
 
-    private var listenSeats: [String] {
-        switch mode {
-        case .solo: return ["p1"]
-        case .togetherOnePhone: return ["p1", "p2"]
-        case .twoPhones: return [localID, partnerID]
-        }
-    }
-
     private func move(_ next: RoundCursor, _ grade: GradedWord?) {
-        cursor = next
+        cursor = RoundEngine.prepare(next, plan: plan)
         if let grade { stats = RoundEngine.apply(stats, grade) }
         presentCoachIfNeeded()
         if cursor.finished { onFinish?(Array(stats.values)) }
@@ -222,7 +264,7 @@ struct RoundScreen: View {
                         confirmLeave = true
                     }
                 }
-                TurnBanner(name: round.turnName, left: round.turnIsLeft, text: round.instruction)
+                TurnBanner(name: round.bannerTitle, left: round.turnIsLeft, text: round.bannerDetail)
                 if round.done {
                     ResultsPane(
                         leftName: round.leftName,
@@ -274,11 +316,27 @@ struct RoundScreen: View {
     @ViewBuilder private var beatBody: some View {
         switch round.beat {
         case .intro(let word):
-            IntroPane(word: word, speak: { speech.speak(word.thai) }, slow: { speech.speak(word.thai, slow: true) }, next: round.nextIntro)
+            IntroPane(
+                word: word,
+                speak: { speech.speak(word.thai, clipID: word.id) },
+                slow: { speech.speak(word.thai, slow: true, clipID: word.id) },
+                next: round.nextIntro
+            )
         case .listen(let item):
-            ListenBoard(item: item, mode: round.mode, left: round.leftName, right: round.rightName) { player, choice in
-                round.tap(player: player, choice: choice)
-            }
+            ListenDuet(
+                item: item,
+                phase: round.cursor.listenPhase,
+                romanOpacity: romanOpacity(wordID: item.answer.id),
+                speech: speech,
+                listener: round.display(item.listenerID),
+                onExplain: round.acceptExplain,
+                onSpoken: round.noteListenSpeech,
+                onHandoff: round.confirmHandoff,
+                onPicture: round.choosePicture,
+                onNext: round.finishListen
+            )
+            .id(item.id + round.cursor.listenPhase.rawValue)
+            .transition(.opacity.combined(with: .move(edge: .trailing)))
         case .say(let turn):
             let form = voiced(thai: turn.word.thai, roman: turn.word.roman, speakerID: turn.speakerID, dialog: false)
             SpeechCard(
@@ -345,7 +403,8 @@ struct RoundScreen: View {
             right: model.partner?.name ?? model.partnerSeatName,
             localID: model.me.id,
             partnerID: model.partner?.id ?? "p2",
-            coach: !lessonSeen
+            coach: !lessonSeen,
+            extras: model.ownWords
         )
     }
 
@@ -382,6 +441,8 @@ private struct TurnBanner: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -403,41 +464,81 @@ private struct IntroPane: View {
     }
 }
 
-private struct ListenBoard: View {
+private struct ListenDuet: View {
     let item: ListenChallenge
-    let mode: PlayMode
-    let left: String
-    let right: String
-    let tap: (String, String) -> Void
+    let phase: ListenPhase
+    let romanOpacity: Double
+    let speech: SpeechCoach
+    let listener: String
+    let onExplain: () -> Void
+    let onSpoken: (SpeechGrade) -> Void
+    let onHandoff: () -> Void
+    let onPicture: (String) -> Void
+    let onNext: () -> Void
+    @State private var grade: SpeechGrade?
+    @State private var fallback = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        if mode == .togetherOnePhone {
-            HStack(alignment: .top, spacing: 8) {
-                choiceColumn(title: left, player: "p1", color: Theme.navy)
-                choiceColumn(title: right, player: "p2", color: Theme.accent)
-            }
-        } else {
-            choiceColumn(title: "", player: "p1", color: Theme.navy)
-        }
-    }
-
-    private func choiceColumn(title: String, player: String, color: Color) -> some View {
-        VStack(spacing: 8) {
-            if !title.isEmpty {
-                Text(title).font(.headline).foregroundStyle(color)
-            }
-            ForEach(item.choices) { choice in
-                Button {
-                    tap(player, choice.id)
-                } label: {
-                    Text(choice.emoji)
-                        .font(.system(size: 36))
-                        .frame(maxWidth: .infinity, minHeight: 58)
-                        .background(color.opacity(0.16), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        VStack(spacing: 14) {
+            switch phase {
+            case .explain, .pending:
+                Text("Eine Person sagt das Wort, die andere hört nur zu und tippt das Bild, und den Punkt gibt es nur für beide zusammen.")
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                FillButton(title: "Los", action: onExplain)
+            case .speak:
+                Text(item.answer.emoji).font(.system(size: 72)).accessibilityHidden(true)
+                Text(item.answer.german).font(.title2)
+                SpeechListenDeck(
+                    thai: item.answer.thai,
+                    roman: item.answer.roman,
+                    alternates: [],
+                    romanOpacity: romanOpacity,
+                    speech: speech,
+                    grade: $grade,
+                    fallback: $fallback
+                )
+                FillButton(title: "Anhören", systemImage: "speaker.wave.2") { speech.speak(item.answer.thai, clipID: item.answer.id) }
+                FillButton(title: "Langsam", systemImage: "tortoise") { speech.speak(item.answer.thai, slow: true, clipID: item.answer.id) }
+                if grade != nil || fallback {
+                    FillButton(title: "Handy weitergeben") {
+                        onSpoken(grade ?? .miss)
+                    }
                 }
-                .buttonStyle(.plain)
+            case .handoff:
+                Image(systemName: "iphone.gen3")
+                    .font(.system(size: 64))
+                    .foregroundStyle(Theme.accent)
+                    .accessibilityHidden(true)
+                Text(item.speakerID == item.listenerID
+                     ? "Drehe das Handy um, dann tippe nur das Bild."
+                     : "\(listener) nimmt das Handy. Das Wort bleibt verdeckt.")
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                FillButton(title: item.speakerID == item.listenerID ? "Bilder zeigen" : "\(listener) hat das Handy", action: onHandoff)
+            case .point:
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    ForEach(Array(item.choices.enumerated()), id: \.element.id) { index, choice in
+                        Button {
+                            Haptics.tap()
+                            onPicture(choice.id)
+                        } label: {
+                            Text(choice.emoji)
+                                .font(.system(size: 56))
+                                .frame(maxWidth: .infinity, minHeight: 96)
+                                .background(Theme.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Bild \(index + 1)")
+                    }
+                }
+            case .result:
+                FillButton(title: "Weiter", action: onNext)
             }
         }
+        .animation(reduceMotion ? nil : .spring(duration: 0.35), value: phase)
     }
 }
 

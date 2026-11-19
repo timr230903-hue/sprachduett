@@ -285,6 +285,63 @@ final class AppModel: ObservableObject {
 
     var persistedUsage: UsageLog { persisted.usage }
 
+    var ownCards: [OwnCard] { persisted.ownCards }
+
+    var ownWords: [PathWord] {
+        persisted.ownCards.map { PathWord(id: $0.id, emoji: "✏️", thai: $0.thai, roman: $0.roman.isEmpty ? $0.thai : $0.roman, german: $0.german) }
+    }
+
+    var phraseHits: [PhraseHit] {
+        catalog.phrases.map { PhraseHit(id: $0.id, thai: $0.thai, roman: $0.roman, german: $0.german) }
+    }
+
+    var dailyWord: PhraseHit? {
+        let hits = phraseHits
+        guard !hits.isEmpty else { return nil }
+        return hits[WordOfDay.index(day: today, count: hits.count)]
+    }
+
+    var scriptUnlocked: Int {
+        ScriptCourse.unlockedCount(done: persisted.scriptDone, lastDay: persisted.scriptDay, today: today)
+    }
+
+    var canFinishScript: Bool {
+        persisted.scriptDone < scriptUnlocked
+    }
+
+    func completeScriptLesson() {
+        guard canFinishScript else { return }
+        persisted.scriptDone += 1
+        persisted.scriptDay = today
+        save()
+    }
+
+    func addOwn(_ card: OwnCard) {
+        persisted.ownCards.removeAll { $0.id == card.id }
+        persisted.ownCards.append(card)
+        save()
+    }
+
+    func audioFolder() -> URL {
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        let folder = base.appendingPathComponent("Sprachduett/OwnAudio", isDirectory: true)
+        try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        return folder
+    }
+
+    func audioURL(named name: String?) -> URL? {
+        guard let name, !name.isEmpty else { return nil }
+        let url = audioFolder().appendingPathComponent("\(name).m4a")
+        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+    }
+
+    func refreshNudge() {
+        let stamps = persisted.duo.stamps.map { ($0.userID, $0.day) }
+        let fire = CoupleReminder.shouldNudge(myID: me.id, partnerID: partner?.id, stamps: stamps, today: today)
+        CoupleNudge.schedule(fire)
+    }
+
     var headline: String {
         persisted.checks.max { $0.date < $1.date }?.sentence
             ?? "Noch kein Alltags-Check. Der kommt, wenn eine Stufe sitzt."
@@ -358,6 +415,7 @@ final class AppModel: ObservableObject {
         persisted.duo.updatedAt = Date()
         saveAndPush()
         noteStreak()
+        refreshNudge()
     }
 
     func publishClaim(itemID: String, playerID: String, choiceID: String) {
@@ -413,6 +471,9 @@ struct Persisted: Codable, Equatable {
     var usage: UsageLog
     var feedback: [FeedbackNote]
     var checks: [CheckRecord]
+    var ownCards: [OwnCard]
+    var scriptDone: Int
+    var scriptDay: String
 
     var member: MemberProfile {
         MemberProfile(
@@ -452,7 +513,10 @@ struct Persisted: Codable, Equatable {
             wordStats: [],
             usage: UsageLog(),
             feedback: [],
-            checks: []
+            checks: [],
+            ownCards: [],
+            scriptDone: 0,
+            scriptDay: ""
         )
     }
 
@@ -482,6 +546,9 @@ struct Persisted: Codable, Equatable {
         if object["checks"] == nil { object["checks"] = [] }
         if object["partnerName"] == nil { object["partnerName"] = "Partner" }
         if object["partnerGender"] == nil { object["partnerGender"] = "unspecified" }
+        if object["ownCards"] == nil { object["ownCards"] = [] }
+        if object["scriptDone"] == nil { object["scriptDone"] = 0 }
+        if object["scriptDay"] == nil { object["scriptDay"] = "" }
         return (try? JSONSerialization.data(withJSONObject: object)) ?? data
     }
 
@@ -522,7 +589,10 @@ private struct LegacyPersisted: Codable {
             wordStats: [],
             usage: UsageLog(),
             feedback: [],
-            checks: []
+            checks: [],
+            ownCards: [],
+            scriptDone: 0,
+            scriptDay: ""
         )
     }
 }

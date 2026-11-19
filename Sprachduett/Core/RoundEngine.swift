@@ -11,15 +11,37 @@ public enum PlayMode: Equatable {
     }
 }
 
+public enum ListenPhase: String, Equatable {
+    case pending
+    case explain
+    case speak
+    case handoff
+    case point
+    case result
+}
+
 public struct ListenChallenge: Equatable, Identifiable {
     public let id: String
     public let answer: PathWord
     public let choices: [PathWord]
+    public let speakerID: String
+    public let listenerID: String
+    public let opensRound: Bool
 
-    public init(id: String, answer: PathWord, choices: [PathWord]) {
+    public init(
+        id: String,
+        answer: PathWord,
+        choices: [PathWord],
+        speakerID: String = "p1",
+        listenerID: String = "p2",
+        opensRound: Bool = false
+    ) {
         self.id = id
         self.answer = answer
         self.choices = choices
+        self.speakerID = speakerID
+        self.listenerID = listenerID
+        self.opensRound = opensRound
     }
 }
 
@@ -94,12 +116,26 @@ public struct RoundCursor: Equatable {
     public var phase: SayPhase
     public var scores: [String: Int]
     public var missed: Set<String>
+    public var listenPhase: ListenPhase
+    public var speechUnderstood: Bool
+    public var pictureRight: Bool
 
-    public init(index: Int = 0, phase: SayPhase = .speak, scores: [String: Int] = [:], missed: Set<String> = []) {
+    public init(
+        index: Int = 0,
+        phase: SayPhase = .speak,
+        scores: [String: Int] = [:],
+        missed: Set<String> = [],
+        listenPhase: ListenPhase = .pending,
+        speechUnderstood: Bool = false,
+        pictureRight: Bool = false
+    ) {
         self.index = index
         self.phase = phase
         self.scores = scores
         self.missed = missed
+        self.listenPhase = listenPhase
+        self.speechUnderstood = speechUnderstood
+        self.pictureRight = pictureRight
     }
 
     public var finished: Bool { index < 0 }
@@ -118,7 +154,7 @@ public struct GradedWord: Equatable {
 }
 
 public enum RoundBuilder {
-    public static func build(units: [LearnUnit], stats: [String: WordStat], seed: UInt64, together: Bool) -> RoundPlan {
+    public static func build(units: [LearnUnit], stats: [String: WordStat], seed: UInt64, together: Bool, extras: [PathWord] = []) -> RoundPlan {
         let snapshot = LearningPath.snapshot(units: units, stats: stats)
         let index = LearningPath.currentIndex(units: units, stats: stats)
         guard units.indices.contains(index) else {
@@ -147,12 +183,21 @@ public enum RoundBuilder {
             .filter { LearningPath.isUnlocked($0.offset, units: units, stats: stats) }
             .flatMap(\.element.words)
         var beats: [Beat] = newWords.map { .intro($0) }
-        for (offset, word) in quiz.enumerated() {
-            let choices = choices(for: word, pool: quiz, extra: unlockedWords, rng: &rng)
-            beats.append(.listen(ListenChallenge(id: "\(word.id)-\(offset)", answer: word, choices: choices)))
-        }
         let first = "p1"
         let second = together ? "p2" : "p1"
+        for (offset, word) in quiz.enumerated() {
+            let choices = choices(for: word, pool: quiz, extra: unlockedWords, rng: &rng)
+            let speaker = offset % 2 == 0 ? first : second
+            let listener = offset % 2 == 0 ? second : first
+            beats.append(.listen(ListenChallenge(
+                id: "\(word.id)-\(offset)",
+                answer: word,
+                choices: choices,
+                speakerID: speaker,
+                listenerID: listener,
+                opensRound: offset == 0
+            )))
+        }
         for (offset, word) in quiz.enumerated() {
             let speaker = offset % 2 == 0 ? first : second
             beats.append(.say(SayTurn(id: "\(word.id)-say-\(offset)", word: word, speakerID: speaker)))
@@ -161,6 +206,10 @@ public enum RoundBuilder {
         for pair in pairs {
             beats.append(.dialog(DialogTurn(id: "\(pair.id)-a", line: pair.a, speakerID: first)))
             beats.append(.dialog(DialogTurn(id: "\(pair.id)-b", line: pair.b, speakerID: second)))
+        }
+        for (offset, word) in extras.prefix(4).enumerated() {
+            let speaker = offset % 2 == 0 ? first : second
+            beats.append(.say(SayTurn(id: "own-\(word.id)", word: word, speakerID: speaker)))
         }
         return RoundPlan(beats: beats, label: snapshot.label, unitTitle: unit.title)
     }
@@ -192,32 +241,58 @@ public enum RoundEngine {
         next.index += 1
         next.phase = .speak
         next.missed = []
+        next.listenPhase = .pending
+        next.speechUnderstood = false
+        next.pictureRight = false
         if next.index >= plan.beats.count { next.index = -1 }
         return next
     }
 
-    public static func listenTap(
-        _ cursor: RoundCursor,
-        plan: RoundPlan,
-        playerID: String,
-        choiceID: String,
-        seats: [String]
-    ) -> (RoundCursor, GradedWord?) {
-        guard case .listen(let item)? = beat(plan, cursor) else { return (cursor, nil) }
-        if cursor.missed.contains(playerID) { return (cursor, nil) }
+    public static func prepare(_ cursor: RoundCursor, plan: RoundPlan) -> RoundCursor {
+        guard case .listen(let item)? = beat(plan, cursor), cursor.listenPhase == .pending else { return cursor }
         var next = cursor
-        if choiceID == item.answer.id {
-            next.scores[playerID, default: 0] += 1
-            next = advance(next, plan: plan)
-            return (next, GradedWord(wordID: item.answer.id, correct: true, playerID: playerID))
+        next.listenPhase = item.opensRound ? .explain : .speak
+        return next
+    }
+
+    public static func beginSpeaking(_ cursor: RoundCursor, plan: RoundPlan) -> RoundCursor {
+        guard case .listen = beat(plan, cursor), cursor.listenPhase == .explain else { return cursor }
+        var next = cursor
+        next.listenPhase = .speak
+        return next
+    }
+
+    /// Das gesprochene Wort zählt nur, wenn es kein Fehlschuss war. Danach kommt die Übergabe.
+    public static func noteSpeech(_ cursor: RoundCursor, plan: RoundPlan, understood: Bool) -> RoundCursor {
+        guard case .listen = beat(plan, cursor), cursor.listenPhase == .speak else { return cursor }
+        var next = cursor
+        next.speechUnderstood = understood
+        next.listenPhase = .handoff
+        return next
+    }
+
+    public static func confirmHandoff(_ cursor: RoundCursor, plan: RoundPlan) -> RoundCursor {
+        guard case .listen = beat(plan, cursor), cursor.listenPhase == .handoff else { return cursor }
+        var next = cursor
+        next.listenPhase = .point
+        return next
+    }
+
+    /// Beide bekommen den Punkt nur, wenn das Wort ankam und das Bild stimmt.
+    public static func point(_ cursor: RoundCursor, plan: RoundPlan, choiceID: String) -> (RoundCursor, GradedWord?) {
+        guard case .listen(let item)? = beat(plan, cursor), cursor.listenPhase == .point else { return (cursor, nil) }
+        var next = cursor
+        let right = choiceID == item.answer.id
+        next.pictureRight = right
+        let coop = right && cursor.speechUnderstood
+        if coop {
+            next.scores[item.speakerID, default: 0] += 1
+            if item.listenerID != item.speakerID {
+                next.scores[item.listenerID, default: 0] += 1
+            }
         }
-        next.missed.insert(playerID)
-        let waiting = seats.filter { !next.missed.contains($0) }
-        if waiting.isEmpty {
-            next = advance(next, plan: plan)
-            return (next, GradedWord(wordID: item.answer.id, correct: false, playerID: nil))
-        }
-        return (next, nil)
+        next.listenPhase = .result
+        return (next, GradedWord(wordID: item.answer.id, correct: coop, playerID: coop ? item.speakerID : nil))
     }
 
     public static func revealSay(_ cursor: RoundCursor, plan: RoundPlan) -> RoundCursor {

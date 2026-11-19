@@ -47,7 +47,7 @@ public enum TutorialScript {
 public enum LessonTour {
     public static let steps: [GuideCard] = [
         GuideCard(id: "intro", emoji: "👂", title: "Zuerst zuhören", text: "Neue Wörter hört ihr gemeinsam und sprecht sie nach. Danach kommt das Spiel."),
-        GuideCard(id: "listen", emoji: "👆", title: "Wer tippt zuerst?", text: "Jede Seite hat dieselben Bilder. Der erste richtige Tipp bekommt den Punkt."),
+        GuideCard(id: "listen", emoji: "👆", title: "Sagen und zeigen", text: "Eine Person sagt das Wort, die andere hört nur zu und tippt das Bild, und den Punkt gibt es nur für beide zusammen."),
         GuideCard(id: "say", emoji: "🗣️", title: "Sag das Wort", text: "Eine Person sieht das Bild und sagt das Thai. Das Handy hört zu."),
         GuideCard(id: "dialog", emoji: "✅", title: "Zwei Sätze", text: "Lies deinen Satz laut. Das Handy sagt, ob es angekommen ist."),
     ]

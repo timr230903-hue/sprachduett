@@ -45,13 +45,18 @@ final class RoundTests: XCTestCase {
         XCTAssertFalse(intros.isEmpty)
         XCTAssertEqual(plan.unitTitle, "Hallo")
         XCTAssertTrue(plan.label.hasPrefix("Stufe 1"))
-        if case .listen(let first) = plan.beats.first(where: { if case .listen = $0 { return true }; return false }) {
-            XCTAssertTrue(intros.contains(first.answer.id))
-            XCTAssertEqual(first.choices.count, 4)
-            XCTAssertTrue(first.choices.contains { $0.id == first.answer.id })
-        } else {
-            XCTFail("keine Hör-Aufgabe")
+        let listens = plan.beats.compactMap { beat -> ListenChallenge? in
+            if case .listen(let item) = beat { return item }
+            return nil
         }
+        XCTAssertGreaterThanOrEqual(listens.count, 2)
+        XCTAssertEqual(listens[0].speakerID, "p1")
+        XCTAssertEqual(listens[0].listenerID, "p2")
+        XCTAssertTrue(listens[0].opensRound)
+        XCTAssertEqual(listens[1].speakerID, "p2")
+        XCTAssertEqual(listens[1].listenerID, "p1")
+        XCTAssertEqual(listens[0].choices.count, 4)
+        XCTAssertTrue(intros.contains(listens[0].answer.id))
     }
 
     func testOnePhoneWhenThePartnerIsAway() {
@@ -60,25 +65,15 @@ final class RoundTests: XCTestCase {
         XCTAssertEqual(PlayMode.resolve(together: false, partnerConnected: true), .solo)
     }
 
-    func testFirstCorrectTapScoresAndAMissLetsTheOtherTry() {
-        let word = PathWord(id: "w", emoji: "🍚", thai: "ข้าว", roman: "khâao", german: "Reis")
-        let other = PathWord(id: "o", emoji: "🐔", thai: "ไก่", roman: "gài", german: "Huhn")
-        let item = ListenChallenge(id: "q", answer: word, choices: [word, other])
-        let plan = RoundPlan(beats: [.listen(item)], label: "Stufe 1 · Einheit 1 von 1", unitTitle: "Essen")
-        var cursor = RoundCursor()
-        let (waiting, none) = RoundEngine.listenTap(cursor, plan: plan, playerID: "p1", choiceID: "o", seats: ["p1", "p2"])
-        XCTAssertNil(none)
-        XCTAssertEqual(waiting.missed, ["p1"])
-        XCTAssertEqual(waiting.index, 0)
-        let (won, grade) = RoundEngine.listenTap(waiting, plan: plan, playerID: "p2", choiceID: "w", seats: ["p1", "p2"])
-        XCTAssertEqual(grade?.playerID, "p2")
-        XCTAssertEqual(won.scores["p2"], 1)
-        XCTAssertTrue(won.finished)
-        cursor = RoundCursor()
-        let (bothMiss, miss) = RoundEngine.listenTap(cursor, plan: plan, playerID: "p1", choiceID: "o", seats: ["p1"])
-        XCTAssertEqual(miss?.correct, false)
-        XCTAssertTrue(bothMiss.finished)
-        XCTAssertEqual(bothMiss.scores["p1"], nil)
+    func testSoloListenUsesOneVoice() throws {
+        let units = sampleUnits()
+        let plan = RoundBuilder.build(units: units, stats: [:], seed: 3, together: false)
+        let listens = plan.beats.compactMap { beat -> ListenChallenge? in
+            if case .listen(let item) = beat { return item }
+            return nil
+        }
+        XCTAssertFalse(listens.isEmpty)
+        XCTAssertTrue(listens.allSatisfy { $0.speakerID == "p1" && $0.listenerID == "p1" })
     }
 
     func testSayAndDialogAwardTheSpeaker() {

@@ -1,0 +1,301 @@
+id,thai,roman,german,file
+pol-01,สวัสดี,sà-wàt-dii,Hallo,Audio/pol-01.m4a
+pol-05,ขอบคุณ,khɔ̀ɔp-khun,danke,Audio/pol-05.m4a
+pol-06,ขอบคุณมาก,khɔ̀ɔp-khun mâak,vielen Dank,Audio/pol-06.m4a
+pol-07,ไม่เป็นไร,mâi-bpen-rai,"kein Problem, gern geschehen",Audio/pol-07.m4a
+pol-15,สบายดี,sà-baai-dii,mir geht es gut,Audio/pol-15.m4a
+pol-16,สบายดีไหม,sà-baai-dii mǎi,wie geht es dir?,Audio/pol-16.m4a
+pol-18,ลาก่อน,laa-gɔ̀ɔn,auf Wiedersehen,Audio/pol-18.m4a
+pol-09,ใช่,châi,ja,Audio/pol-09.m4a
+pol-10,ไม่ใช่,mâi-châi,"nein, nicht so",Audio/pol-10.m4a
+pol-11,ได้,dâai,"kann, okay, es geht",Audio/pol-11.m4a
+pol-12,ไม่ได้,mâi-dâai,geht nicht,Audio/pol-12.m4a
+pol-02,ครับ,khráp,"höfliche Partikel, männlich",Audio/pol-02.m4a
+pol-03,ค่ะ,khâ,"höfliche Partikel, weiblich, Aussage",Audio/pol-03.m4a
+pol-04,คะ,khá,"höfliche Partikel, weiblich, Frage",Audio/pol-04.m4a
+num-01,หนึ่ง,nʉ̀ng,eins,Audio/num-01.m4a
+num-02,สอง,sɔ̌ɔng,zwei,Audio/num-02.m4a
+num-03,สาม,sǎam,drei,Audio/num-03.m4a
+num-04,สี่,sìi,vier,Audio/num-04.m4a
+num-05,ห้า,hâa,fünf,Audio/num-05.m4a
+num-06,หก,hòk,sechs,Audio/num-06.m4a
+num-07,เจ็ด,jèt,sieben,Audio/num-07.m4a
+num-08,แปด,bpɛ̀ɛt,acht,Audio/num-08.m4a
+num-09,เก้า,kâao,neun,Audio/num-09.m4a
+num-10,สิบ,sìp,zehn,Audio/num-10.m4a
+ton-01,ไป,bpai,"gehen, Mittelton",Audio/ton-01.m4a
+ton-06,มา,maa,"kommen, Mittelton",Audio/ton-06.m4a
+ton-02,ใหม่,mài,"neu, tiefer Ton",Audio/ton-02.m4a
+ton-03,ไม่,mâi,"nicht, fallender Ton",Audio/ton-03.m4a
+ton-04,ไม้,mái,"Holz, hoher Ton",Audio/ton-04.m4a
+ton-05,ไหม,mǎi,"oder, steigender Ton",Audio/ton-05.m4a
+ton-07,ม้า,máa,"Pferd, hoher Ton",Audio/ton-07.m4a
+ton-08,หมา,mǎa,"Hund, steigender Ton",Audio/ton-08.m4a
+food-17,หมู,mùu,Schwein,Audio/food-17.m4a
+food-18,ไก่,gài,Huhn,Audio/food-18.m4a
+food-19,เนื้อ,nʉ́a,Rind,Audio/food-19.m4a
+food-20,ปลา,bplaa,Fisch,Audio/food-20.m4a
+food-21,กุ้ง,gûng,Garnele,Audio/food-21.m4a
+food-22,เต้าหู้,dtào-hûu,Tofu,Audio/food-22.m4a
+food-23,ผัก,phàk,Gemüse,Audio/food-23.m4a
+food-25,มะม่วง,má-mûang,Mango,Audio/food-25.m4a
+food-26,มะละกอ,má-lá-gɔɔ,Papaya,Audio/food-26.m4a
+food-27,กล้วย,glûai,Banane,Audio/food-27.m4a
+food-28,สับปะรด,sàp-bpà-rót,Ananas,Audio/food-28.m4a
+food-29,แอปเปิ้ล,ɛ́p-bpə̂ən,Apfel,Audio/food-29.m4a
+food-31,พริก,phrík,Chili,Audio/food-31.m4a
+food-32,กระเทียม,grà-thiam,Knoblauch,Audio/food-32.m4a
+food-35,ไข่,khài,Ei,Audio/food-35.m4a
+food-36,ขนมปัง,khà-nǒm-bpang,Brot,Audio/food-36.m4a
+food-01,ข้าว,khâao,Reis,Audio/food-01.m4a
+food-05,ผัดไทย,phàt-thai,Pad Thai,Audio/food-05.m4a
+food-06,ส้มตำ,sôm-dtàm,grüner Papayasalat,Audio/food-06.m4a
+food-12,ไก่ทอด,gài-thɔ̂ɔt,frittiertes Huhn,Audio/food-12.m4a
+food-15,ไข่เจียว,khài-jiao,Omelett,Audio/food-15.m4a
+food-16,ไข่ดาว,khài-daao,Spiegelei,Audio/food-16.m4a
+food-37,โจ๊ก,jôok,Reisbrei,Audio/food-37.m4a
+tas-01,อร่อย,à-rɔ̀i,lecker,Audio/tas-01.m4a
+tas-03,เผ็ด,phèt,scharf,Audio/tas-03.m4a
+tas-04,หวาน,wǎan,süß,Audio/tas-04.m4a
+tas-06,เปรี้ยว,prîao,sauer,Audio/tas-06.m4a
+dri-01,น้ำ,náam,Wasser,Audio/dri-01.m4a
+dri-02,น้ำเปล่า,náam-bplàao,Wasser ohne Eis und Zucker,Audio/dri-02.m4a
+dri-03,น้ำแข็ง,náam-khɛ̌ng,Eis,Audio/dri-03.m4a
+dri-05,ชา,chaa,Tee,Audio/dri-05.m4a
+dri-06,ชาเย็น,chaa-yen,Eistee mit Milch,Audio/dri-06.m4a
+dri-07,กาแฟ,gaa-fɛɛ,Kaffee,Audio/dri-07.m4a
+dri-08,กาแฟเย็น,gaa-fɛɛ-yen,Eiskaffee,Audio/dri-08.m4a
+dri-09,นม,nom,Milch,Audio/dri-09.m4a
+dri-10,น้ำส้ม,náam-sôm,Orangensaft,Audio/dri-10.m4a
+dri-11,น้ำมะพร้าว,náam-má-phráao,Kokoswasser,Audio/dri-11.m4a
+dri-12,เบียร์,bia,Bier,Audio/dri-12.m4a
+dri-14,ไวน์,wai,Wein,Audio/dri-14.m4a
+res-01,เมนู,mee-nuu,Speisekarte,Audio/res-01.m4a
+res-06,โต๊ะ,dtò,Tisch,Audio/res-06.m4a
+res-08,ช้อน,chɔ́ɔn,Löffel,Audio/res-08.m4a
+res-14,พอแล้ว,phɔɔ lɛ́ɛo,das reicht,Audio/res-14.m4a
+res-16,เช็คบิล,chék bin,die Rechnung bitte,Audio/res-16.m4a
+cls-gaew,แก้ว,gɛ̂ɛo,"Glas, Zählwort für Getränke",Audio/cls-gaew.m4a
+cls-jaan,จาน,jaan,Teller,Audio/cls-jaan.m4a
+cls-baht,บาท,bàat,Baht,Audio/cls-baht.m4a
+mar-01,เท่าไหร่,thâo-rài,wie viel?,Audio/mar-01.m4a
+mar-02,แพง,phaeng,teuer,Audio/mar-02.m4a
+mar-04,ถูก,thùuk,"günstig, richtig",Audio/mar-04.m4a
+mar-05,ลด,lót,"Rabatt, heruntersetzen",Audio/mar-05.m4a
+mar-07,อันนี้,an-níi,dieses,Audio/mar-07.m4a
+mar-09,เอาอันนี้,ao an-níi,ich nehme das,Audio/mar-09.m4a
+mar-10,ไม่เอา,mâi ao,ich nehme es nicht,Audio/mar-10.m4a
+mar-12,สวย,sǔai,schön,Audio/mar-12.m4a
+day-01,เงิน,ngən,Geld,Audio/day-01.m4a
+cls-an,อัน,an,Zählwort für Dinge,Audio/cls-an.m4a
+plc-05,ตลาด,dtà-làat,Markt,Audio/plc-05.m4a
+way-01,ตรงไป,dtrong bpai,geradeaus,Audio/way-01.m4a
+way-02,เลี้ยวซ้าย,líiao sâai,links abbiegen,Audio/way-02.m4a
+way-03,เลี้ยวขวา,líiao khwǎa,rechts abbiegen,Audio/way-03.m4a
+way-04,ซ้าย,sâai,links,Audio/way-04.m4a
+way-05,ขวา,khwǎa,rechts,Audio/way-05.m4a
+way-08,ใกล้,glài,nah,Audio/way-08.m4a
+way-09,ไกล,glai,weit,Audio/way-09.m4a
+way-15,อยู่ที่ไหน,yùu thîi-nǎi,wo ist das?,Audio/way-15.m4a
+plc-01,บ้าน,bâan,"Haus, Zuhause",Audio/plc-01.m4a
+plc-03,ห้องน้ำ,hɔ̂ɔng-náam,Toilette,Audio/plc-03.m4a
+plc-07,ร้านอาหาร,ráan-aa-hǎan,Restaurant,Audio/plc-07.m4a
+plc-12,วัด,wát,Tempel,Audio/plc-12.m4a
+plc-14,ทะเล,thá-lee,Meer,Audio/plc-14.m4a
+plc-15,หาด,hàat,Strand,Audio/plc-15.m4a
+trn-02,แท็กซี่,thɛ́k-sîi,Taxi,Audio/trn-02.m4a
+fam-01,พ่อ,phɔ̂ɔ,Vater,Audio/fam-01.m4a
+fam-02,แม่,mɛ̂ɛ,Mutter,Audio/fam-02.m4a
+fam-05,ลูก,lûuk,Kind,Audio/fam-05.m4a
+fam-06,ลูกชาย,lûuk-chaai,Sohn,Audio/fam-06.m4a
+fam-07,ลูกสาว,lûuk-sǎao,Tochter,Audio/fam-07.m4a
+fam-08,ปู่,bpùu,Großvater väterlicherseits,Audio/fam-08.m4a
+fam-09,ย่า,yâa,Großmutter väterlicherseits,Audio/fam-09.m4a
+fam-12,พี่ชาย,phîi-chaai,großer Bruder,Audio/fam-12.m4a
+fam-13,พี่สาว,phîi-sǎao,große Schwester,Audio/fam-13.m4a
+fam-16,สามี,sǎa-mii,Ehemann,Audio/fam-16.m4a
+fam-17,ภรรยา,phan-rá-yaa,Ehefrau,Audio/fam-17.m4a
+fam-18,ครอบครัว,khrɔ̂ɔp-khrua,Familie,Audio/fam-18.m4a
+pro-17,แฟน,fɛɛn,"Freund, Freundin, fest",Audio/pro-17.m4a
+pro-16,เพื่อน,phʉ̂an,"Freund, Freundin",Audio/pro-16.m4a
+tim-01,วันนี้,wan-níi,heute,Audio/tim-01.m4a
+tim-02,พรุ่งนี้,phrûng-níi,morgen,Audio/tim-02.m4a
+tim-03,เมื่อวาน,mʉ̂a-waan,gestern,Audio/tim-03.m4a
+tim-06,เช้า,châao,Morgen,Audio/tim-06.m4a
+tim-08,เที่ยง,thîang,Mittag,Audio/tim-08.m4a
+tim-10,เย็น,yen,Abend,Audio/tim-10.m4a
+tim-12,คืน,khʉʉn,Nacht,Audio/tim-12.m4a
+tim-15,ชั่วโมง,chûa-moong,Stunde,Audio/tim-15.m4a
+tim-27,วันจันทร์,wan-jan,Montag,Audio/tim-27.m4a
+tim-31,วันศุกร์,wan-sùk,Freitag,Audio/tim-31.m4a
+tim-33,วันอาทิตย์,wan-aa-thít,Sonntag,Audio/tim-33.m4a
+tim-35,หกโมงเย็น,hòk moong yen,sechs Uhr abends,Audio/tim-35.m4a
+col-02,แดง,dɛɛng,rot,Audio/col-02.m4a
+col-03,เขียว,khìao,grün,Audio/col-03.m4a
+col-04,เหลือง,lʉ̌ang,gelb,Audio/col-04.m4a
+col-05,น้ำเงิน,náam-ngən,blau,Audio/col-05.m4a
+col-06,ดำ,dam,schwarz,Audio/col-06.m4a
+col-07,ขาว,khǎao,weiß,Audio/col-07.m4a
+col-08,ส้ม,sôm,orange,Audio/col-08.m4a
+col-09,ชมพู,chom-phuu,rosa,Audio/col-09.m4a
+col-10,ม่วง,mûang,lila,Audio/col-10.m4a
+ani-01,หมา,mǎa,Hund,Audio/ani-01.m4a
+ani-02,แมว,mɛɛo,Katze,Audio/ani-02.m4a
+ani-03,ช้าง,cháang,Elefant,Audio/ani-03.m4a
+ani-04,นก,nók,Vogel,Audio/ani-04.m4a
+ani-06,ม้า,máa,Pferd,Audio/ani-06.m4a
+ani-07,ยุง,yung,Mücke,Audio/ani-07.m4a
+ani-08,วัว,wua,"Rind, Kuh",Audio/ani-08.m4a
+trn-01,รถ,rót,"Auto, Fahrzeug",Audio/trn-01.m4a
+trn-03,รถเมล์,rót mee,Bus,Audio/trn-03.m4a
+trn-05,รถตู้,rót-dtûu,Minibus,Audio/trn-05.m4a
+trn-06,เรือ,rʉa,Boot,Audio/trn-06.m4a
+trn-09,ตั๋ว,dtǔa,Ticket,Audio/trn-09.m4a
+plc-08,โรงแรม,roong-rɛɛm,Hotel,Audio/plc-08.m4a
+plc-10,สนามบิน,sà-naam-bin,Flughafen,Audio/plc-10.m4a
+plc-11,สถานี,sà-thǎa-nii,Station,Audio/plc-11.m4a
+plc-13,โรงเรียน,roong-rian,Schule,Audio/plc-13.m4a
+bod-01,หัว,hǔa,Kopf,Audio/bod-01.m4a
+bod-03,ตา,dtaa,Auge,Audio/bod-03.m4a
+bod-08,มือ,mʉʉ,Hand,Audio/bod-08.m4a
+clo-01,เสื้อ,sʉ̂a,"Hemd, Oberteil",Audio/clo-01.m4a
+clo-03,รองเท้า,rɔɔng-tháao,Schuhe,Audio/clo-03.m4a
+clo-05,กระเป๋า,grà-bpǎo,Tasche,Audio/clo-05.m4a
+wea-05,ฝน,fǒn,Regen,Audio/wea-05.m4a
+wea-07,แดด,dɛ̀ɛt,"Sonne, Sonnenschein",Audio/wea-07.m4a
+wea-02,ร้อน,rɔ́ɔn,heiß,Audio/wea-02.m4a
+day-02,โทรศัพท์,thoo-rá-sàp,Telefon,Audio/day-02.m4a
+day-03,มือถือ,mʉʉ-thʉ̌ʉ,Handy,Audio/day-03.m4a
+day-06,อาหาร,aa-hǎan,Essen,Audio/day-06.m4a
+pol-08,ขอโทษ,khɔ̌ɔ-thôot,Entschuldigung,Audio/pol-08.m4a
+pol-13,เชิญ,chəən,"bitte sehr, nur zu",Audio/pol-13.m4a
+pol-14,นะ,ná,weicher Ton am Satzende,Audio/pol-14.m4a
+pol-17,ยินดีที่ได้รู้จัก,yin-dii thîi dâai rúu-jàk,freut mich,Audio/pol-17.m4a
+pol-19,แล้วเจอกัน,lɛ́ɛo jəə gan,bis später,Audio/pol-19.m4a
+pol-20,กินข้าวยัง,gin khâao yang,schon gegessen? (gesprochenes Hallo),Audio/pol-20.m4a
+pol-21,ฝันดี,fǎn-dii,schlaf gut,Audio/pol-21.m4a
+pol-22,โชคดี,chôok-dii,viel Glück,Audio/pol-22.m4a
+pro-01,ผม,phǒm,"ich, männlich",Audio/pro-01.m4a
+pro-02,ฉัน,chǎn,"ich, weiblich oder neutral",Audio/pro-02.m4a
+pro-03,เรา,rao,wir,Audio/pro-03.m4a
+pro-04,คุณ,khun,"du, Sie",Audio/pro-04.m4a
+pro-05,เรา,rao,wir,Audio/pro-05.m4a
+pro-06,เขา,khǎo,"er, sie",Audio/pro-06.m4a
+pro-07,เธอ,thəə,"du, vertraut",Audio/pro-07.m4a
+pro-08,พวกเขา,phûak-khǎo,"sie, Plural",Audio/pro-08.m4a
+pro-09,ใคร,khrai,wer,Audio/pro-09.m4a
+pro-10,อะไร,à-rai,was,Audio/pro-10.m4a
+pro-11,ที่ไหน,thîi-nǎi,wo,Audio/pro-11.m4a
+pro-12,เมื่อไหร่,mʉ̂a-rài,wann,Audio/pro-12.m4a
+pro-13,ทำไม,tham-mai,warum,Audio/pro-13.m4a
+pro-14,ยังไง,yang-ngai,wie,Audio/pro-14.m4a
+pro-15,คน,khon,"Mensch, Person",Audio/pro-15.m4a
+pro-18,ชื่อ,chʉ̂ʉ,Name,Audio/pro-18.m4a
+fra-01,ไหม,mǎi,oder? Fragepartikel,Audio/fra-01.m4a
+fra-02,หรือ,rʉ̌ʉ,oder,Audio/fra-02.m4a
+fra-03,กี่,gìi,wie viele,Audio/fra-03.m4a
+fra-04,เท่าไหร่,thâo-rài,wie viel kostet das,Audio/fra-04.m4a
+fra-05,อันไหน,an-nǎi,welches,Audio/fra-05.m4a
+fra-06,ใคร,khrai,wer,Audio/fra-06.m4a
+fra-07,ทำไม,tham-mai,warum,Audio/fra-07.m4a
+fra-08,ได้ไหม,dâai mǎi,geht das?,Audio/fra-08.m4a
+fra-09,หรือยัง,rʉ̌ʉ yang,schon?,Audio/fra-09.m4a
+fra-10,จริงเหรอ,jing rə̌ə,echt?,Audio/fra-10.m4a
+fra-11,อะไรนะ,à-rai ná,wie bitte?,Audio/fra-11.m4a
+fra-12,อีกที,ìik thii,noch einmal,Audio/fra-12.m4a
+fra-13,ช้าๆ,cháa cháa,langsam,Audio/fra-13.m4a
+fra-14,พูดอีกทีได้ไหม,phûut ìik thii dâai mǎi,kannst du das noch einmal sagen?,Audio/fra-14.m4a
+num-00,ศูนย์,sǔun,null,Audio/num-00.m4a
+num-11,สิบเอ็ด,sìp-èt,elf,Audio/num-11.m4a
+num-12,สิบสอง,sìp-sɔ̌ɔng,zwölf,Audio/num-12.m4a
+num-20,ยี่สิบ,yîi-sìp,zwanzig,Audio/num-20.m4a
+num-21,ยี่สิบเอ็ด,yîi-sìp-èt,einundzwanzig,Audio/num-21.m4a
+num-30,สามสิบ,sǎam-sìp,dreißig,Audio/num-30.m4a
+num-40,สี่สิบ,sìi-sìp,vierzig,Audio/num-40.m4a
+num-50,ห้าสิบ,hâa-sìp,fünfzig,Audio/num-50.m4a
+num-60,หกสิบ,hòk-sìp,sechzig,Audio/num-60.m4a
+num-70,เจ็ดสิบ,jèt-sìp,siebzig,Audio/num-70.m4a
+num-80,แปดสิบ,bpɛ̀ɛt-sìp,achtzig,Audio/num-80.m4a
+num-90,เก้าสิบ,kâao-sìp,neunzig,Audio/num-90.m4a
+num-100,ร้อย,rɔ́ɔi,hundert,Audio/num-100.m4a
+num-200,สองร้อย,sɔ̌ɔng-rɔ́ɔi,zweihundert,Audio/num-200.m4a
+num-1000,พัน,phan,tausend,Audio/num-1000.m4a
+num-10000,หมื่น,mʉ̀ʉn,zehntausend,Audio/num-10000.m4a
+num-half,ครึ่ง,khrʉ̂ng,halb,Audio/num-half.m4a
+num-first,แรก,rɛ̂ɛk,erster,Audio/num-first.m4a
+cls-khon,คน,khon,Zählwort für Menschen,Audio/cls-khon.m4a
+cls-thuai,ถ้วย,thûai,Schale,Audio/cls-thuai.m4a
+cls-khuat,ขวด,khùat,Flasche,Audio/cls-khuat.m4a
+cls-bai,ใบ,bai,Zählwort für Tickets und Früchte,Audio/cls-bai.m4a
+cls-khan,คัน,khan,Zählwort für Fahrzeuge,Audio/cls-khan.m4a
+tim-04,ตอนนี้,tɔɔn-níi,jetzt,Audio/tim-04.m4a
+tim-05,เดี๋ยว,dìao,gleich,Audio/tim-05.m4a
+tim-07,สาย,sǎai,später Vormittag,Audio/tim-07.m4a
+tim-09,บ่าย,bàai,Nachmittag,Audio/tim-09.m4a
+tim-11,ค่ำ,khâm,früher Abend,Audio/tim-11.m4a
+tim-13,กลางวัน,glaang-wan,tagsüber,Audio/tim-13.m4a
+tim-14,กลางคืน,glaang-khʉʉn,nachts,Audio/tim-14.m4a
+tim-16,นาที,naa-thii,Minute,Audio/tim-16.m4a
+tim-17,วินาที,wi-naa-thii,Sekunde,Audio/tim-17.m4a
+tim-18,วัน,wan,Tag,Audio/tim-18.m4a
+tim-19,สัปดาห์,sàp-daa,Woche,Audio/tim-19.m4a
+tim-20,เดือน,dʉan,Monat,Audio/tim-20.m4a
+tim-21,ปี,bpii,Jahr,Audio/tim-21.m4a
+tim-22,ก่อน,gɔ̀ɔn,"bevor, vorher",Audio/tim-22.m4a
+tim-23,หลัง,lǎng,"nach, danach",Audio/tim-23.m4a
+tim-24,เสมอ,sà-məə,immer,Audio/tim-24.m4a
+tim-25,เคย,khəəi,"jemals, schon einmal",Audio/tim-25.m4a
+tim-26,ไม่เคย,mâi-khəəi,noch nie,Audio/tim-26.m4a
+tim-28,วันอังคาร,wan-ang-khaan,Dienstag,Audio/tim-28.m4a
+tim-29,วันพุธ,wan-phút,Mittwoch,Audio/tim-29.m4a
+tim-30,วันพฤหัสบดี,wan-phrʉ́-hàt-sà-bɔɔ-dii,Donnerstag,Audio/tim-30.m4a
+tim-32,วันเสาร์,wan-sǎo,Samstag,Audio/tim-32.m4a
+tim-34,โมง,moong,"Uhr-Stunde, Zählwort",Audio/tim-34.m4a
+tim-36,แปดโมงเช้า,bpɛ̀ɛt moong châao,acht Uhr morgens,Audio/tim-36.m4a
+fam-03,พี่,phîi,älteres Geschwister,Audio/fam-03.m4a
+fam-04,น้อง,nɔ́ɔng,jüngeres Geschwister,Audio/fam-04.m4a
+fam-10,ตา,dtaa,Großvater mütterlicherseits,Audio/fam-10.m4a
+fam-11,ยาย,yaai,Großmutter mütterlicherseits,Audio/fam-11.m4a
+fam-14,น้องชาย,nɔ́ɔng-chaai,kleiner Bruder,Audio/fam-14.m4a
+fam-15,น้องสาว,nɔ́ɔng-sǎao,kleine Schwester,Audio/fam-15.m4a
+food-02,ข้าวเหนียว,khâao-nǐao,Klebreis,Audio/food-02.m4a
+food-03,ข้าวสวย,khâao-sǔai,gekochter Reis,Audio/food-03.m4a
+food-04,ก๋วยเตี๋ยว,gǔai-dtǐao,Nudelsuppe,Audio/food-04.m4a
+food-07,ต้มยำกุ้ง,dtôm-yam-gûng,sauer-scharfe Suppe mit Garnelen,Audio/food-07.m4a
+food-08,แกงเขียวหวาน,kaeng-khìao-wǎan,grünes Curry,Audio/food-08.m4a
+food-09,ข้าวผัด,khâao-phàt,gebratener Reis,Audio/food-09.m4a
+food-10,ข้าวมันไก่,khâao-man-gài,Hähnchenreis,Audio/food-10.m4a
+food-11,ผัดกะเพรา,phàt-gà-phrao,Braten mit Basilikum,Audio/food-11.m4a
+food-13,หมูปิ้ง,mùu-bîng,gegrilltes Schwein,Audio/food-13.m4a
+food-14,ปลาเผา,bplaa-phǎo,gegrillter Fisch,Audio/food-14.m4a
+food-24,ผลไม้,phǒn-lá-máai,Obst,Audio/food-24.m4a
+food-30,น้ำปลา,náam-bplaa,Fischsauce,Audio/food-30.m4a
+food-33,น้ำตาล,náam-dtaan,Zucker,Audio/food-33.m4a
+food-34,เกลือ,glʉa,Salz,Audio/food-34.m4a
+dri-04,น้ำอัดลม,náam-àt-lom,Sprudel,Audio/dri-04.m4a
+dri-13,เหล้า,lào,Schnaps,Audio/dri-13.m4a
+dri-15,หวานน้อย,wǎan nɔ́ɔi,wenig süß,Audio/dri-15.m4a
+dri-16,หวานปกติ,wǎan bpòk-gà-dtì,normal süß,Audio/dri-16.m4a
+dri-17,ไม่หวาน,mâi wǎan,nicht süß,Audio/dri-17.m4a
+tas-02,ไม่อร่อย,mâi à-rɔ̀i,schmeckt nicht,Audio/tas-02.m4a
+tas-05,เค็ม,khem,salzig,Audio/tas-05.m4a
+tas-07,จืด,jʉ̀ʉt,"fade, ungewürzt",Audio/tas-07.m4a
+tas-08,มัน,man,"fettig, ölig",Audio/tas-08.m4a
+tas-09,ขม,khǒm,bitter,Audio/tas-09.m4a
+tas-10,หอม,hɔ̌ɔm,duftet gut,Audio/tas-10.m4a
+tas-11,อร่อยมาก,à-rɔ̀i mâak,sehr lecker,Audio/tas-11.m4a
+tas-12,เผ็ดไป,phèt bpai,zu scharf,Audio/tas-12.m4a
+res-02,สั่ง,sàng,bestellen,Audio/res-02.m4a
+res-03,บิล,bin,Rechnung,Audio/res-03.m4a
+res-04,เก็บเงิน,gèp-ngən,"kassieren, bezahlen",Audio/res-04.m4a
+res-05,จอง,jɔɔng,reservieren,Audio/res-05.m4a
+res-07,เก้าอี้,gâo-ìi,Stuhl,Audio/res-07.m4a
+res-09,ส้อม,sɔ̂ɔm,Gabel,Audio/res-09.m4a
+res-10,มีด,mîit,Messer,Audio/res-10.m4a
+res-11,ไม่เผ็ด,mâi-phèt,nicht scharf,Audio/res-11.m4a
+res-12,เผ็ดน้อย,phèt nɔ́ɔi,wenig scharf,Audio/res-12.m4a
+res-13,เอาด้วย,ao dûai,das auch noch,Audio/res-13.m4a
+res-15,เชิญชิม,chəən chim,"guten Appetit, probiert",Audio/res-15.m4a
+mar-03,แพงไป,phaeng bpai,zu teuer,Audio/mar-03.m4a
+mar-06,ลดหน่อย,lót nɔ̀i,ein bisschen weniger,Audio/mar-06.m4a
+mar-08,อันนั้น,an-nán,jenes,Audio/mar-08.m4a

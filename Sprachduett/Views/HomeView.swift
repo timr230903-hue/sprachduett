@@ -34,6 +34,12 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
+                if let daily = model.dailyWord {
+                    Text("Wort des Tages · \(daily.thai) \(daily.german)")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.accent)
+                        .accessibilityLabel("Wort des Tages, \(daily.thai), \(daily.german)")
+                }
                 Text(model.pathSnapshot.label)
                     .font(.title3.weight(.semibold))
                 Text(model.pathSnapshot.unitTitle)
@@ -68,7 +74,10 @@ struct HomeView: View {
             }
             .padding(24)
         }
-        .onAppear { screens.name = "Home" }
+        .onAppear {
+            screens.name = "Home"
+            model.refreshNudge()
+        }
         .navigationDestination(isPresented: $playing) {
             RoundScreen(together: together, resume: resume)
         }
@@ -116,6 +125,10 @@ private struct ProgressDots: View {
     }
 }
 
+enum StudioRoute: Hashable {
+    case tone, script, own, travel, role, share
+}
+
 struct SettingsSheet: View {
     var playSolo: () -> Void
     @EnvironmentObject private var model: AppModel
@@ -129,6 +142,7 @@ struct SettingsSheet: View {
     @State private var rightGender: SpeakerGender = .unspecified
     @State private var showDuo = false
     @State private var feedback = false
+    @State private var studio: StudioRoute?
 
     var body: some View {
         NavigationStack {
@@ -167,6 +181,13 @@ struct SettingsSheet: View {
                         Text(debugText)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                        SoftButton(title: "Ton-Duell") { studio = .tone }
+                        SoftButton(title: "Schrift") { studio = .script }
+                        SoftButton(title: "Eigene Sätze") { studio = .own }
+                        SoftButton(title: "Reise") { studio = .travel }
+                            .accessibilityIdentifier("open-travel")
+                        SoftButton(title: "Rollenspiel") { studio = .role }
+                        SoftButton(title: "Fortschritt teilen") { studio = .share }
                         SoftButton(title: "Feedback") { feedback = true }
                         if model.hasFeedback {
                             ShareLink(item: model.feedbackExport) { Text("Notizen teilen") }
@@ -188,6 +209,16 @@ struct SettingsSheet: View {
             }
             .sheet(isPresented: $showDuo) { DuoView() }
             .sheet(isPresented: $feedback) { FeedbackSheet() }
+            .navigationDestination(item: $studio) { route in
+                switch route {
+                case .tone: ToneDuelScreen()
+                case .script: ScriptScreen()
+                case .own: OwnPhraseScreen()
+                case .travel: TravelScreen()
+                case .role: RolePlayScreen()
+                case .share: ShareProgressScreen(sentence: model.headline)
+                }
+            }
         }
     }
 

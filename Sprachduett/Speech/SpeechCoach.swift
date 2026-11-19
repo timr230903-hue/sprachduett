@@ -23,6 +23,7 @@ final class SpeechCoach: ObservableObject {
     private var meterSamples = 0
     private var meterTick = Date.distantPast
     private var timeout: Task<Void, Never>?
+    private var player: AVAudioPlayer?
     private var generation = 0
 
     var canListen: Bool { recognizer != nil }
@@ -35,9 +36,14 @@ final class SpeechCoach: ObservableObject {
         Task { _ = await authorize() }
     }
 
-    func speak(_ text: String, slow: Bool = false) {
+    func speak(_ text: String, slow: Bool = false, clipID: String? = nil, file: URL? = nil) {
         stopListening()
         synth.stopSpeaking(at: .immediate)
+        if let file, ClipLibrary.prefersRecording(hasFile: true, slow: slow), playFile(file) { return }
+        if let clipID, ClipLibrary.prefersRecording(hasFile: true, slow: slow),
+           let url = Bundle.main.url(forResource: clipID, withExtension: "m4a", subdirectory: "Audio")
+            ?? Bundle.main.url(forResource: clipID, withExtension: "m4a"),
+           playFile(url) { return }
         synth = AVSpeechSynthesizer()
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playAndRecord, mode: .spokenAudio, options: [.defaultToSpeaker, .duckOthers])
@@ -58,6 +64,17 @@ final class SpeechCoach: ObservableObject {
             }
             synth.speak(utterance)
         }
+    }
+
+    @discardableResult
+    private func playFile(_ url: URL) -> Bool {
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playAndRecord, mode: .spokenAudio, options: [.defaultToSpeaker, .duckOthers])
+        try? session.setActive(true)
+        guard let next = try? AVAudioPlayer(contentsOf: url) else { return false }
+        player = next
+        next.play()
+        return true
     }
 
     /// `nil` nur wenn Erkennung oder Mikrofon fehlen. Leerer Text heißt: nichts gehört, das ist kein Treffer.
