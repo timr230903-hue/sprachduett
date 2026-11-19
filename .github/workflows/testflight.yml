@@ -147,7 +147,10 @@ jobs:
             echo "::error::aps-environment ist '$APS', erwartet production."; exit 1
           fi
           ENT=Config/Sprachduett-YES.entitlements
-          if ! /usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.developer.icloud-container-environment' "$RUNNER_TEMP/profile.plist" >/dev/null 2>&1; then
+          if /usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.developer.icloud-container-environment' "$RUNNER_TEMP/profile.plist" >/dev/null 2>&1; then
+            /usr/libexec/PlistBuddy -c 'Set :com.apple.developer.icloud-container-environment Development' "$ENT"
+            echo "CloudKit-Container-Umgebung im TestFlight-Build: Development"
+          else
             /usr/libexec/PlistBuddy -c 'Delete :com.apple.developer.icloud-container-environment' "$ENT" || true
             echo "Profil ohne icloud-container-environment, Schlüssel aus den App-Entitlements genommen."
           fi
@@ -206,7 +209,8 @@ jobs:
           test "$(/usr/libexec/PlistBuddy -c 'Print :SprachduettCloudKitEnabled' "$PLIST")" = "YES"
           codesign -d --entitlements :- "$APP" > "$LOG_DIR/entitlements.plist"
           grep -q "$CLOUD_CONTAINER" "$LOG_DIR/entitlements.plist"
-          grep -q "production" "$LOG_DIR/entitlements.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :aps-environment' "$LOG_DIR/entitlements.plist")" = "production"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :com.apple.developer.icloud-container-environment' "$LOG_DIR/entitlements.plist")" = "Development"
           grep -q "CloudKit" "$LOG_DIR/entitlements.plist"
           echo "Entitlements im Archiv:"
           cat "$LOG_DIR/entitlements.plist"

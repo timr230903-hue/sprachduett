@@ -14,9 +14,6 @@ struct DuoView: View {
                         Text("Wir")
                             .font(.system(.largeTitle, design: .rounded).weight(.bold))
                         Text(sync.status.text).foregroundStyle(.secondary)
-                        if let error = sync.lastError {
-                            Text(error).foregroundStyle(Theme.coral)
-                        }
                         WarmCard {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("\(model.me.emoji)  \(model.me.name)")
@@ -71,11 +68,15 @@ struct DuoView: View {
                 let share = try await sync.makeShare()
                 if let container = sync.container {
                     CloudSharingPresenter.present(share: share, container: container) { error in
-                        sync.lastError = error.localizedDescription
+                        Task { @MainActor in
+                            sync.report(error, context: "Die Freigabe konnte nicht gesichert werden.")
+                        }
                     }
+                } else {
+                    sync.report("Der iCloud-Container ist nicht da. Die Einladung kann nicht verschickt werden.")
                 }
             } catch {
-                sync.lastError = error.localizedDescription
+                sync.report(error, context: "Das Duo konnte nicht angelegt werden.")
             }
             busy = false
         }

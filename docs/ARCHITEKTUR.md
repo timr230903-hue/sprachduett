@@ -54,13 +54,13 @@ Die signierte Release-App verlangt:
 
 - `com.apple.developer.icloud-container-identifiers`: `iCloud.de.timroot.sprachduett`
 - `com.apple.developer.icloud-services`: `CloudKit`
-- `com.apple.developer.icloud-container-environment`: `Production`
+- `com.apple.developer.icloud-container-environment`: `Development`
 - `aps-environment`: `production`
 - Hintergrundmodus `remote-notification`
 - `CKSharingSupported`
 - `NSSpeechRecognitionUsageDescription`, `NSMicrophoneUsageDescription`
 
-Container in der Apple-Developer-Konsole anlegen, am App-ID hängen, Schema nach Production schieben, Push für die App-ID einschalten. Das Profil „Sprachduett App Store CI“ muss Container und `aps-environment` = production enthalten.
+TestFlight schreibt in die CloudKit-Development-Umgebung, wie Vorrat. Das Schema der Zone und des `CKShare` entsteht beim ersten Speichern. Push bleibt `production`, weil das App-Store-Profil das so ausstellt. Das Profil muss den Container `iCloud.de.timroot.sprachduett` und `aps-environment` = production enthalten. Eine Einladung öffnet `UICloudSharingController`. Nimmt die andere Person den Link an, ruft die Szene `userDidAcceptCloudKitShareWith` auf (`CKSharingSupported` in der Info.plist). Schlägt CloudKit fehl, zeigt die App einen Hinweis mit `CKError`-Code.
 
 ## CI
 

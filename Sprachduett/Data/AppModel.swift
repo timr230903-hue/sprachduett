@@ -165,7 +165,7 @@ final class AppModel: ObservableObject {
         persisted.isSharedZone = false
         persisted.duo.updatedAt = Date()
         refreshMember()
-        saveAndPush()
+        persisted.save()
     }
 
     func noteSharedZone(ownerName: String, duoID: String) {

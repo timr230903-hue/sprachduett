@@ -6,6 +6,7 @@ enum AppTab: Hashable {
 
 struct RootView: View {
     @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var sync: SyncHub
     @State private var tab: AppTab = .today
 
     var body: some View {
@@ -27,5 +28,28 @@ struct RootView: View {
             OnboardingView()
                 .interactiveDismissDisabled()
         }
+        .onChange(of: sync.focusDuo) { _, focus in
+            if focus { tab = .us }
+        }
+        .modifier(CloudAlert())
+    }
+}
+
+private struct CloudAlert: ViewModifier {
+    @EnvironmentObject private var sync: SyncHub
+
+    func body(content: Content) -> some View {
+        content.alert(sync.alertTitle, isPresented: presented) {
+            Button("OK") { sync.dismissAlert() }
+        } message: {
+            Text(sync.alertMessage ?? "")
+        }
+    }
+
+    private var presented: Binding<Bool> {
+        Binding(
+            get: { sync.alertMessage != nil },
+            set: { if !$0 { sync.dismissAlert() } }
+        )
     }
 }

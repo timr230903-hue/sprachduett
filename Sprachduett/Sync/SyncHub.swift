@@ -42,8 +42,11 @@ final class SyncHub: ObservableObject {
     }
 
     @Published private(set) var status: Status = CloudConfig.isCompiledIn ? .solo : .unavailableInBuild
-    @Published var lastError: String?
+    @Published var alertTitle = "iCloud"
+    @Published var alertMessage: String?
+    @Published var focusDuo = false
     private(set) var container: CKContainer?
+    private var acceptingZones = Set<String>()
     private weak var model: AppModel?
     private var privateEngine: CKSyncEngine?
     private var sharedEngine: CKSyncEngine?
@@ -70,7 +73,7 @@ final class SyncHub: ObservableObject {
             let me = try await ck.userRecordID()
             model.adoptCloudUser(me.recordName)
         } catch {
-            status = .error(error.localizedDescription)
+            report(error, context: "iCloud lässt sich nicht verbinden.")
             return
         }
         let owned = SyncDelegate(scope: .private)
@@ -101,11 +104,16 @@ final class SyncHub: ObservableObject {
             try await sharedEngine.sendChanges()
             status = .idle
         } catch {
-            status = .error(error.localizedDescription)
+            report(error, context: "Der Abgleich mit iCloud ist fehlgeschlagen.")
         }
     }
 
     func push() {
+        enqueueCurrentState()
+        Task { await syncNow() }
+    }
+
+    func enqueueCurrentState() {
         guard let model, model.persisted.sharingStarted || model.persisted.isSharedZone else { return }
         guard let engine = engine(forShared: model.persisted.isSharedZone) else { return }
         let zone = zoneID(model)
@@ -114,7 +122,23 @@ final class SyncHub: ObservableObject {
         }
         let recordID = CKRecord.ID(recordName: CloudConfig.recordName, zoneID: zone)
         engine.state.add(pendingRecordZoneChanges: [.saveRecord(recordID)])
-        Task { await syncNow() }
+    }
+
+    func dismissAlert() {
+        alertMessage = nil
+    }
+
+    func report(_ error: Error, context: String) {
+        let text = "\(context)\n\n\(CloudKitDiagnostics.describe(error))"
+        alertTitle = "iCloud"
+        alertMessage = text
+        status = .error(context)
+    }
+
+    func report(_ message: String) {
+        alertTitle = "iCloud"
+        alertMessage = message
+        status = .error(message)
     }
 
     func makeShare() async throws -> CKShare {
@@ -123,6 +147,7 @@ final class SyncHub: ObservableObject {
         let zone = zoneID(model)
         let db = ck.privateCloudDatabase
         _ = try await db.save(CKRecordZone(zoneID: zone))
+        enqueueCurrentState()
         try await syncNow()
         let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zone)
         if let existing = try? await db.record(for: shareID) as? CKShare {
@@ -136,18 +161,36 @@ final class SyncHub: ObservableObject {
     }
 
     func accept(_ metadata: CKShare.Metadata) async {
-        guard CloudConfig.isCompiledIn else { return }
+        guard CloudConfig.isCompiledIn else {
+            report("Diese Installation hat kein iCloud. Die Einladung kann nicht angenommen werden.")
+            return
+        }
+        let zone = metadata.share.recordID.zoneID
+        let key = "\(zone.ownerName)/\(zone.zoneName)"
+        guard acceptingZones.insert(key).inserted else { return }
+        defer { acceptingZones.remove(key) }
         if container == nil, let model { await start(model: model) }
-        guard let ck = container, let model else { return }
+        guard let ck = container, let model else {
+            report("iCloud ist noch nicht verbunden. Öffne die App und versuch den Link noch einmal.")
+            return
+        }
         do {
             _ = try await ck.accept(metadata)
-            let zone = metadata.share.recordID.zoneID
             let duoID = CloudConfig.duoID(from: zone.zoneName) ?? zone.zoneName
             model.noteSharedZone(ownerName: zone.ownerName, duoID: duoID)
             await syncNow()
+            focusDuo = true
+            if case .error = status { return }
+            alertTitle = "Duo"
+            alertMessage = "Die Einladung ist angenommen. Ihr seid jetzt ein Duo."
         } catch {
-            lastError = "Die Einladung hat nicht geklappt."
-            status = .error(error.localizedDescription)
+            if model.persisted.isSharedZone, model.persisted.zoneOwnerName == zone.ownerName {
+                focusDuo = true
+                alertTitle = "Duo"
+                alertMessage = "Du bist schon in diesem Duo."
+                return
+            }
+            report(error, context: "Die Einladung konnte nicht angenommen werden.")
         }
     }
 
@@ -204,7 +247,7 @@ final class SyncHub: ObservableObject {
                 case .networkFailure, .networkUnavailable, .serviceUnavailable, .requestRateLimited, .zoneBusy:
                     break
                 default:
-                    status = .error(failure.error.localizedDescription)
+                    report(failure.error, context: "Ein Duo-Eintrag konnte nicht gespeichert werden.")
                 }
             }
         default:
@@ -258,7 +301,35 @@ final class SyncHub: ObservableObject {
 
 enum ShareFailure: LocalizedError {
     case unavailable
-    var errorDescription: String? { "iCloud-Freigabe ist gerade nicht verfügbar." }
+    var errorDescription: String? { "iCloud-Freigabe ist gerade nicht verfügbar. Bist du bei iCloud angemeldet?" }
+}
+
+enum CloudKitDiagnostics {
+    static func describe(_ error: Error) -> String {
+        guard let ck = error as? CKError else {
+            return error.localizedDescription
+        }
+        var lines = ["CKError \(ck.errorCode) (\(ck.code))"]
+        if let reason = ck.localizedDescription.nilIfBlank { lines.append(reason) }
+        if let partial = ck.partialErrorsByItemID, !partial.isEmpty {
+            for (key, value) in partial {
+                let name = (key as? CKRecord.ID)?.recordName ?? String(describing: key)
+                if let inner = value as? CKError {
+                    lines.append("\(name): CKError \(inner.errorCode) (\(inner.code))")
+                } else {
+                    lines.append("\(name): \(value.localizedDescription)")
+                }
+            }
+        }
+        return lines.joined(separator: "\n")
+    }
+}
+
+private extension String {
+    var nilIfBlank: String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
 }
 
 enum SystemFieldsCache {
