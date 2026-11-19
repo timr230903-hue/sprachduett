@@ -2,12 +2,22 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var coach: SpeechCoach
+    @AppStorage(TutorialKey.intro) private var introSeen = false
     @State private var name = ""
     @State private var gender: SpeakerGender = .unspecified
     @State private var emoji = "🐘"
     private let emojis = ["🐘", "🌷", "🌊", "🦊", "🌙", "☀️"]
 
     var body: some View {
+        if introSeen {
+            profile
+        } else {
+            TutorialCarousel(onDone: { introSeen = true }, onAllowSpeech: coach.requestPermissions)
+        }
+    }
+
+    private var profile: some View {
         ScreenBackground {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {

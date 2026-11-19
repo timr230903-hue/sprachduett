@@ -7,6 +7,9 @@ enum AppTab: Hashable {
 struct RootView: View {
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var sync: SyncHub
+    @EnvironmentObject private var coach: SpeechCoach
+    @EnvironmentObject private var help: HelpRouter
+    @AppStorage(TutorialKey.intro) private var introSeen = false
     @State private var tab: AppTab = .today
 
     var body: some View {
@@ -24,9 +27,12 @@ struct RootView: View {
                 .tabItem { Label("Wir", systemImage: "person.2.fill") }
                 .tag(AppTab.us)
         }
-        .fullScreenCover(isPresented: Binding(get: { !model.onboarded }, set: { _ in })) {
+        .fullScreenCover(isPresented: Binding(get: { !introSeen || !model.onboarded }, set: { _ in })) {
             OnboardingView()
                 .interactiveDismissDisabled()
+        }
+        .sheet(isPresented: $help.showTutorial) {
+            TutorialCarousel(onDone: { help.showTutorial = false }, onAllowSpeech: coach.requestPermissions)
         }
         .onChange(of: sync.focusDuo) { _, focus in
             if focus { tab = .us }

@@ -28,6 +28,7 @@ struct HomeView: View {
             .onChange(of: model.celebration) { _, text in
                 if text != nil { Haptics.success() }
             }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
         }
     }
 

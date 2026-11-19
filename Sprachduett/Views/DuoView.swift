@@ -3,6 +3,8 @@ import SwiftUI
 struct DuoView: View {
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var sync: SyncHub
+    @EnvironmentObject private var help: HelpRouter
+    @AppStorage(TutorialKey.lesson) private var lessonSeen = false
     @State private var name = ""
     @State private var busy = false
 
@@ -35,6 +37,10 @@ struct DuoView: View {
                         if model.duo.members.count >= 2 {
                             SoftButton(title: "Rollen tauschen") { model.swapRoles() }
                         }
+                        SoftButton(title: "Tutorial ansehen") {
+                            lessonSeen = false
+                            help.open()
+                        }
                         Text("Dein Name")
                             .font(.headline)
                         TextField("Name", text: $name)
@@ -50,6 +56,7 @@ struct DuoView: View {
                     .padding(20)
                 }
             }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
         }
     }
 

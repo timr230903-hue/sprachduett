@@ -26,6 +26,7 @@ struct SceneListView: View {
                     .padding(20)
                 }
             }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
             .navigationDestination(item: $activeID) { id in
                 SessionView(sceneID: id)
             }

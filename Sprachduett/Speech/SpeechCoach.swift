@@ -18,8 +18,12 @@ final class SpeechCoach: ObservableObject {
 
     var canListen: Bool { recognizer != nil }
 
-    func prepare() {
+    func refreshAvailability() {
         onDevice = recognizer?.supportsOnDeviceRecognition ?? false
+    }
+
+    func requestPermissions() {
+        refreshAvailability()
         SFSpeechRecognizer.requestAuthorization { _ in }
         AVAudioSession.sharedInstance().requestRecordPermission { _ in }
     }

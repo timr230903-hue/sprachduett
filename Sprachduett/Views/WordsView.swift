@@ -42,6 +42,7 @@ struct WordsView: View {
                     .padding(20)
                 }
             }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
         }
     }
 }

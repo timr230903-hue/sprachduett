@@ -4,6 +4,8 @@ struct SessionView: View {
     let sceneID: String
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var coach: SpeechCoach
+    @AppStorage(TutorialKey.lesson) private var lessonSeen = false
+    @State private var tourStep = 0
 
     var body: some View {
         ScreenBackground {
@@ -15,7 +17,20 @@ struct SessionView: View {
         }
         .navigationTitle(model.catalog.scene(sceneID)?.title ?? "Duett")
         .navigationBarTitleDisplayMode(.inline)
+        .overlay {
+            if !lessonSeen, model.catalog.scene(sceneID) != nil {
+                LessonCoach(step: tourStep) { advanceTour() }
+            }
+        }
         .onDisappear { coach.stop() }
+    }
+
+    private func advanceTour() {
+        if let next = LessonTour.advance(step: tourStep) {
+            tourStep = next
+        } else {
+            lessonSeen = true
+        }
     }
 }
 
