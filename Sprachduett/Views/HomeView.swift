@@ -97,7 +97,6 @@ private func playButton(_ title: String, action: @escaping () -> Void) -> some V
                 .foregroundStyle(Color.white)
         }
         .buttonStyle(.plain)
-    }
 }
 
 private struct ProgressDots: View {
