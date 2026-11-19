@@ -64,6 +64,33 @@ final class AppModel: ObservableObject {
         saveAndPush()
     }
 
+    var partnerSeatName: String {
+        let trimmed = persisted.partnerName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "Partner" : trimmed
+    }
+
+    var persistedPartnerGender: SpeakerGender { persisted.partnerGender }
+
+    func updateSeats(name: String, gender: SpeakerGender, partnerName: String, partnerGender: SpeakerGender) {
+        persisted.learnerName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        persisted.learnerGender = gender
+        persisted.partnerName = partnerName.trimmingCharacters(in: .whitespacesAndNewlines)
+        persisted.partnerGender = partnerGender
+        refreshMember()
+        saveAndPush()
+    }
+
+    func gender(forSpeaker speakerID: String, partnerID: String) -> SpeakerGender {
+        let right = speakerID == "p2" || speakerID == partnerID
+        if right {
+            if let partner, partner.id == speakerID, partner.gender != .unspecified {
+                return partner.gender
+            }
+            return persisted.partnerGender
+        }
+        return persisted.learnerGender
+    }
+
     func adoptCloudUser(_ id: String) {
         guard persisted.learnerID != id else { return }
         let old = persisted.learnerID
@@ -374,6 +401,8 @@ struct Persisted: Codable, Equatable {
     var learnerName: String
     var learnerGender: SpeakerGender
     var learnerEmoji: String
+    var partnerName: String
+    var partnerGender: SpeakerGender
     var myRole: DuettRole
     var duo: DuoCloudState
     var isSharedZone: Bool
@@ -412,6 +441,8 @@ struct Persisted: Codable, Equatable {
             learnerName: "",
             learnerGender: .unspecified,
             learnerEmoji: "🐘",
+            partnerName: "Partner",
+            partnerGender: .unspecified,
             myRole: .a,
             duo: duo,
             isSharedZone: false,
@@ -449,6 +480,8 @@ struct Persisted: Codable, Equatable {
         }
         if object["feedback"] == nil { object["feedback"] = [] }
         if object["checks"] == nil { object["checks"] = [] }
+        if object["partnerName"] == nil { object["partnerName"] = "Partner" }
+        if object["partnerGender"] == nil { object["partnerGender"] = "unspecified" }
         return (try? JSONSerialization.data(withJSONObject: object)) ?? data
     }
 
@@ -478,6 +511,8 @@ private struct LegacyPersisted: Codable {
             learnerName: learnerName,
             learnerGender: learnerGender,
             learnerEmoji: learnerEmoji,
+            partnerName: "Partner",
+            partnerGender: .unspecified,
             myRole: myRole,
             duo: duo,
             isSharedZone: isSharedZone,

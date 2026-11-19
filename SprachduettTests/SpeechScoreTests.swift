@@ -18,6 +18,33 @@ final class SpeechScoreTests: XCTestCase {
     func testUnrelatedIsMiss() {
         XCTAssertEqual(SpeechScore.grade(recognized: "น้ำ", expected: "ข้าว"), .miss)
         XCTAssertEqual(SpeechScore.grade(recognized: "", expected: "สวัสดี"), .miss)
+        XCTAssertEqual(SpeechScore.grade(recognized: "เอ่อ", expected: "สวัสดี"), .miss)
+        XCTAssertEqual(SpeechScore.grade(recognized: "อ่ะ", expected: "ขอบคุณครับ"), .miss)
+        XCTAssertEqual(SpeechScore.grade(recognized: "แมว", expected: "หมา"), .miss)
+        XCTAssertFalse(SpeechMatch.accepts(recognized: "ไอ", expectedThai: "สวัสดี"))
+    }
+
+    func testSlowRateIsClearlySlower() {
+        let slow = SpeechPace.rate(slow: true, minimum: 0, defaultRate: 0.5)
+        let normal = SpeechPace.rate(slow: false, minimum: 0, defaultRate: 0.5)
+        XCTAssertEqual(normal, 0.45, accuracy: 0.001)
+        XCTAssertEqual(slow, 0.15, accuracy: 0.001)
+        XCTAssertLessThan(slow, normal * 0.5)
+        XCTAssertEqual(SpeechPace.chunks("เอา ข้าว", slow: true), ["เอา", "ข้าว"])
+        XCTAssertEqual(SpeechPace.chunks("สวัสดี", slow: true), ["สวัสดี"])
+        XCTAssertEqual(SpeechPace.chunks("เอา ข้าว", slow: false), ["เอา ข้าว"])
+    }
+
+    func testLiveTokensLightAPrefixAndMarkAMiss() {
+        let prefix = SpeechScore.liveTokens(recognized: "สวั", expected: "สวัสดี", roman: "sà-wàt-dii", finished: false)
+        XCTAssertEqual(prefix.first?.light, .sure)
+        XCTAssertTrue(prefix.contains { $0.light == .pending })
+        let wrong = SpeechScore.liveTokens(recognized: "แมว", expected: "สวัสดี", roman: "sà-wàt-dii", finished: true)
+        XCTAssertTrue(wrong.allSatisfy { $0.light == .miss })
+        let quiet = SpeechScore.liveTokens(recognized: "", expected: "สวัสดี", roman: "sà-wàt-dii", finished: false)
+        XCTAssertTrue(quiet.allSatisfy { $0.light == .pending })
+        let done = SpeechScore.liveTokens(recognized: "สวัสดีครับ", expected: "สวัสดี", roman: "sà-wàt-dii", finished: true)
+        XCTAssertTrue(done.allSatisfy { $0.light == .sure })
     }
 
     func testRestaurantOutcomeAndMonthlyGate() {

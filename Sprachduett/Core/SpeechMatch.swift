@@ -37,14 +37,105 @@ public enum SpeechScore {
             bestBare = max(bestBare, SpeechMatch.similarity(heardBare, withoutTones(target)))
             bestFull = max(bestFull, SpeechMatch.similarity(SpeechMatch.stripParticles(recognized), SpeechMatch.stripParticles(target)))
         }
-        if bestBare >= 0.99 || bestFull >= 0.72 || bestBare >= 0.8 { return .close }
+        if bestBare >= 0.99 { return .close }
+        if bestFull >= 0.75 { return .close }
         return .miss
+    }
+
+    /// Silben der Zielzeile, live eingefärbt. Leer und noch nicht fertig bleibt grau.
+    public static func liveTokens(recognized: String, expected: String, roman: String, finished: Bool) -> [LiveToken] {
+        let labels = syllableLabels(expected: expected, roman: roman)
+        let count = max(labels.count, 1)
+        let expectedCore = SpeechMatch.stripParticles(expected)
+        let heardCore = SpeechMatch.stripParticles(recognized)
+        if heardCore.isEmpty {
+            let light: TokenLight = finished ? .miss : .pending
+            return labels.enumerated().map { LiveToken(index: $0.offset, text: $0.element, light: light) }
+        }
+        if heardCore == expectedCore {
+            return labels.enumerated().map { LiveToken(index: $0.offset, text: $0.element, light: .sure) }
+        }
+        let bareHeard = withoutTones(heardCore)
+        let bareExpected = withoutTones(expectedCore)
+        if !bareHeard.isEmpty, bareHeard == bareExpected {
+            return labels.enumerated().map { LiveToken(index: $0.offset, text: $0.element, light: .close) }
+        }
+        let matched = commonPrefixCount(bareHeard, bareExpected)
+        let total = max(Array(bareExpected).count, 1)
+        let diverged = matched < Array(bareHeard).count
+        return labels.enumerated().map { offset, text in
+            let start = total * offset / count
+            let end = max(total * (offset + 1) / count, start + 1)
+            let light: TokenLight
+            if matched >= end {
+                light = .sure
+            } else if matched > start {
+                light = .close
+            } else if diverged || finished {
+                light = .miss
+            } else {
+                light = .pending
+            }
+            return LiveToken(index: offset, text: text, light: light)
+        }
+    }
+
+    private static func syllableLabels(expected: String, roman: String) -> [String] {
+        let pieces = roman.split { $0 == " " || $0 == "-" }.map(String.init).filter { !$0.isEmpty }
+        if !pieces.isEmpty { return pieces }
+        let words = expected.split(whereSeparator: \.isWhitespace).map(String.init).filter { !$0.isEmpty }
+        return words.isEmpty ? [expected] : words
+    }
+
+    private static func commonPrefixCount(_ left: String, _ right: String) -> Int {
+        let a = Array(left)
+        let b = Array(right)
+        var index = 0
+        while index < a.count, index < b.count, a[index] == b[index] {
+            index += 1
+        }
+        return index
+    }
+}
+
+public enum TokenLight: String, Equatable {
+    case pending
+    case sure
+    case close
+    case miss
+}
+
+public struct LiveToken: Equatable, Identifiable {
+    public let index: Int
+    public let text: String
+    public let light: TokenLight
+    public var id: Int { index }
+
+    public init(index: Int, text: String, light: TokenLight) {
+        self.index = index
+        self.text = text
+        self.light = light
+    }
+}
+
+public enum SpeechPace {
+    /// Normal etwas unter dem Systemtempo, langsam knapp über dem Minimum.
+    public static func rate(slow: Bool, minimum: Float, defaultRate: Float) -> Float {
+        slow ? minimum + 0.15 : defaultRate * 0.9
+    }
+
+    /// Langsam trennt Wörter und legt dazwischen eine Pause. Eine Silbe bleibt ein Stück.
+    public static func chunks(_ text: String, slow: Bool) -> [String] {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard slow, !trimmed.isEmpty else { return [trimmed] }
+        let parts = trimmed.split(whereSeparator: \.isWhitespace).map(String.init).filter { !$0.isEmpty }
+        return parts.count > 1 ? parts : [trimmed]
     }
 }
 
 public enum SpeechMatch {
     /// Längste zuerst, damit ครับผม vor ครับ fällt.
-    public static let particleSuffixes = ["ครับผม", "นะครับ", "นะคะ", "ครับ", "ค่ะ", "คะ", "นะ", "จ้า", "จ้ะ"]
+    public static let particleSuffixes = ["ครับผม", "นะครับ", "นะคะ", "นะค่ะ", "ครับ", "ค่ะ", "คะ", "คับ", "ค้า", "นะ", "จ้า", "จ้ะ", "จ๊ะ"]
 
     public static func normalize(_ text: String) -> String {
         var value = text.precomposedStringWithCanonicalMapping
@@ -85,7 +176,7 @@ public enum SpeechMatch {
         let expectedCore = stripParticles(expected)
         if !heardCore.isEmpty, heardCore == expectedCore { return true }
         if containsLoose(heardCore, expectedCore) { return true }
-        return similarity(heardCore, expectedCore) >= 0.8
+        return false
     }
 
     private static func containsLoose(_ heard: String, _ expected: String) -> Bool {
@@ -93,7 +184,7 @@ public enum SpeechMatch {
         let short = heard.count < expected.count ? heard : expected
         let long = heard.count < expected.count ? expected : heard
         guard long.contains(short) else { return false }
-        return Double(short.count) / Double(long.count) >= 0.6
+        return Double(short.count) / Double(long.count) >= 0.85
     }
 
     static func levenshtein(_ left: String, _ right: String) -> Int {

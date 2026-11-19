@@ -204,16 +204,16 @@
         },
         {
           "id": "pol-20",
-          "thai": "อรุณสวัสดิ์",
-          "roman": "à-run-sà-wàt",
-          "german": "guten Morgen, förmlich",
+          "thai": "กินข้าวยัง",
+          "roman": "gin khâao yang",
+          "german": "schon gegessen? (gesprochenes Hallo)",
           "particle": "none"
         },
         {
           "id": "pol-21",
-          "thai": "ราตรีสวัสดิ์",
-          "roman": "raa-dtrii-sà-wàt",
-          "german": "gute Nacht, förmlich",
+          "thai": "ฝันดี",
+          "roman": "fǎn-dii",
+          "german": "schlaf gut",
           "particle": "none"
         },
         {
@@ -246,9 +246,9 @@
         },
         {
           "id": "pro-03",
-          "thai": "ดิฉัน",
-          "roman": "dì-chǎn",
-          "german": "ich, weiblich, förmlich",
+          "thai": "เรา",
+          "roman": "rao",
+          "german": "wir",
           "particle": "none"
         },
         {
@@ -1129,28 +1129,28 @@
         {
           "id": "food-01",
           "thai": "ข้าว",
-          "roman": "khàao",
+          "roman": "khâao",
           "german": "Reis",
           "particle": "none"
         },
         {
           "id": "food-02",
           "thai": "ข้าวเหนียว",
-          "roman": "khàao-nǐao",
+          "roman": "khâao-nǐao",
           "german": "Klebreis",
           "particle": "none"
         },
         {
           "id": "food-03",
           "thai": "ข้าวสวย",
-          "roman": "khàao-sǔai",
+          "roman": "khâao-sǔai",
           "german": "gekochter Reis",
           "particle": "none"
         },
         {
           "id": "food-04",
           "thai": "ก๋วยเตี๋ยว",
-          "roman": "gǔai-dtìao",
+          "roman": "gǔai-dtǐao",
           "german": "Nudelsuppe",
           "particle": "none"
         },
@@ -1185,14 +1185,14 @@
         {
           "id": "food-09",
           "thai": "ข้าวผัด",
-          "roman": "khàao-phàt",
+          "roman": "khâao-phàt",
           "german": "gebratener Reis",
           "particle": "none"
         },
         {
           "id": "food-10",
           "thai": "ข้าวมันไก่",
-          "roman": "khàao-man-gài",
+          "roman": "khâao-man-gài",
           "german": "Hähnchenreis",
           "particle": "none"
         },
@@ -3586,8 +3586,8 @@
         {
           "id": "ton-09",
           "thai": "ข้าว",
-          "roman": "khàao",
-          "german": "Reis, tiefer Ton",
+          "roman": "khâao",
+          "german": "Reis, fallender Ton",
           "particle": "none"
         },
         {
@@ -4441,7 +4441,7 @@
           "id": "stf-4",
           "role": "a",
           "thai": "ขอข้าวเหนียวด้วย",
-          "roman": "khɔ̌ɔ khàao-nǐao dûai",
+          "roman": "khɔ̌ɔ khâao-nǐao dûai",
           "german": "Und Klebreis dazu.",
           "particle": "statement"
         },
@@ -4655,7 +4655,7 @@
           "id": "ver-3",
           "role": "a",
           "thai": "ไปกินข้าวกันไหม",
-          "roman": "bpai gin khàao gan mǎi",
+          "roman": "bpai gin khâao gan mǎi",
           "german": "Wollen wir essen gehen?",
           "particle": "question"
         },

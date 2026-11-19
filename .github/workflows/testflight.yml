@@ -179,6 +179,35 @@ jobs:
           command -v xcodegen >/dev/null || brew install xcodegen
           xcodegen generate
 
+      - name: UI-Tests (Simulator)
+        run: |
+          set -o pipefail
+          FORMAT=cat
+          command -v xcbeautify >/dev/null && FORMAT="xcbeautify --renderer github-actions"
+          DEST=$(python3 - << 'PY'
+          import subprocess
+          out = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available"], text=True)
+          name = ""
+          for line in out.splitlines():
+              if "iPhone" in line and "unavailable" not in line.lower():
+                  name = line.split("(")[0].strip()
+                  break
+          if not name:
+              raise SystemExit("Kein iPhone-Simulator")
+          print(f"platform=iOS Simulator,name={name}")
+          PY
+          )
+          echo "UI-Test-Ziel: $DEST"
+          set -o pipefail
+          xcodebuild test \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination "$DEST" \
+            -only-testing:SprachduettUITests \
+            -resultBundlePath "$LOG_DIR/uitest.xcresult" \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$LOG_DIR/uitest.log" | $FORMAT
+
       - name: Archiv bauen und signieren
         run: |
           set -o pipefail

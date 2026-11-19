@@ -41,3 +41,15 @@ public enum RomanTones {
         return .mid
     }
 }
+
+/// Umschrift ist am Anfang voll da und blendet aus, wenn das Wort sitzt.
+public enum RomanFade {
+    public static func opacity(reviews: Int, pronunciation: Double) -> Double {
+        if reviews <= 0 { return 1 }
+        let known = min(max(pronunciation, 0), 1)
+        if reviews >= 8, known >= 0.8 { return 0 }
+        let practiced = min(Double(reviews), 8) / 8
+        let hide = min(1, practiced * 0.7 + known * 0.3)
+        return 1 - hide * 0.75
+    }
+}

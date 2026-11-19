@@ -50,3 +50,26 @@ targets:
           SPRACHDUETT_CLOUDKIT_ENABLED: "YES"
           PROVISIONING_PROFILE_SPECIFIER: $(APP_PROFILE_SPECIFIER)
           CODE_SIGN_STYLE: Manual
+  SprachduettUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SprachduettUITests
+    dependencies:
+      - target: Sprachduett
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.timroot.sprachduett.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Sprachduett
+schemes:
+  Sprachduett:
+    build:
+      targets:
+        Sprachduett: all
+        SprachduettUITests: [test]
+    test:
+      targets:
+        - SprachduettUITests
+    run:
+      config: Debug

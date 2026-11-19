@@ -31,3 +31,18 @@ Erst die Konsonantenklassen, die den Ton bestimmen, dann die Vokale, dann kurze 
 ## Weitere Sprachen
 
 Dasselbe Duo, ein zweites JSON. Vietnamesisch und Italienisch liegen nah, weil das Paar sie braucht und die Rollenlogik gleich bleibt. Die Erkennung wechselt das Locale (`vi-VN`, `it-IT`). Töne, Partikel und Schrift bleiben sprachspezifisch im Katalog, nicht im View-Code.
+
+## Freigegeben, noch nicht in diesem Stand
+
+Jeder Punkt bekommt einen eigenen TestFlight-Stand, ohne Bezahlschranke. Thai bleibt die einzige ausgelieferte Sprache, bis ein Sprachpaket wirklich fertig ist.
+
+1. Aufnahmen: `Audio/<id>.m4a` abspielen, sonst Vorlesen. Die Liste der Sätze steht in `docs/AUDIO-SCRIPT.csv`. Die Dateien nimmt ein Mensch auf, die App erfindet sie nicht.
+2. Ton-Duell: Minimalpaare, die sich nur im Ton unterscheiden. Abwechselnd tippen, welcher Ton gemeint war.
+3. Schrift, ein paar Buchstaben am Tag, dann Schilder und Speisekarten als gezeichnete Texte, keine Fotos.
+4. Eigene Sätze: deutsches Suchwort im Kuratieren, Thai von Hand, Aufnahme vom Partner, Karte für beide. Keine Cloud-KI.
+5. Reise-Modus: große Karten für Taxi, Markt, Arzt, Hotel, offline.
+6. Abend-Erinnerung lokal: „Partner hat heute schon gespielt, jetzt du?“ Kein Serien-Verlust.
+7. Rollenspiel mit erzeugter Umgebungsfläche (Markt, Massage, Tuk-Tuk), nichts Lizenziertes.
+8. Teilbare Fortschrittskarte, zum Beispiel „Wir können jetzt im Restaurant bestellen“.
+9. Widget „Wort des Tages“ über WidgetKit und App Group. Dafür braucht es eine neue Bundle-ID und ein Profil. Solange das Profil fehlt, bleibt das Widget aus dem signierten Archiv.
+10. Sprachpakete: der Katalog hängt an einer Sprache. Ausgeliefert wird weiter nur Thai.

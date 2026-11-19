@@ -47,7 +47,7 @@ struct DuoView: View {
                         TextField("Name", text: $name)
                             .textFieldStyle(.roundedBorder)
                             .onAppear { name = model.me.name }
-                        FillButton(title: "Name sichern", color: Theme.leaf) {
+                        FillButton(title: "Name sichern") {
                             model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
                         }
                         Text("Ein Duo ist eine private iCloud-Zone. Der Einladungslink kommt von Apple. Ohne iCloud bleibt alles auf diesem Gerät.")

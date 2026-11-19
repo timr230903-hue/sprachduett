@@ -5,6 +5,13 @@ import UIKit
 @main
 struct SprachduettApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
+    init() {
+        if ProcessInfo.processInfo.arguments.contains("-ui-testing") {
+            UserDefaults.standard.set(true, forKey: TutorialKey.intro)
+            UserDefaults.standard.set(true, forKey: TutorialKey.lesson)
+        }
+    }
     @StateObject private var model = AppModel()
     @StateObject private var sync = SyncHub.shared
     @StateObject private var coach = SpeechCoach()
@@ -23,6 +30,9 @@ struct SprachduettApp: App {
                 .environmentObject(screens)
                 .task {
                     coach.refreshAvailability()
+                    if !ProcessInfo.processInfo.arguments.contains("-ui-testing") {
+                        coach.requestPermissions()
+                    }
                     await sync.start(model: model)
                 }
                 .onChange(of: scenePhase) { _, phase in

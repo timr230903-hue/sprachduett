@@ -3,8 +3,21 @@ import UIKit
 
 /// Ruhige Palette: warmes Creme, Tempelgold als einzige Akzentfarbe, Tinte in Nachtblau.
 enum Theme {
-    static let accent = Color(red: 0.62, green: 0.47, blue: 0.27)
-    static let navy = Color(red: 0.16, green: 0.20, blue: 0.30)
+    /// Tempelgold, im Hellen dunkel genug für Text, im Dunkeln hell genug auf Nachtblau.
+    static let accent = Color(uiColor: UIColor { trait in
+        if trait.userInterfaceStyle == .dark {
+            return UIColor(red: 0.93, green: 0.80, blue: 0.58, alpha: 1)
+        }
+        return UIColor(red: 0.26, green: 0.15, blue: 0.04, alpha: 1)
+    })
+    /// Knöpfe bleiben dunkel, damit weiße Schrift in beiden Modi lesbar ist.
+    static let button = Color(red: 0.11, green: 0.14, blue: 0.20)
+    static let navy = Color(uiColor: UIColor { trait in
+        if trait.userInterfaceStyle == .dark {
+            return UIColor(red: 0.78, green: 0.84, blue: 0.93, alpha: 1)
+        }
+        return UIColor(red: 0.11, green: 0.14, blue: 0.20, alpha: 1)
+    })
     static let sage = Color(red: 0.29, green: 0.45, blue: 0.38)
     static let brick = Color(red: 0.55, green: 0.32, blue: 0.28)
     static let coral = brick
@@ -54,7 +67,7 @@ struct WarmCard<Content: View>: View {
 struct FillButton: View {
     let title: String
     var systemImage: String? = nil
-    var color: Color = Theme.accent
+    var color: Color = Theme.button
     let action: () -> Void
 
     var body: some View {
@@ -69,6 +82,7 @@ struct FillButton: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(color, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .minimumScaleFactor(0.8)
             .foregroundStyle(Color.white)
         }
         .buttonStyle(.plain)
@@ -108,6 +122,7 @@ struct CloseBar: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Zurück zum Start")
+            .accessibilityIdentifier("close-screen")
             Spacer()
         }
     }

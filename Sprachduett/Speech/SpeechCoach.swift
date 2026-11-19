@@ -7,14 +7,23 @@ final class SpeechCoach: ObservableObject {
     @Published var listening = false
     @Published var heard = ""
     @Published var hint = ""
+    @Published var level: Double = 0
     @Published private(set) var onDevice = false
 
-    private let synth = AVSpeechSynthesizer()
+    private var synth = AVSpeechSynthesizer()
     private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "th-TH"))
     private let audio = AVAudioEngine()
     private var task: SFSpeechRecognitionTask?
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var tapInstalled = false
+    private var finishHandler: ((String?) -> Void)?
+    private var didFinish = false
+    private var triedServer = false
+    private var peak: Double = 0
+    private var meterSamples = 0
+    private var meterTick = Date.distantPast
+    private var timeout: Task<Void, Never>?
+    private var generation = 0
 
     var canListen: Bool { recognizer != nil }
 
@@ -23,179 +32,218 @@ final class SpeechCoach: ObservableObject {
     }
 
     func requestPermissions() {
-        refreshAvailability()
-        SFSpeechRecognizer.requestAuthorization { _ in }
-        AVAudioSession.sharedInstance().requestRecordPermission { _ in }
+        Task { _ = await authorize() }
     }
 
     func speak(_ text: String, slow: Bool = false) {
         stopListening()
-        let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
-        try? session.setActive(true)
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "th-TH")
-        utterance.rate = slow ? 0.35 : AVSpeechUtteranceDefaultSpeechRate * 0.82
         synth.stopSpeaking(at: .immediate)
-        synth.speak(utterance)
-    }
-
-    /// `nil` heißt: Erkennung fehlt oder ist nicht erlaubt. Dann tippt der Partner.
-    func capture(onText: @escaping (String?) -> Void) {
-        let status = SFSpeechRecognizer.authorizationStatus()
-        if status == .notDetermined {
-            requestPermissions()
-            hint = "Erlaubt Mikrofon und Spracherkennung, dann nochmal."
-            onText(nil)
-            return
-        }
-        guard status == .authorized, let recognizer, recognizer.isAvailable else {
-            hint = "Spracherkennung ist nicht da."
-            onText(nil)
-            return
-        }
-        stopListening()
+        synth = AVSpeechSynthesizer()
         let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(.playAndRecord, mode: .measurement, options: [.duckOthers, .defaultToSpeaker])
-            try session.setActive(true)
-        } catch {
-            hint = "Das Mikrofon lässt sich nicht starten."
-            onText(nil)
-            return
-        }
-        let next = SFSpeechAudioBufferRecognitionRequest()
-        next.shouldReportPartialResults = true
-        if recognizer.supportsOnDeviceRecognition {
-            next.requiresOnDeviceRecognition = true
-            onDevice = true
-        } else {
-            onDevice = false
-        }
-        request = next
-        let input = audio.inputNode
-        let format = input.outputFormat(forBus: 0)
-        guard format.sampleRate > 0 else {
-            hint = "Das Mikrofon ist nicht bereit."
-            onText(nil)
-            return
-        }
-        if tapInstalled {
-            input.removeTap(onBus: 0)
-            tapInstalled = false
-        }
-        input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
-            next.append(buffer)
-        }
-        tapInstalled = true
-        audio.prepare()
-        do {
-            try audio.start()
-        } catch {
-            hint = "Das Mikrofon lässt sich nicht starten."
-            onText(nil)
-            return
-        }
-        listening = true
-        heard = ""
-        hint = onDevice ? "Ich höre auf dem Gerät zu." : "Ich höre zu."
-        let gate = ListenGate()
-        task = recognizer.recognitionTask(with: next) { [weak self] result, error in
-            let text = result?.bestTranscription.formattedString ?? ""
-            let finished = result?.isFinal ?? false
-            Task { @MainActor in
-                guard let self, gate.open else { return }
-                if !text.isEmpty { self.heard = text }
-                if finished || error != nil {
-                    gate.open = false
-                    let said = self.heard
-                    self.stopListening()
-                    onText(said)
-                }
+        try? session.setCategory(.playAndRecord, mode: .spokenAudio, options: [.defaultToSpeaker, .duckOthers])
+        try? session.setActive(true)
+        let pieces = SpeechPace.chunks(text, slow: slow)
+        let rate = SpeechPace.rate(
+            slow: slow,
+            minimum: AVSpeechUtteranceMinimumSpeechRate,
+            defaultRate: AVSpeechUtteranceDefaultSpeechRate
+        )
+        for (index, piece) in pieces.enumerated() {
+            let utterance = AVSpeechUtterance(string: piece)
+            utterance.voice = AVSpeechSynthesisVoice(language: "th-TH")
+            utterance.prefersAssistiveTechnologySettings = false
+            utterance.rate = rate
+            if slow, index > 0 {
+                utterance.preUtteranceDelay = 0.32
             }
+            synth.speak(utterance)
         }
     }
 
-    func listen(expected: String, onMatch: @escaping () -> Void) {
-        stopListening()
-        guard let recognizer, recognizer.isAvailable else {
-            hint = "Spracherkennung ist gerade nicht da. Dein Partner tippt Verstanden."
-            return
-        }
-        let session = AVAudioSession.sharedInstance()
-        do {
-            try session.setCategory(.playAndRecord, mode: .measurement, options: [.duckOthers, .defaultToSpeaker])
-            try session.setActive(true)
-        } catch {
-            hint = "Das Mikrofon lässt sich nicht starten."
-            return
-        }
-        let next = SFSpeechAudioBufferRecognitionRequest()
-        next.shouldReportPartialResults = true
-        if recognizer.supportsOnDeviceRecognition {
-            next.requiresOnDeviceRecognition = true
-            onDevice = true
-        } else {
-            onDevice = false
-        }
-        request = next
-        let input = audio.inputNode
-        let format = input.outputFormat(forBus: 0)
-        guard format.sampleRate > 0 else {
-            hint = "Das Mikrofon ist nicht bereit."
-            return
-        }
-        if tapInstalled {
-            input.removeTap(onBus: 0)
-            tapInstalled = false
-        }
-        input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
-            next.append(buffer)
-        }
-        tapInstalled = true
-        audio.prepare()
-        do {
-            try audio.start()
-        } catch {
-            hint = "Das Mikrofon lässt sich nicht starten."
-            return
-        }
-        listening = true
-        heard = ""
-        hint = onDevice ? "Ich höre auf dem Gerät zu." : "Ich höre zu."
-        let gate = ListenGate()
-        task = recognizer.recognitionTask(with: next) { [weak self] result, error in
-            let text = result?.bestTranscription.formattedString ?? ""
-            let matched = SpeechMatch.accepts(recognized: text, expectedThai: expected)
-            let finished = result?.isFinal ?? false
-            Task { @MainActor in
-                guard let self, gate.open else { return }
-                if !text.isEmpty { self.heard = text }
-                if matched {
-                    gate.open = false
-                    self.stopListening()
-                    onMatch()
-                    return
-                }
-                if finished || error != nil {
-                    gate.open = false
-                    self.stopListening()
-                    if self.heard.isEmpty {
-                        self.hint = "Nicht erkannt. Sag es noch einmal, oder dein Partner tippt Verstanden."
-                    } else {
-                        self.hint = "Das klang noch nicht danach. Nochmal, oder dein Partner tippt Verstanden."
-                    }
-                }
-            }
-        }
+    /// `nil` nur wenn Erkennung oder Mikrofon fehlen. Leerer Text heißt: nichts gehört, das ist kein Treffer.
+    func capture(expected: String = "", alternates: [String] = [], onText: @escaping (String?) -> Void) {
+        Task { await beginCapture(expected: expected, alternates: alternates, onText: onText) }
     }
 
     func stop() {
-        stopListening()
+        finish(nil, keepHandler: false)
         synth.stopSpeaking(at: .immediate)
     }
 
+    private func beginCapture(expected: String, alternates: [String], onText: @escaping (String?) -> Void) async {
+        synth.stopSpeaking(at: .immediate)
+        let session = AVAudioSession.sharedInstance()
+        try? session.setActive(false, options: [.notifyOthersOnDeactivation])
+        if let blocked = await authorize() {
+            hint = blocked
+            onText(nil)
+            return
+        }
+        guard let recognizer else {
+            hint = "Thailändische Spracherkennung ist auf diesem iPhone nicht verfügbar."
+            onText(nil)
+            return
+        }
+        guard recognizer.isAvailable else {
+            hint = "Spracherkennung ist gerade nicht verfügbar."
+            onText(nil)
+            return
+        }
+        stopEngine()
+        didFinish = false
+        triedServer = false
+        peak = 0
+        meterSamples = 0
+        level = 0
+        heard = ""
+        finishHandler = onText
+        let preferDevice = recognizer.supportsOnDeviceRecognition
+        onDevice = preferDevice
+        do {
+            try startEngine(recognizer: recognizer, expected: expected, alternates: alternates, onDevice: preferDevice)
+        } catch {
+            hint = "Das Mikrofon lässt sich nicht starten."
+            finish(nil)
+        }
+    }
+
+    private func startEngine(
+        recognizer: SFSpeechRecognizer,
+        expected: String,
+        alternates: [String],
+        onDevice: Bool
+    ) throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker, .duckOthers])
+        try session.setActive(true)
+        let next = SFSpeechAudioBufferRecognitionRequest()
+        next.shouldReportPartialResults = true
+        next.requiresOnDeviceRecognition = onDevice
+        let context = ([expected] + alternates).filter { !$0.isEmpty }
+        if !context.isEmpty {
+            next.contextualStrings = context
+        }
+        self.onDevice = onDevice
+        request = next
+        let input = audio.inputNode
+        let format = input.outputFormat(forBus: 0)
+        guard format.sampleRate > 0, format.channelCount > 0 else {
+            throw ListenError.microphone
+        }
+        input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
+            next.append(buffer)
+            let value = SpeechCoach.meterLevel(buffer)
+            Task { @MainActor in
+                self?.noteLevel(value)
+            }
+        }
+        tapInstalled = true
+        audio.prepare()
+        try audio.start()
+        listening = true
+        hint = "Ich höre zu…"
+        let generation = self.generation
+        armTimeout()
+        task = recognizer.recognitionTask(with: next) { [weak self] result, error in
+            let text = result?.bestTranscription.formattedString ?? ""
+            let finished = result?.isFinal ?? false
+            Task { @MainActor in
+                guard let self, self.generation == generation, !self.didFinish else { return }
+                if !text.isEmpty { self.heard = text }
+                if error != nil, onDevice, self.heard.isEmpty, !self.triedServer {
+                    self.triedServer = true
+                    self.hint = "On-Device geht nicht, ich höre über den Server."
+                    self.restartOnServer(recognizer: recognizer, expected: expected, alternates: alternates)
+                    return
+                }
+                if finished || error != nil {
+                    self.finish(self.heard)
+                }
+            }
+        }
+    }
+
+    private func restartOnServer(recognizer: SFSpeechRecognizer, expected: String, alternates: [String]) {
+        stopEngine()
+        do {
+            try startEngine(recognizer: recognizer, expected: expected, alternates: alternates, onDevice: false)
+        } catch {
+            hint = "Spracherkennung ist gerade nicht verfügbar."
+            finish(nil)
+        }
+    }
+
+    private func noteLevel(_ value: Double) {
+        meterSamples += 1
+        peak = max(peak, value)
+        let now = Date()
+        guard now.timeIntervalSince(meterTick) > 0.05 else { return }
+        meterTick = now
+        level = value
+    }
+
+    private func armTimeout() {
+        timeout?.cancel()
+        timeout = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 6_000_000_000)
+            guard !Task.isCancelled, listening else { return }
+            finish(heard)
+        }
+    }
+
+    private func finish(_ text: String?, keepHandler: Bool = true) {
+        guard !didFinish else { return }
+        didFinish = true
+        timeout?.cancel()
+        let handler = finishHandler
+        finishHandler = nil
+        stopEngine()
+        guard keepHandler else { return }
+        if text == nil {
+            if hint.isEmpty { hint = "Spracherkennung ist gerade nicht verfügbar." }
+            handler?(nil)
+            return
+        }
+        let said = text ?? ""
+        let silence = meterSamples > 3 && peak < 0.01
+        if said.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || silence {
+            hint = "Nichts gehört."
+            heard = ""
+            handler?("")
+            return
+        }
+        hint = ""
+        handler?(said)
+    }
+
+    private func authorize() async -> String? {
+        let speech: SFSpeechRecognizerAuthorizationStatus = await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
+        }
+        if speech == .denied || speech == .restricted {
+            return "Spracherkennung ist nicht erlaubt. Erlaubt sie in den Einstellungen."
+        }
+        if speech != .authorized {
+            return "Spracherkennung ist nicht erlaubt."
+        }
+        let mic = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            AVAudioSession.sharedInstance().requestRecordPermission { continuation.resume(returning: $0) }
+        }
+        if !mic {
+            return "Mikrofon ist nicht erlaubt. Erlaubt es in den Einstellungen."
+        }
+        return nil
+    }
+
     private func stopListening() {
+        timeout?.cancel()
+        didFinish = true
+        finishHandler = nil
+        stopEngine()
+    }
+
+    private func stopEngine() {
+        generation += 1
         if audio.isRunning { audio.stop() }
         if tapInstalled {
             audio.inputNode.removeTap(onBus: 0)
@@ -206,9 +254,37 @@ final class SpeechCoach: ObservableObject {
         request = nil
         task = nil
         listening = false
+        level = 0
     }
 }
 
-private final class ListenGate: @unchecked Sendable {
-    var open = true
+private enum ListenError: Error {
+    case microphone
+}
+
+extension SpeechCoach {
+    nonisolated static func meterLevel(_ buffer: AVAudioPCMBuffer) -> Double {
+        let frames = Int(buffer.frameLength)
+        guard frames > 0 else { return 0 }
+        var sum: Float = 0
+        if let data = buffer.floatChannelData {
+            let samples = data[0]
+            for index in 0..<frames {
+                let sample = samples[index]
+                sum += sample * sample
+            }
+        } else if let data = buffer.int16ChannelData {
+            let samples = data[0]
+            let scale = Float(Int16.max)
+            for index in 0..<frames {
+                let sample = Float(samples[index]) / scale
+                sum += sample * sample
+            }
+        } else {
+            return 0
+        }
+        let rms = sqrt(sum / Float(frames))
+        let db = 20 * log10(max(rms, 0.000_01))
+        return Double(min(1, max(0, (db + 48) / 42)))
+    }
 }

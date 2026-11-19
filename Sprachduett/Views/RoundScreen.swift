@@ -280,23 +280,29 @@ struct RoundScreen: View {
                 round.tap(player: player, choice: choice)
             }
         case .say(let turn):
+            let form = voiced(thai: turn.word.thai, roman: turn.word.roman, speakerID: turn.speakerID, dialog: false)
             SpeechCard(
                 emoji: turn.word.emoji,
-                thai: turn.word.thai,
-                roman: turn.word.roman,
+                thai: form.thai,
+                roman: form.roman,
                 german: turn.word.german,
+                alternates: [turn.word.thai],
                 hideThaiUntilGraded: true,
+                romanOpacity: romanOpacity(wordID: turn.word.id),
                 speech: speech,
                 onGrade: { grade in round.finishSpeech(grade, wordID: turn.word.id, speakerID: turn.speakerID) }
             )
             .id(turn.id)
         case .dialog(let turn):
+            let form = voiced(thai: turn.line.thai, roman: turn.line.roman, speakerID: turn.speakerID, dialog: true)
             SpeechCard(
                 emoji: "💬",
-                thai: turn.line.thai,
-                roman: turn.line.roman,
+                thai: form.thai,
+                roman: form.roman,
                 german: turn.line.german,
+                alternates: [turn.line.thai],
                 hideThaiUntilGraded: false,
+                romanOpacity: 1,
                 speech: speech,
                 onGrade: { grade in round.finishSpeech(grade, wordID: nil, speakerID: turn.speakerID) }
             )
@@ -336,11 +342,26 @@ struct RoundScreen: View {
             together: together,
             partnerConnected: model.partnerConnected,
             left: model.me.name.isEmpty ? "Du" : model.me.name,
-            right: model.partner?.name ?? "Partner",
+            right: model.partner?.name ?? model.partnerSeatName,
             localID: model.me.id,
             partnerID: model.partner?.id ?? "p2",
             coach: !lessonSeen
         )
+    }
+
+    private func voiced(thai: String, roman: String, speakerID: String, dialog: Bool) -> SpokenForm {
+        let gender = model.gender(forSpeaker: speakerID, partnerID: model.partner?.id ?? "p2")
+        return GenderVoice.speak(
+            thai: thai,
+            roman: roman,
+            gender: gender,
+            polite: GenderVoice.usesParticle(thai, dialog: dialog)
+        )
+    }
+
+    private func romanOpacity(wordID: String) -> Double {
+        let stat = model.pathStats[wordID]
+        return RomanFade.opacity(reviews: stat?.reviews ?? 0, pronunciation: stat?.pronunciation ?? 0)
     }
 }
 
@@ -352,7 +373,8 @@ private struct TurnBanner: View {
     var body: some View {
         VStack(spacing: 6) {
             Text(name)
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(.system(.largeTitle, design: .rounded).weight(.bold))
+            .minimumScaleFactor(0.6)
                 .foregroundStyle(left ? Theme.navy : Theme.accent)
                 .multilineTextAlignment(.center)
             Text(text)
@@ -376,7 +398,7 @@ private struct IntroPane: View {
             Text(word.german).font(.title2)
             FillButton(title: "Anhören", systemImage: "speaker.wave.2", action: speak)
             FillButton(title: "Langsam", systemImage: "tortoise", action: slow)
-            FillButton(title: "Weiter", color: Theme.leaf, action: next)
+            FillButton(title: "Weiter", action: next)
         }
     }
 }
@@ -424,7 +446,9 @@ private struct SpeechCard: View {
     let thai: String
     let roman: String
     let german: String
+    var alternates: [String] = []
     let hideThaiUntilGraded: Bool
+    var romanOpacity: Double = 1
     let speech: SpeechCoach
     let onGrade: (SpeechGrade) -> Void
     @State private var grade: SpeechGrade?
@@ -433,50 +457,21 @@ private struct SpeechCard: View {
     var body: some View {
         VStack(spacing: 12) {
             Text(emoji).font(.system(size: 72))
-            if !hideThaiUntilGraded || grade != nil {
-                Text(thai).font(.system(size: 36, weight: .bold, design: .rounded))
-            }
             Text(german).font(.title3)
-            if let grade {
-                Text(label(grade))
-                    .font(.headline)
-                    .foregroundStyle(color(grade))
-                if grade != .sure { ToneLine(roman: roman) }
-            }
+            SpeechListenDeck(
+                thai: thai,
+                roman: roman,
+                alternates: alternates,
+                romanOpacity: romanOpacity,
+                speech: speech,
+                grade: $grade,
+                fallback: $fallback,
+                hidesThaiUntilListening: hideThaiUntilGraded
+            )
             FillButton(title: "Nochmal anhören", systemImage: "tortoise") { speech.speak(thai, slow: true) }
-            FillButton(title: speech.listening ? "Ich höre zu …" : "Sprechen", color: Theme.leaf) {
-                speech.capture { text in
-                    if let text {
-                        fallback = false
-                        grade = SpeechScore.grade(recognized: text, expected: thai)
-                    } else {
-                        fallback = true
-                    }
-                }
-            }
             if let grade {
                 FillButton(title: "Weiter") { onGrade(grade) }
             }
-            if fallback {
-                SoftButton(title: "Partner: Richtig") { onGrade(.sure) }
-                SoftButton(title: "Partner: Nochmal") { onGrade(.miss) }
-            }
-        }
-    }
-
-    private func label(_ grade: SpeechGrade) -> String {
-        switch grade {
-        case .sure: return "Sicher"
-        case .close: return "Fast – nochmal anhören"
-        case .miss: return "Daneben"
-        }
-    }
-
-    private func color(_ grade: SpeechGrade) -> Color {
-        switch grade {
-        case .sure: return Theme.leaf
-        case .close: return Theme.mango
-        case .miss: return Theme.coral
         }
     }
 }

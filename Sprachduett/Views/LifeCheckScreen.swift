@@ -46,23 +46,24 @@ struct LifeCheckScreen: View {
     }
 
     private func speakStep(_ prompt: CheckPrompt) -> some View {
-        VStack(spacing: 12) {
+        let form = GenderVoice.speak(
+            thai: prompt.expected,
+            roman: "",
+            gender: model.me.gender,
+            polite: GenderVoice.usesParticle(prompt.expected, dialog: true)
+        )
+        return VStack(spacing: 12) {
             Text(prompt.instruction).font(.title3)
             FillButton(title: "Kellner hören") { speech.speak(prompt.waiterThai, slow: true) }
-            gradeLabel
-            FillButton(title: speech.listening ? "Ich höre zu …" : "Antworten", color: Theme.leaf) {
-                speech.capture { text in
-                    if let text {
-                        grade = SpeechScore.grade(recognized: text, expected: prompt.expected, alternates: prompt.alternates)
-                        fallback = false
-                    } else {
-                        fallback = true
-                    }
-                }
-            }
-            if fallback {
-                SoftButton(title: "Partner: verstanden") { grade = .sure }
-            }
+            SpeechListenDeck(
+                thai: form.thai,
+                roman: form.roman,
+                alternates: prompt.alternates + [prompt.expected],
+                romanOpacity: 1,
+                speech: speech,
+                grade: $grade,
+                fallback: $fallback
+            )
             if grade != nil {
                 FillButton(title: "Weiter") { pushSpeak(prompt) }
             }
@@ -79,13 +80,6 @@ struct LifeCheckScreen: View {
                     advance()
                 }
             }
-        }
-    }
-
-    @ViewBuilder private var gradeLabel: some View {
-        if let grade {
-            Text(grade == .sure ? "Sicher" : (grade == .close ? "Fast" : "Daneben"))
-                .foregroundStyle(grade == .sure ? Theme.leaf : (grade == .close ? Theme.mango : Theme.coral))
         }
     }
 

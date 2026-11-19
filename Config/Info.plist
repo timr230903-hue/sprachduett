@@ -21,5 +21,9 @@
 	</array>
 	<key>SprachduettCloudKitEnabled</key>
 	<string>$(SPRACHDUETT_CLOUDKIT_ENABLED)</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Sprachduett hört kurz zu, ob die thailändische Zeile erkannt wird. Wenn das iPhone es kann, bleibt die Erkennung auf dem Gerät.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Das Mikrofon wird nur benutzt, während ihr eine Zeile laut vorsagt.</string>
 </dict>
 </plist>

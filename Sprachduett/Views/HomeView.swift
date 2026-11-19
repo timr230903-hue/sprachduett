@@ -93,10 +93,12 @@ private func playButton(_ title: String, action: @escaping () -> Void) -> some V
                 .font(.system(.title, design: .rounded).weight(.bold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 28)
-                .background(Theme.accent, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .background(Theme.button, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
                 .foregroundStyle(Color.white)
+                .minimumScaleFactor(0.7)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(title == "Zusammen spielen" ? "play-together" : "play-resume")
 }
 
 private struct ProgressDots: View {
@@ -122,6 +124,9 @@ struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(TutorialKey.lesson) private var lessonSeen = false
     @State private var name = ""
+    @State private var partnerName = ""
+    @State private var leftGender: SpeakerGender = .unspecified
+    @State private var rightGender: SpeakerGender = .unspecified
     @State private var showDuo = false
     @State private var feedback = false
 
@@ -130,11 +135,22 @@ struct SettingsSheet: View {
             ScreenBackground {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
-                        TextField("Name", text: $name)
+                        TextField("Dein Name", text: $name)
                             .textFieldStyle(.roundedBorder)
-                            .onAppear { name = model.me.name }
-                        FillButton(title: "Name sichern") {
-                            model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
+                        Text("Links · du").font(.headline)
+                        genderPicker(leftGender) { leftGender = $0 }
+                        Text(preview(leftGender))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        TextField("Partner", text: $partnerName)
+                            .textFieldStyle(.roundedBorder)
+                        Text("Rechts · Partner").font(.headline)
+                        genderPicker(rightGender) { rightGender = $0 }
+                        Text(preview(rightGender))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        FillButton(title: "Sichern") {
+                            model.updateSeats(name: name, gender: leftGender, partnerName: partnerName, partnerGender: rightGender)
                         }
                         SoftButton(title: "Solo üben") { dismiss(); playSolo() }
                         SoftButton(title: "Duo / Partner") { showDuo = true }
@@ -163,10 +179,41 @@ struct SettingsSheet: View {
             .navigationBarBackButtonHidden(false)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Fertig") { dismiss() } } }
-            .onAppear { screens.name = "Einstellungen" }
+            .onAppear {
+                screens.name = "Einstellungen"
+                name = model.me.name
+                partnerName = model.partnerSeatName
+                leftGender = model.me.gender
+                rightGender = model.persistedPartnerGender
+            }
             .sheet(isPresented: $showDuo) { DuoView() }
             .sheet(isPresented: $feedback) { FeedbackSheet() }
         }
+    }
+
+    private func genderPicker(_ value: SpeakerGender, choose: @escaping (SpeakerGender) -> Void) -> some View {
+        HStack(spacing: 8) {
+            seatButton("ผม ครับ", selected: value == .male) { choose(.male) }
+            seatButton("ฉัน ค่ะ", selected: value == .female) { choose(.female) }
+        }
+    }
+
+    private func seatButton(_ title: String, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(selected ? Theme.button : Theme.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .foregroundStyle(selected ? Color.white : Theme.ink)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func preview(_ gender: SpeakerGender) -> String {
+        let form = GenderVoice.speak(thai: "สวัสดี", roman: "sà-wàt-dii", gender: gender, polite: true)
+        let mine = GenderVoice.speak(thai: "ผม", roman: "phǒm", gender: gender, polite: false)
+        return "\(mine.thai) \(mine.roman) · \(form.thai) \(form.roman)"
     }
 
     private var debugText: String {

@@ -122,7 +122,7 @@ enum PathData {
             ],
             dialogs: [
                 DialogRef(id: "e1",
-                    a: LineRef(thai: "เอาข้าว", roman: "ao khàao", german: "Ich nehme Reis."),
+                    a: LineRef(thai: "เอาข้าว", roman: "ao khâao", german: "Ich nehme Reis."),
                     b: LineRef(thai: "ได้", roman: "dâai", german: "Okay.")),
                 DialogRef(id: "e2",
                     a: LineRef(thai: "อร่อยไหม", roman: "à-rɔ̀i mǎi", german: "Lecker?"),

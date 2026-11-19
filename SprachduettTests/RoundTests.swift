@@ -25,6 +25,15 @@ final class RoundTests: XCTestCase {
         XCTAssertEqual(LearningPath.snapshot(units: units, stats: stats).label, "Stufe 1 · Einheit 2 von 2")
     }
 
+    func testEmptyPathStaysOnTheHomeLabel() {
+        let snapshot = LearningPath.snapshot(units: [], stats: [:])
+        XCTAssertEqual(snapshot.stage, 1)
+        XCTAssertEqual(snapshot.unitCount, 0)
+        let plan = RoundBuilder.build(units: [], stats: [:], seed: 1, together: true)
+        XCTAssertTrue(plan.beats.isEmpty)
+        XCTAssertNil(RoundEngine.beat(plan, RoundCursor()))
+    }
+
     func testFreshRoundIntroducesBeforeItQuizzes() throws {
         let units = LearningPath.load(from: try CatalogLoader.loadBundled())
         let plan = RoundBuilder.build(units: units, stats: [:], seed: 7, together: true)
@@ -52,7 +61,7 @@ final class RoundTests: XCTestCase {
     }
 
     func testFirstCorrectTapScoresAndAMissLetsTheOtherTry() {
-        let word = PathWord(id: "w", emoji: "🍚", thai: "ข้าว", roman: "khàao", german: "Reis")
+        let word = PathWord(id: "w", emoji: "🍚", thai: "ข้าว", roman: "khâao", german: "Reis")
         let other = PathWord(id: "o", emoji: "🐔", thai: "ไก่", roman: "gài", german: "Huhn")
         let item = ListenChallenge(id: "q", answer: word, choices: [word, other])
         let plan = RoundPlan(beats: [.listen(item)], label: "Stufe 1 · Einheit 1 von 1", unitTitle: "Essen")
