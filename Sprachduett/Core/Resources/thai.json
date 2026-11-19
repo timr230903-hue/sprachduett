@@ -1,0 +1,5001 @@
+{
+  "language": "th",
+  "title": "Thai",
+  "tones": [
+    {
+      "id": "mid",
+      "nameDE": "Mittelton",
+      "nameTH": "สามัญ",
+      "roman": "sǎa-man",
+      "mark": "ohne Zeichen",
+      "contour": "Eben, in der mittleren Tonhöhe. Nicht anheben und nicht fallen lassen.",
+      "exampleThai": "ไป",
+      "exampleRoman": "bpai",
+      "exampleDE": "gehen",
+      "rule": "Mittelklasse-Anlaut, lebendige Silbe, kein Tonzeichen. Beispiel zum Hören: ไป bpai."
+    },
+    {
+      "id": "low",
+      "nameDE": "Tiefer Ton",
+      "nameTH": "เอก",
+      "roman": "èek",
+      "mark": "à",
+      "contour": "Mittel anfangen, sinken und unten bleiben.",
+      "exampleThai": "ใหม่",
+      "exampleRoman": "mài",
+      "exampleDE": "neu",
+      "rule": "In Paiboon der Gravis. Neben ใหม่ mài stehen drei Verwandte: ไม่ mâi nicht, ไม้ mái Holz, ไหม mǎi oder?"
+    },
+    {
+      "id": "falling",
+      "nameDE": "Fallender Ton",
+      "nameTH": "โท",
+      "roman": "thoo",
+      "mark": "â",
+      "contour": "Hoch anfangen und schnell nach unten fallen.",
+      "exampleThai": "ไม่",
+      "exampleRoman": "mâi",
+      "exampleDE": "nicht",
+      "rule": "Zirkumflex. ไม่ mâi ist fallend, ใหม่ mài ist tief. Die Richtung ist der Unterschied."
+    },
+    {
+      "id": "high",
+      "nameDE": "Hoher Ton",
+      "nameTH": "ตรี",
+      "roman": "dtrii",
+      "mark": "á",
+      "contour": "Hoch und knapp. Nicht lange in der Mitte hängen bleiben.",
+      "exampleThai": "ไม้",
+      "exampleRoman": "mái",
+      "exampleDE": "Holz, Stock",
+      "rule": "Akut. ไม้ mái Holz, ม้า máa Pferd, น้ำ náam Wasser."
+    },
+    {
+      "id": "rising",
+      "nameDE": "Steigender Ton",
+      "nameTH": "จัตวา",
+      "roman": "jàt-dtà-waa",
+      "mark": "ǎ",
+      "contour": "Tief anfangen und nach oben steigen, wie eine Frage im Deutschen.",
+      "exampleThai": "ไหม",
+      "exampleRoman": "mǎi",
+      "exampleDE": "oder? (Fragewort)",
+      "rule": "Hatschek. ไหม mǎi fragt. หมา mǎa ist der Hund, มา maa kommen bleibt Mittelton."
+    }
+  ],
+  "topics": [
+    {
+      "id": "hoeflichkeit",
+      "title": "Höflichkeit",
+      "blurb": "ครับ khráp spricht man als höfliche hohe Partikel, auch wenn die Schreibung einen tiefen Ton nahelegt. Frauen sagen ค่ะ khâ in Aussagen und คะ khá in Fragen.",
+      "items": [
+        {
+          "id": "pol-01",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo",
+          "particle": "none"
+        },
+        {
+          "id": "pol-02",
+          "thai": "ครับ",
+          "roman": "khráp",
+          "german": "höfliche Partikel, männlich",
+          "particle": "none"
+        },
+        {
+          "id": "pol-03",
+          "thai": "ค่ะ",
+          "roman": "khâ",
+          "german": "höfliche Partikel, weiblich, Aussage",
+          "particle": "none"
+        },
+        {
+          "id": "pol-04",
+          "thai": "คะ",
+          "roman": "khá",
+          "german": "höfliche Partikel, weiblich, Frage",
+          "particle": "none"
+        },
+        {
+          "id": "pol-05",
+          "thai": "ขอบคุณ",
+          "roman": "khɔ̀ɔp-khun",
+          "german": "danke",
+          "particle": "none"
+        },
+        {
+          "id": "pol-06",
+          "thai": "ขอบคุณมาก",
+          "roman": "khɔ̀ɔp-khun mâak",
+          "german": "vielen Dank",
+          "particle": "none"
+        },
+        {
+          "id": "pol-07",
+          "thai": "ไม่เป็นไร",
+          "roman": "mâi-bpen-rai",
+          "german": "kein Problem, gern geschehen",
+          "particle": "none"
+        },
+        {
+          "id": "pol-08",
+          "thai": "ขอโทษ",
+          "roman": "khɔ̌ɔ-thôot",
+          "german": "Entschuldigung",
+          "particle": "none"
+        },
+        {
+          "id": "pol-09",
+          "thai": "ใช่",
+          "roman": "châi",
+          "german": "ja",
+          "particle": "none"
+        },
+        {
+          "id": "pol-10",
+          "thai": "ไม่ใช่",
+          "roman": "mâi-châi",
+          "german": "nein, nicht so",
+          "particle": "none"
+        },
+        {
+          "id": "pol-11",
+          "thai": "ได้",
+          "roman": "dâai",
+          "german": "kann, okay, es geht",
+          "particle": "none"
+        },
+        {
+          "id": "pol-12",
+          "thai": "ไม่ได้",
+          "roman": "mâi-dâai",
+          "german": "geht nicht",
+          "particle": "none"
+        },
+        {
+          "id": "pol-13",
+          "thai": "เชิญ",
+          "roman": "chəən",
+          "german": "bitte sehr, nur zu",
+          "particle": "none"
+        },
+        {
+          "id": "pol-14",
+          "thai": "นะ",
+          "roman": "ná",
+          "german": "weicher Ton am Satzende",
+          "particle": "none"
+        },
+        {
+          "id": "pol-15",
+          "thai": "สบายดี",
+          "roman": "sà-baai-dii",
+          "german": "mir geht es gut",
+          "particle": "none"
+        },
+        {
+          "id": "pol-16",
+          "thai": "สบายดีไหม",
+          "roman": "sà-baai-dii mǎi",
+          "german": "wie geht es dir?",
+          "particle": "none"
+        },
+        {
+          "id": "pol-17",
+          "thai": "ยินดีที่ได้รู้จัก",
+          "roman": "yin-dii thîi dâai rúu-jàk",
+          "german": "freut mich",
+          "particle": "none"
+        },
+        {
+          "id": "pol-18",
+          "thai": "ลาก่อน",
+          "roman": "laa-gɔ̀ɔn",
+          "german": "auf Wiedersehen",
+          "particle": "none"
+        },
+        {
+          "id": "pol-19",
+          "thai": "แล้วเจอกัน",
+          "roman": "lɛ́ɛo jəə gan",
+          "german": "bis später",
+          "particle": "none"
+        },
+        {
+          "id": "pol-20",
+          "thai": "อรุณสวัสดิ์",
+          "roman": "à-run-sà-wàt",
+          "german": "guten Morgen, förmlich",
+          "particle": "none"
+        },
+        {
+          "id": "pol-21",
+          "thai": "ราตรีสวัสดิ์",
+          "roman": "raa-dtrii-sà-wàt",
+          "german": "gute Nacht, förmlich",
+          "particle": "none"
+        },
+        {
+          "id": "pol-22",
+          "thai": "โชคดี",
+          "roman": "chôok-dii",
+          "german": "viel Glück",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "pronomen",
+      "title": "Wer spricht",
+      "blurb": "Die Partikel kommt nach dem Satz. Das Wort für ich wählt ihr selbst: ผม phǒm oder ฉัน chǎn.",
+      "items": [
+        {
+          "id": "pro-01",
+          "thai": "ผม",
+          "roman": "phǒm",
+          "german": "ich, männlich",
+          "particle": "none"
+        },
+        {
+          "id": "pro-02",
+          "thai": "ฉัน",
+          "roman": "chǎn",
+          "german": "ich, weiblich oder neutral",
+          "particle": "none"
+        },
+        {
+          "id": "pro-03",
+          "thai": "ดิฉัน",
+          "roman": "dì-chǎn",
+          "german": "ich, weiblich, förmlich",
+          "particle": "none"
+        },
+        {
+          "id": "pro-04",
+          "thai": "คุณ",
+          "roman": "khun",
+          "german": "du, Sie",
+          "particle": "none"
+        },
+        {
+          "id": "pro-05",
+          "thai": "เรา",
+          "roman": "rao",
+          "german": "wir",
+          "particle": "none"
+        },
+        {
+          "id": "pro-06",
+          "thai": "เขา",
+          "roman": "khǎo",
+          "german": "er, sie",
+          "particle": "none"
+        },
+        {
+          "id": "pro-07",
+          "thai": "เธอ",
+          "roman": "thəə",
+          "german": "du, vertraut",
+          "particle": "none"
+        },
+        {
+          "id": "pro-08",
+          "thai": "พวกเขา",
+          "roman": "phûak-khǎo",
+          "german": "sie, Plural",
+          "particle": "none"
+        },
+        {
+          "id": "pro-09",
+          "thai": "ใคร",
+          "roman": "khrai",
+          "german": "wer",
+          "particle": "none"
+        },
+        {
+          "id": "pro-10",
+          "thai": "อะไร",
+          "roman": "à-rai",
+          "german": "was",
+          "particle": "none"
+        },
+        {
+          "id": "pro-11",
+          "thai": "ที่ไหน",
+          "roman": "thîi-nǎi",
+          "german": "wo",
+          "particle": "none"
+        },
+        {
+          "id": "pro-12",
+          "thai": "เมื่อไหร่",
+          "roman": "mʉ̂a-rài",
+          "german": "wann",
+          "particle": "none"
+        },
+        {
+          "id": "pro-13",
+          "thai": "ทำไม",
+          "roman": "tham-mai",
+          "german": "warum",
+          "particle": "none"
+        },
+        {
+          "id": "pro-14",
+          "thai": "ยังไง",
+          "roman": "yang-ngai",
+          "german": "wie",
+          "particle": "none"
+        },
+        {
+          "id": "pro-15",
+          "thai": "คน",
+          "roman": "khon",
+          "german": "Mensch, Person",
+          "particle": "none"
+        },
+        {
+          "id": "pro-16",
+          "thai": "เพื่อน",
+          "roman": "phʉ̂an",
+          "german": "Freund, Freundin",
+          "particle": "none"
+        },
+        {
+          "id": "pro-17",
+          "thai": "แฟน",
+          "roman": "fɛɛn",
+          "german": "Freund, Freundin, fest",
+          "particle": "none"
+        },
+        {
+          "id": "pro-18",
+          "thai": "ชื่อ",
+          "roman": "chʉ̂ʉ",
+          "german": "Name",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "fragen",
+      "title": "Fragen stellen",
+      "blurb": "Eine Frage klingt im Thai oft am Fragewort, nicht nur am Ton. Schaut euch an, wenn ihr fragt.",
+      "items": [
+        {
+          "id": "fra-01",
+          "thai": "ไหม",
+          "roman": "mǎi",
+          "german": "oder? Fragepartikel",
+          "particle": "none"
+        },
+        {
+          "id": "fra-02",
+          "thai": "หรือ",
+          "roman": "rʉ̌ʉ",
+          "german": "oder",
+          "particle": "none"
+        },
+        {
+          "id": "fra-03",
+          "thai": "กี่",
+          "roman": "gìi",
+          "german": "wie viele",
+          "particle": "none"
+        },
+        {
+          "id": "fra-04",
+          "thai": "เท่าไหร่",
+          "roman": "thâo-rài",
+          "german": "wie viel kostet das",
+          "particle": "none"
+        },
+        {
+          "id": "fra-05",
+          "thai": "อันไหน",
+          "roman": "an-nǎi",
+          "german": "welches",
+          "particle": "none"
+        },
+        {
+          "id": "fra-06",
+          "thai": "ใคร",
+          "roman": "khrai",
+          "german": "wer",
+          "particle": "none"
+        },
+        {
+          "id": "fra-07",
+          "thai": "ทำไม",
+          "roman": "tham-mai",
+          "german": "warum",
+          "particle": "none"
+        },
+        {
+          "id": "fra-08",
+          "thai": "ได้ไหม",
+          "roman": "dâai mǎi",
+          "german": "geht das?",
+          "particle": "none"
+        },
+        {
+          "id": "fra-09",
+          "thai": "หรือยัง",
+          "roman": "rʉ̌ʉ yang",
+          "german": "schon?",
+          "particle": "none"
+        },
+        {
+          "id": "fra-10",
+          "thai": "จริงเหรอ",
+          "roman": "jing rə̌ə",
+          "german": "echt?",
+          "particle": "none"
+        },
+        {
+          "id": "fra-11",
+          "thai": "อะไรนะ",
+          "roman": "à-rai ná",
+          "german": "wie bitte?",
+          "particle": "none"
+        },
+        {
+          "id": "fra-12",
+          "thai": "อีกที",
+          "roman": "ìik thii",
+          "german": "noch einmal",
+          "particle": "none"
+        },
+        {
+          "id": "fra-13",
+          "thai": "ช้าๆ",
+          "roman": "cháa cháa",
+          "german": "langsam",
+          "particle": "none"
+        },
+        {
+          "id": "fra-14",
+          "thai": "พูดอีกทีได้ไหม",
+          "roman": "phûut ìik thii dâai mǎi",
+          "german": "kannst du das noch einmal sagen?",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "zahlen",
+      "title": "Zahlen",
+      "blurb": "Nach der Zahl kommt oft ein Zählwort: คน für Menschen, อัน für Dinge, แก้ว für Gläser.",
+      "items": [
+        {
+          "id": "num-00",
+          "thai": "ศูนย์",
+          "roman": "sǔun",
+          "german": "null",
+          "particle": "none"
+        },
+        {
+          "id": "num-01",
+          "thai": "หนึ่ง",
+          "roman": "nʉ̀ng",
+          "german": "eins",
+          "particle": "none"
+        },
+        {
+          "id": "num-02",
+          "thai": "สอง",
+          "roman": "sɔ̌ɔng",
+          "german": "zwei",
+          "particle": "none"
+        },
+        {
+          "id": "num-03",
+          "thai": "สาม",
+          "roman": "sǎam",
+          "german": "drei",
+          "particle": "none"
+        },
+        {
+          "id": "num-04",
+          "thai": "สี่",
+          "roman": "sìi",
+          "german": "vier",
+          "particle": "none"
+        },
+        {
+          "id": "num-05",
+          "thai": "ห้า",
+          "roman": "hâa",
+          "german": "fünf",
+          "particle": "none"
+        },
+        {
+          "id": "num-06",
+          "thai": "หก",
+          "roman": "hòk",
+          "german": "sechs",
+          "particle": "none"
+        },
+        {
+          "id": "num-07",
+          "thai": "เจ็ด",
+          "roman": "jèt",
+          "german": "sieben",
+          "particle": "none"
+        },
+        {
+          "id": "num-08",
+          "thai": "แปด",
+          "roman": "bpɛ̀ɛt",
+          "german": "acht",
+          "particle": "none"
+        },
+        {
+          "id": "num-09",
+          "thai": "เก้า",
+          "roman": "kâao",
+          "german": "neun",
+          "particle": "none"
+        },
+        {
+          "id": "num-10",
+          "thai": "สิบ",
+          "roman": "sìp",
+          "german": "zehn",
+          "particle": "none"
+        },
+        {
+          "id": "num-11",
+          "thai": "สิบเอ็ด",
+          "roman": "sìp-èt",
+          "german": "elf",
+          "particle": "none"
+        },
+        {
+          "id": "num-12",
+          "thai": "สิบสอง",
+          "roman": "sìp-sɔ̌ɔng",
+          "german": "zwölf",
+          "particle": "none"
+        },
+        {
+          "id": "num-20",
+          "thai": "ยี่สิบ",
+          "roman": "yîi-sìp",
+          "german": "zwanzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-21",
+          "thai": "ยี่สิบเอ็ด",
+          "roman": "yîi-sìp-èt",
+          "german": "einundzwanzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-30",
+          "thai": "สามสิบ",
+          "roman": "sǎam-sìp",
+          "german": "dreißig",
+          "particle": "none"
+        },
+        {
+          "id": "num-40",
+          "thai": "สี่สิบ",
+          "roman": "sìi-sìp",
+          "german": "vierzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-50",
+          "thai": "ห้าสิบ",
+          "roman": "hâa-sìp",
+          "german": "fünfzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-60",
+          "thai": "หกสิบ",
+          "roman": "hòk-sìp",
+          "german": "sechzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-70",
+          "thai": "เจ็ดสิบ",
+          "roman": "jèt-sìp",
+          "german": "siebzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-80",
+          "thai": "แปดสิบ",
+          "roman": "bpɛ̀ɛt-sìp",
+          "german": "achtzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-90",
+          "thai": "เก้าสิบ",
+          "roman": "kâao-sìp",
+          "german": "neunzig",
+          "particle": "none"
+        },
+        {
+          "id": "num-100",
+          "thai": "ร้อย",
+          "roman": "rɔ́ɔi",
+          "german": "hundert",
+          "particle": "none"
+        },
+        {
+          "id": "num-200",
+          "thai": "สองร้อย",
+          "roman": "sɔ̌ɔng-rɔ́ɔi",
+          "german": "zweihundert",
+          "particle": "none"
+        },
+        {
+          "id": "num-1000",
+          "thai": "พัน",
+          "roman": "phan",
+          "german": "tausend",
+          "particle": "none"
+        },
+        {
+          "id": "num-10000",
+          "thai": "หมื่น",
+          "roman": "mʉ̀ʉn",
+          "german": "zehntausend",
+          "particle": "none"
+        },
+        {
+          "id": "num-half",
+          "thai": "ครึ่ง",
+          "roman": "khrʉ̂ng",
+          "german": "halb",
+          "particle": "none"
+        },
+        {
+          "id": "num-first",
+          "thai": "แรก",
+          "roman": "rɛ̂ɛk",
+          "german": "erster",
+          "particle": "none"
+        },
+        {
+          "id": "cls-khon",
+          "thai": "คน",
+          "roman": "khon",
+          "german": "Zählwort für Menschen",
+          "particle": "none"
+        },
+        {
+          "id": "cls-an",
+          "thai": "อัน",
+          "roman": "an",
+          "german": "Zählwort für Dinge",
+          "particle": "none"
+        },
+        {
+          "id": "cls-gaew",
+          "thai": "แก้ว",
+          "roman": "gɛ̂ɛo",
+          "german": "Glas, Zählwort für Getränke",
+          "particle": "none"
+        },
+        {
+          "id": "cls-jaan",
+          "thai": "จาน",
+          "roman": "jaan",
+          "german": "Teller",
+          "particle": "none"
+        },
+        {
+          "id": "cls-thuai",
+          "thai": "ถ้วย",
+          "roman": "thûai",
+          "german": "Schale",
+          "particle": "none"
+        },
+        {
+          "id": "cls-khuat",
+          "thai": "ขวด",
+          "roman": "khùat",
+          "german": "Flasche",
+          "particle": "none"
+        },
+        {
+          "id": "cls-bai",
+          "thai": "ใบ",
+          "roman": "bai",
+          "german": "Zählwort für Tickets und Früchte",
+          "particle": "none"
+        },
+        {
+          "id": "cls-khan",
+          "thai": "คัน",
+          "roman": "khan",
+          "german": "Zählwort für Fahrzeuge",
+          "particle": "none"
+        },
+        {
+          "id": "cls-baht",
+          "thai": "บาท",
+          "roman": "bàat",
+          "german": "Baht",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "zeit",
+      "title": "Zeit",
+      "blurb": "Uhrzeiten sagt man mit โมง moong. Morgens hängt เช้า daran, abends เย็น.",
+      "items": [
+        {
+          "id": "tim-01",
+          "thai": "วันนี้",
+          "roman": "wan-níi",
+          "german": "heute",
+          "particle": "none"
+        },
+        {
+          "id": "tim-02",
+          "thai": "พรุ่งนี้",
+          "roman": "phrûng-níi",
+          "german": "morgen",
+          "particle": "none"
+        },
+        {
+          "id": "tim-03",
+          "thai": "เมื่อวาน",
+          "roman": "mʉ̂a-waan",
+          "german": "gestern",
+          "particle": "none"
+        },
+        {
+          "id": "tim-04",
+          "thai": "ตอนนี้",
+          "roman": "tɔɔn-níi",
+          "german": "jetzt",
+          "particle": "none"
+        },
+        {
+          "id": "tim-05",
+          "thai": "เดี๋ยว",
+          "roman": "dìao",
+          "german": "gleich",
+          "particle": "none"
+        },
+        {
+          "id": "tim-06",
+          "thai": "เช้า",
+          "roman": "châao",
+          "german": "Morgen",
+          "particle": "none"
+        },
+        {
+          "id": "tim-07",
+          "thai": "สาย",
+          "roman": "sǎai",
+          "german": "später Vormittag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-08",
+          "thai": "เที่ยง",
+          "roman": "thîang",
+          "german": "Mittag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-09",
+          "thai": "บ่าย",
+          "roman": "bàai",
+          "german": "Nachmittag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-10",
+          "thai": "เย็น",
+          "roman": "yen",
+          "german": "Abend",
+          "particle": "none"
+        },
+        {
+          "id": "tim-11",
+          "thai": "ค่ำ",
+          "roman": "khâm",
+          "german": "früher Abend",
+          "particle": "none"
+        },
+        {
+          "id": "tim-12",
+          "thai": "คืน",
+          "roman": "khʉʉn",
+          "german": "Nacht",
+          "particle": "none"
+        },
+        {
+          "id": "tim-13",
+          "thai": "กลางวัน",
+          "roman": "glaang-wan",
+          "german": "tagsüber",
+          "particle": "none"
+        },
+        {
+          "id": "tim-14",
+          "thai": "กลางคืน",
+          "roman": "glaang-khʉʉn",
+          "german": "nachts",
+          "particle": "none"
+        },
+        {
+          "id": "tim-15",
+          "thai": "ชั่วโมง",
+          "roman": "chûa-moong",
+          "german": "Stunde",
+          "particle": "none"
+        },
+        {
+          "id": "tim-16",
+          "thai": "นาที",
+          "roman": "naa-thii",
+          "german": "Minute",
+          "particle": "none"
+        },
+        {
+          "id": "tim-17",
+          "thai": "วินาที",
+          "roman": "wi-naa-thii",
+          "german": "Sekunde",
+          "particle": "none"
+        },
+        {
+          "id": "tim-18",
+          "thai": "วัน",
+          "roman": "wan",
+          "german": "Tag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-19",
+          "thai": "สัปดาห์",
+          "roman": "sàp-daa",
+          "german": "Woche",
+          "particle": "none"
+        },
+        {
+          "id": "tim-20",
+          "thai": "เดือน",
+          "roman": "dʉan",
+          "german": "Monat",
+          "particle": "none"
+        },
+        {
+          "id": "tim-21",
+          "thai": "ปี",
+          "roman": "bpii",
+          "german": "Jahr",
+          "particle": "none"
+        },
+        {
+          "id": "tim-22",
+          "thai": "ก่อน",
+          "roman": "gɔ̀ɔn",
+          "german": "bevor, vorher",
+          "particle": "none"
+        },
+        {
+          "id": "tim-23",
+          "thai": "หลัง",
+          "roman": "lǎng",
+          "german": "nach, danach",
+          "particle": "none"
+        },
+        {
+          "id": "tim-24",
+          "thai": "เสมอ",
+          "roman": "sà-məə",
+          "german": "immer",
+          "particle": "none"
+        },
+        {
+          "id": "tim-25",
+          "thai": "เคย",
+          "roman": "khəəi",
+          "german": "jemals, schon einmal",
+          "particle": "none"
+        },
+        {
+          "id": "tim-26",
+          "thai": "ไม่เคย",
+          "roman": "mâi-khəəi",
+          "german": "noch nie",
+          "particle": "none"
+        },
+        {
+          "id": "tim-27",
+          "thai": "วันจันทร์",
+          "roman": "wan-jan",
+          "german": "Montag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-28",
+          "thai": "วันอังคาร",
+          "roman": "wan-ang-khaan",
+          "german": "Dienstag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-29",
+          "thai": "วันพุธ",
+          "roman": "wan-phút",
+          "german": "Mittwoch",
+          "particle": "none"
+        },
+        {
+          "id": "tim-30",
+          "thai": "วันพฤหัสบดี",
+          "roman": "wan-phrʉ́-hàt-sà-bɔɔ-dii",
+          "german": "Donnerstag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-31",
+          "thai": "วันศุกร์",
+          "roman": "wan-sùk",
+          "german": "Freitag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-32",
+          "thai": "วันเสาร์",
+          "roman": "wan-sǎo",
+          "german": "Samstag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-33",
+          "thai": "วันอาทิตย์",
+          "roman": "wan-aa-thít",
+          "german": "Sonntag",
+          "particle": "none"
+        },
+        {
+          "id": "tim-34",
+          "thai": "โมง",
+          "roman": "moong",
+          "german": "Uhr-Stunde, Zählwort",
+          "particle": "none"
+        },
+        {
+          "id": "tim-35",
+          "thai": "หกโมงเย็น",
+          "roman": "hòk moong yen",
+          "german": "sechs Uhr abends",
+          "particle": "none"
+        },
+        {
+          "id": "tim-36",
+          "thai": "แปดโมงเช้า",
+          "roman": "bpɛ̀ɛt moong châao",
+          "german": "acht Uhr morgens",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "familie",
+      "title": "Menschen",
+      "blurb": "แฟน fɛɛn ist das alltägliche Wort für die Person, mit der man zusammen ist.",
+      "items": [
+        {
+          "id": "fam-01",
+          "thai": "พ่อ",
+          "roman": "phɔ̂ɔ",
+          "german": "Vater",
+          "particle": "none"
+        },
+        {
+          "id": "fam-02",
+          "thai": "แม่",
+          "roman": "mɛ̂ɛ",
+          "german": "Mutter",
+          "particle": "none"
+        },
+        {
+          "id": "fam-03",
+          "thai": "พี่",
+          "roman": "phîi",
+          "german": "älteres Geschwister",
+          "particle": "none"
+        },
+        {
+          "id": "fam-04",
+          "thai": "น้อง",
+          "roman": "nɔ́ɔng",
+          "german": "jüngeres Geschwister",
+          "particle": "none"
+        },
+        {
+          "id": "fam-05",
+          "thai": "ลูก",
+          "roman": "lûuk",
+          "german": "Kind",
+          "particle": "none"
+        },
+        {
+          "id": "fam-06",
+          "thai": "ลูกชาย",
+          "roman": "lûuk-chaai",
+          "german": "Sohn",
+          "particle": "none"
+        },
+        {
+          "id": "fam-07",
+          "thai": "ลูกสาว",
+          "roman": "lûuk-sǎao",
+          "german": "Tochter",
+          "particle": "none"
+        },
+        {
+          "id": "fam-08",
+          "thai": "ปู่",
+          "roman": "bpùu",
+          "german": "Großvater väterlicherseits",
+          "particle": "none"
+        },
+        {
+          "id": "fam-09",
+          "thai": "ย่า",
+          "roman": "yâa",
+          "german": "Großmutter väterlicherseits",
+          "particle": "none"
+        },
+        {
+          "id": "fam-10",
+          "thai": "ตา",
+          "roman": "dtaa",
+          "german": "Großvater mütterlicherseits",
+          "particle": "none"
+        },
+        {
+          "id": "fam-11",
+          "thai": "ยาย",
+          "roman": "yaai",
+          "german": "Großmutter mütterlicherseits",
+          "particle": "none"
+        },
+        {
+          "id": "fam-12",
+          "thai": "พี่ชาย",
+          "roman": "phîi-chaai",
+          "german": "großer Bruder",
+          "particle": "none"
+        },
+        {
+          "id": "fam-13",
+          "thai": "พี่สาว",
+          "roman": "phîi-sǎao",
+          "german": "große Schwester",
+          "particle": "none"
+        },
+        {
+          "id": "fam-14",
+          "thai": "น้องชาย",
+          "roman": "nɔ́ɔng-chaai",
+          "german": "kleiner Bruder",
+          "particle": "none"
+        },
+        {
+          "id": "fam-15",
+          "thai": "น้องสาว",
+          "roman": "nɔ́ɔng-sǎao",
+          "german": "kleine Schwester",
+          "particle": "none"
+        },
+        {
+          "id": "fam-16",
+          "thai": "สามี",
+          "roman": "sǎa-mii",
+          "german": "Ehemann",
+          "particle": "none"
+        },
+        {
+          "id": "fam-17",
+          "thai": "ภรรยา",
+          "roman": "phan-rá-yaa",
+          "german": "Ehefrau",
+          "particle": "none"
+        },
+        {
+          "id": "fam-18",
+          "thai": "ครอบครัว",
+          "roman": "khrɔ̂ɔp-khrua",
+          "german": "Familie",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "essen",
+      "title": "Essen",
+      "blurb": "Bestellt einer laut, der andere hört nur zu. Die Bedeutung steht auf dem Handy dessen, der spricht.",
+      "items": [
+        {
+          "id": "food-01",
+          "thai": "ข้าว",
+          "roman": "khàao",
+          "german": "Reis",
+          "particle": "none"
+        },
+        {
+          "id": "food-02",
+          "thai": "ข้าวเหนียว",
+          "roman": "khàao-nǐao",
+          "german": "Klebreis",
+          "particle": "none"
+        },
+        {
+          "id": "food-03",
+          "thai": "ข้าวสวย",
+          "roman": "khàao-sǔai",
+          "german": "gekochter Reis",
+          "particle": "none"
+        },
+        {
+          "id": "food-04",
+          "thai": "ก๋วยเตี๋ยว",
+          "roman": "gǔai-dtìao",
+          "german": "Nudelsuppe",
+          "particle": "none"
+        },
+        {
+          "id": "food-05",
+          "thai": "ผัดไทย",
+          "roman": "phàt-thai",
+          "german": "Pad Thai",
+          "particle": "none"
+        },
+        {
+          "id": "food-06",
+          "thai": "ส้มตำ",
+          "roman": "sôm-dtàm",
+          "german": "grüner Papayasalat",
+          "particle": "none"
+        },
+        {
+          "id": "food-07",
+          "thai": "ต้มยำกุ้ง",
+          "roman": "dtôm-yam-gûng",
+          "german": "sauer-scharfe Suppe mit Garnelen",
+          "particle": "none"
+        },
+        {
+          "id": "food-08",
+          "thai": "แกงเขียวหวาน",
+          "roman": "kaeng-khìao-wǎan",
+          "german": "grünes Curry",
+          "particle": "none"
+        },
+        {
+          "id": "food-09",
+          "thai": "ข้าวผัด",
+          "roman": "khàao-phàt",
+          "german": "gebratener Reis",
+          "particle": "none"
+        },
+        {
+          "id": "food-10",
+          "thai": "ข้าวมันไก่",
+          "roman": "khàao-man-gài",
+          "german": "Hähnchenreis",
+          "particle": "none"
+        },
+        {
+          "id": "food-11",
+          "thai": "ผัดกะเพรา",
+          "roman": "phàt-gà-phrao",
+          "german": "Braten mit Basilikum",
+          "particle": "none"
+        },
+        {
+          "id": "food-12",
+          "thai": "ไก่ทอด",
+          "roman": "gài-thɔ̂ɔt",
+          "german": "frittiertes Huhn",
+          "particle": "none"
+        },
+        {
+          "id": "food-13",
+          "thai": "หมูปิ้ง",
+          "roman": "mùu-bîng",
+          "german": "gegrilltes Schwein",
+          "particle": "none"
+        },
+        {
+          "id": "food-14",
+          "thai": "ปลาเผา",
+          "roman": "bplaa-phǎo",
+          "german": "gegrillter Fisch",
+          "particle": "none"
+        },
+        {
+          "id": "food-15",
+          "thai": "ไข่เจียว",
+          "roman": "khài-jiao",
+          "german": "Omelett",
+          "particle": "none"
+        },
+        {
+          "id": "food-16",
+          "thai": "ไข่ดาว",
+          "roman": "khài-daao",
+          "german": "Spiegelei",
+          "particle": "none"
+        },
+        {
+          "id": "food-17",
+          "thai": "หมู",
+          "roman": "mùu",
+          "german": "Schwein",
+          "particle": "none"
+        },
+        {
+          "id": "food-18",
+          "thai": "ไก่",
+          "roman": "gài",
+          "german": "Huhn",
+          "particle": "none"
+        },
+        {
+          "id": "food-19",
+          "thai": "เนื้อ",
+          "roman": "nʉ́a",
+          "german": "Rind",
+          "particle": "none"
+        },
+        {
+          "id": "food-20",
+          "thai": "ปลา",
+          "roman": "bplaa",
+          "german": "Fisch",
+          "particle": "none"
+        },
+        {
+          "id": "food-21",
+          "thai": "กุ้ง",
+          "roman": "gûng",
+          "german": "Garnele",
+          "particle": "none"
+        },
+        {
+          "id": "food-22",
+          "thai": "เต้าหู้",
+          "roman": "dtào-hûu",
+          "german": "Tofu",
+          "particle": "none"
+        },
+        {
+          "id": "food-23",
+          "thai": "ผัก",
+          "roman": "phàk",
+          "german": "Gemüse",
+          "particle": "none"
+        },
+        {
+          "id": "food-24",
+          "thai": "ผลไม้",
+          "roman": "phǒn-lá-máai",
+          "german": "Obst",
+          "particle": "none"
+        },
+        {
+          "id": "food-25",
+          "thai": "มะม่วง",
+          "roman": "má-mûang",
+          "german": "Mango",
+          "particle": "none"
+        },
+        {
+          "id": "food-26",
+          "thai": "มะละกอ",
+          "roman": "má-lá-gɔɔ",
+          "german": "Papaya",
+          "particle": "none"
+        },
+        {
+          "id": "food-27",
+          "thai": "กล้วย",
+          "roman": "glûai",
+          "german": "Banane",
+          "particle": "none"
+        },
+        {
+          "id": "food-28",
+          "thai": "สับปะรด",
+          "roman": "sàp-bpà-rót",
+          "german": "Ananas",
+          "particle": "none"
+        },
+        {
+          "id": "food-29",
+          "thai": "แอปเปิ้ล",
+          "roman": "ɛ́p-bpə̂ən",
+          "german": "Apfel",
+          "particle": "none"
+        },
+        {
+          "id": "food-30",
+          "thai": "น้ำปลา",
+          "roman": "náam-bplaa",
+          "german": "Fischsauce",
+          "particle": "none"
+        },
+        {
+          "id": "food-31",
+          "thai": "พริก",
+          "roman": "phrík",
+          "german": "Chili",
+          "particle": "none"
+        },
+        {
+          "id": "food-32",
+          "thai": "กระเทียม",
+          "roman": "grà-thiam",
+          "german": "Knoblauch",
+          "particle": "none"
+        },
+        {
+          "id": "food-33",
+          "thai": "น้ำตาล",
+          "roman": "náam-dtaan",
+          "german": "Zucker",
+          "particle": "none"
+        },
+        {
+          "id": "food-34",
+          "thai": "เกลือ",
+          "roman": "glʉa",
+          "german": "Salz",
+          "particle": "none"
+        },
+        {
+          "id": "food-35",
+          "thai": "ไข่",
+          "roman": "khài",
+          "german": "Ei",
+          "particle": "none"
+        },
+        {
+          "id": "food-36",
+          "thai": "ขนมปัง",
+          "roman": "khà-nǒm-bpang",
+          "german": "Brot",
+          "particle": "none"
+        },
+        {
+          "id": "food-37",
+          "thai": "โจ๊ก",
+          "roman": "jôok",
+          "german": "Reisbrei",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "trinken",
+      "title": "Trinken",
+      "blurb": "หวานน้อย heißt wenig süß. Das ist die wichtigste Bestellung im Café.",
+      "items": [
+        {
+          "id": "dri-01",
+          "thai": "น้ำ",
+          "roman": "náam",
+          "german": "Wasser",
+          "particle": "none"
+        },
+        {
+          "id": "dri-02",
+          "thai": "น้ำเปล่า",
+          "roman": "náam-bplàao",
+          "german": "Wasser ohne Eis und Zucker",
+          "particle": "none"
+        },
+        {
+          "id": "dri-03",
+          "thai": "น้ำแข็ง",
+          "roman": "náam-khɛ̌ng",
+          "german": "Eis",
+          "particle": "none"
+        },
+        {
+          "id": "dri-04",
+          "thai": "น้ำอัดลม",
+          "roman": "náam-àt-lom",
+          "german": "Sprudel",
+          "particle": "none"
+        },
+        {
+          "id": "dri-05",
+          "thai": "ชา",
+          "roman": "chaa",
+          "german": "Tee",
+          "particle": "none"
+        },
+        {
+          "id": "dri-06",
+          "thai": "ชาเย็น",
+          "roman": "chaa-yen",
+          "german": "Eistee mit Milch",
+          "particle": "none"
+        },
+        {
+          "id": "dri-07",
+          "thai": "กาแฟ",
+          "roman": "gaa-fɛɛ",
+          "german": "Kaffee",
+          "particle": "none"
+        },
+        {
+          "id": "dri-08",
+          "thai": "กาแฟเย็น",
+          "roman": "gaa-fɛɛ-yen",
+          "german": "Eiskaffee",
+          "particle": "none"
+        },
+        {
+          "id": "dri-09",
+          "thai": "นม",
+          "roman": "nom",
+          "german": "Milch",
+          "particle": "none"
+        },
+        {
+          "id": "dri-10",
+          "thai": "น้ำส้ม",
+          "roman": "náam-sôm",
+          "german": "Orangensaft",
+          "particle": "none"
+        },
+        {
+          "id": "dri-11",
+          "thai": "น้ำมะพร้าว",
+          "roman": "náam-má-phráao",
+          "german": "Kokoswasser",
+          "particle": "none"
+        },
+        {
+          "id": "dri-12",
+          "thai": "เบียร์",
+          "roman": "bia",
+          "german": "Bier",
+          "particle": "none"
+        },
+        {
+          "id": "dri-13",
+          "thai": "เหล้า",
+          "roman": "lào",
+          "german": "Schnaps",
+          "particle": "none"
+        },
+        {
+          "id": "dri-14",
+          "thai": "ไวน์",
+          "roman": "wai",
+          "german": "Wein",
+          "particle": "none"
+        },
+        {
+          "id": "dri-15",
+          "thai": "หวานน้อย",
+          "roman": "wǎan nɔ́ɔi",
+          "german": "wenig süß",
+          "particle": "none"
+        },
+        {
+          "id": "dri-16",
+          "thai": "หวานปกติ",
+          "roman": "wǎan bpòk-gà-dtì",
+          "german": "normal süß",
+          "particle": "none"
+        },
+        {
+          "id": "dri-17",
+          "thai": "ไม่หวาน",
+          "roman": "mâi wǎan",
+          "german": "nicht süß",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "geschmack",
+      "title": "Schmecken",
+      "blurb": "Sagt das Wort und lasst den anderen raten, welches Gericht das ist.",
+      "items": [
+        {
+          "id": "tas-01",
+          "thai": "อร่อย",
+          "roman": "à-rɔ̀i",
+          "german": "lecker",
+          "particle": "none"
+        },
+        {
+          "id": "tas-02",
+          "thai": "ไม่อร่อย",
+          "roman": "mâi à-rɔ̀i",
+          "german": "schmeckt nicht",
+          "particle": "none"
+        },
+        {
+          "id": "tas-03",
+          "thai": "เผ็ด",
+          "roman": "phèt",
+          "german": "scharf",
+          "particle": "none"
+        },
+        {
+          "id": "tas-04",
+          "thai": "หวาน",
+          "roman": "wǎan",
+          "german": "süß",
+          "particle": "none"
+        },
+        {
+          "id": "tas-05",
+          "thai": "เค็ม",
+          "roman": "khem",
+          "german": "salzig",
+          "particle": "none"
+        },
+        {
+          "id": "tas-06",
+          "thai": "เปรี้ยว",
+          "roman": "prîao",
+          "german": "sauer",
+          "particle": "none"
+        },
+        {
+          "id": "tas-07",
+          "thai": "จืด",
+          "roman": "jʉ̀ʉt",
+          "german": "fade, ungewürzt",
+          "particle": "none"
+        },
+        {
+          "id": "tas-08",
+          "thai": "มัน",
+          "roman": "man",
+          "german": "fettig, ölig",
+          "particle": "none"
+        },
+        {
+          "id": "tas-09",
+          "thai": "ขม",
+          "roman": "khǒm",
+          "german": "bitter",
+          "particle": "none"
+        },
+        {
+          "id": "tas-10",
+          "thai": "หอม",
+          "roman": "hɔ̌ɔm",
+          "german": "duftet gut",
+          "particle": "none"
+        },
+        {
+          "id": "tas-11",
+          "thai": "อร่อยมาก",
+          "roman": "à-rɔ̀i mâak",
+          "german": "sehr lecker",
+          "particle": "none"
+        },
+        {
+          "id": "tas-12",
+          "thai": "เผ็ดไป",
+          "roman": "phèt bpai",
+          "german": "zu scharf",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "restaurant",
+      "title": "Im Restaurant",
+      "blurb": "Eine Person bestellt, die andere spielt den Service. Danach tauscht ihr.",
+      "items": [
+        {
+          "id": "res-01",
+          "thai": "เมนู",
+          "roman": "mee-nuu",
+          "german": "Speisekarte",
+          "particle": "none"
+        },
+        {
+          "id": "res-02",
+          "thai": "สั่ง",
+          "roman": "sàng",
+          "german": "bestellen",
+          "particle": "none"
+        },
+        {
+          "id": "res-03",
+          "thai": "บิล",
+          "roman": "bin",
+          "german": "Rechnung",
+          "particle": "none"
+        },
+        {
+          "id": "res-04",
+          "thai": "เก็บเงิน",
+          "roman": "gèp-ngən",
+          "german": "kassieren, bezahlen",
+          "particle": "none"
+        },
+        {
+          "id": "res-05",
+          "thai": "จอง",
+          "roman": "jɔɔng",
+          "german": "reservieren",
+          "particle": "none"
+        },
+        {
+          "id": "res-06",
+          "thai": "โต๊ะ",
+          "roman": "dtò",
+          "german": "Tisch",
+          "particle": "none"
+        },
+        {
+          "id": "res-07",
+          "thai": "เก้าอี้",
+          "roman": "gâo-ìi",
+          "german": "Stuhl",
+          "particle": "none"
+        },
+        {
+          "id": "res-08",
+          "thai": "ช้อน",
+          "roman": "chɔ́ɔn",
+          "german": "Löffel",
+          "particle": "none"
+        },
+        {
+          "id": "res-09",
+          "thai": "ส้อม",
+          "roman": "sɔ̂ɔm",
+          "german": "Gabel",
+          "particle": "none"
+        },
+        {
+          "id": "res-10",
+          "thai": "มีด",
+          "roman": "mîit",
+          "german": "Messer",
+          "particle": "none"
+        },
+        {
+          "id": "res-11",
+          "thai": "ไม่เผ็ด",
+          "roman": "mâi-phèt",
+          "german": "nicht scharf",
+          "particle": "none"
+        },
+        {
+          "id": "res-12",
+          "thai": "เผ็ดน้อย",
+          "roman": "phèt nɔ́ɔi",
+          "german": "wenig scharf",
+          "particle": "none"
+        },
+        {
+          "id": "res-13",
+          "thai": "เอาด้วย",
+          "roman": "ao dûai",
+          "german": "das auch noch",
+          "particle": "none"
+        },
+        {
+          "id": "res-14",
+          "thai": "พอแล้ว",
+          "roman": "phɔɔ lɛ́ɛo",
+          "german": "das reicht",
+          "particle": "none"
+        },
+        {
+          "id": "res-15",
+          "thai": "เชิญชิม",
+          "roman": "chəən chim",
+          "german": "guten Appetit, probiert",
+          "particle": "none"
+        },
+        {
+          "id": "res-16",
+          "thai": "เช็คบิล",
+          "roman": "chék bin",
+          "german": "die Rechnung bitte",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "markt",
+      "title": "Auf dem Markt",
+      "blurb": "Handeln gehört dazu. Sagt die Zahl laut und wartet, bis der andere nickt.",
+      "items": [
+        {
+          "id": "mar-01",
+          "thai": "เท่าไหร่",
+          "roman": "thâo-rài",
+          "german": "wie viel?",
+          "particle": "none"
+        },
+        {
+          "id": "mar-02",
+          "thai": "แพง",
+          "roman": "phaeng",
+          "german": "teuer",
+          "particle": "none"
+        },
+        {
+          "id": "mar-03",
+          "thai": "แพงไป",
+          "roman": "phaeng bpai",
+          "german": "zu teuer",
+          "particle": "none"
+        },
+        {
+          "id": "mar-04",
+          "thai": "ถูก",
+          "roman": "thùuk",
+          "german": "günstig, richtig",
+          "particle": "none"
+        },
+        {
+          "id": "mar-05",
+          "thai": "ลด",
+          "roman": "lót",
+          "german": "Rabatt, heruntersetzen",
+          "particle": "none"
+        },
+        {
+          "id": "mar-06",
+          "thai": "ลดหน่อย",
+          "roman": "lót nɔ̀i",
+          "german": "ein bisschen weniger",
+          "particle": "none"
+        },
+        {
+          "id": "mar-07",
+          "thai": "อันนี้",
+          "roman": "an-níi",
+          "german": "dieses",
+          "particle": "none"
+        },
+        {
+          "id": "mar-08",
+          "thai": "อันนั้น",
+          "roman": "an-nán",
+          "german": "jenes",
+          "particle": "none"
+        },
+        {
+          "id": "mar-09",
+          "thai": "เอาอันนี้",
+          "roman": "ao an-níi",
+          "german": "ich nehme das",
+          "particle": "none"
+        },
+        {
+          "id": "mar-10",
+          "thai": "ไม่เอา",
+          "roman": "mâi ao",
+          "german": "ich nehme es nicht",
+          "particle": "none"
+        },
+        {
+          "id": "mar-11",
+          "thai": "ดูได้ไหม",
+          "roman": "duu dâai mǎi",
+          "german": "darf ich das ansehen?",
+          "particle": "none"
+        },
+        {
+          "id": "mar-12",
+          "thai": "สวย",
+          "roman": "sǔai",
+          "german": "schön",
+          "particle": "none"
+        },
+        {
+          "id": "mar-13",
+          "thai": "ทำมือ",
+          "roman": "tham mʉʉ",
+          "german": "handgemacht",
+          "particle": "none"
+        },
+        {
+          "id": "mar-14",
+          "thai": "สด",
+          "roman": "sòt",
+          "german": "frisch",
+          "particle": "none"
+        },
+        {
+          "id": "mar-15",
+          "thai": "กิโล",
+          "roman": "gì-loo",
+          "german": "Kilo",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "kleidung",
+      "title": "Anziehen",
+      "blurb": "Im Laden eine Größe laut sagen, die andere Person holt sie.",
+      "items": [
+        {
+          "id": "clo-01",
+          "thai": "เสื้อ",
+          "roman": "sʉ̂a",
+          "german": "Hemd, Oberteil",
+          "particle": "none"
+        },
+        {
+          "id": "clo-02",
+          "thai": "กางเกง",
+          "roman": "gaang-geeng",
+          "german": "Hose",
+          "particle": "none"
+        },
+        {
+          "id": "clo-03",
+          "thai": "รองเท้า",
+          "roman": "rɔɔng-tháao",
+          "german": "Schuhe",
+          "particle": "none"
+        },
+        {
+          "id": "clo-04",
+          "thai": "หมวก",
+          "roman": "mùak",
+          "german": "Mütze",
+          "particle": "none"
+        },
+        {
+          "id": "clo-05",
+          "thai": "กระเป๋า",
+          "roman": "grà-bpǎo",
+          "german": "Tasche",
+          "particle": "none"
+        },
+        {
+          "id": "clo-06",
+          "thai": "แว่นตา",
+          "roman": "wɛ̂ɛn-dtaa",
+          "german": "Brille",
+          "particle": "none"
+        },
+        {
+          "id": "clo-07",
+          "thai": "ขนาด",
+          "roman": "khà-nàat",
+          "german": "Größe",
+          "particle": "none"
+        },
+        {
+          "id": "clo-08",
+          "thai": "เล็ก",
+          "roman": "lék",
+          "german": "klein",
+          "particle": "none"
+        },
+        {
+          "id": "clo-09",
+          "thai": "ใหญ่",
+          "roman": "yài",
+          "german": "groß",
+          "particle": "none"
+        },
+        {
+          "id": "clo-10",
+          "thai": "พอดี",
+          "roman": "phɔɔ-dii",
+          "german": "passt genau",
+          "particle": "none"
+        },
+        {
+          "id": "clo-11",
+          "thai": "ลอง",
+          "roman": "lɔɔng",
+          "german": "ausprobieren",
+          "particle": "none"
+        },
+        {
+          "id": "clo-12",
+          "thai": "ชุด",
+          "roman": "chút",
+          "german": "Outfit, Set",
+          "particle": "none"
+        },
+        {
+          "id": "clo-13",
+          "thai": "ชุดว่ายน้ำ",
+          "roman": "chút wâai-náam",
+          "german": "Badeanzug, Badehose",
+          "particle": "none"
+        },
+        {
+          "id": "clo-14",
+          "thai": "ผ้า",
+          "roman": "phàa",
+          "german": "Stoff, Tuch",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "farben",
+      "title": "Farben",
+      "blurb": "Zeigt auf etwas im Raum und sagt nur die Farbe. Der andere rät den Gegenstand.",
+      "items": [
+        {
+          "id": "col-01",
+          "thai": "สี",
+          "roman": "sǐi",
+          "german": "Farbe",
+          "particle": "none"
+        },
+        {
+          "id": "col-02",
+          "thai": "แดง",
+          "roman": "dɛɛng",
+          "german": "rot",
+          "particle": "none"
+        },
+        {
+          "id": "col-03",
+          "thai": "เขียว",
+          "roman": "khìao",
+          "german": "grün",
+          "particle": "none"
+        },
+        {
+          "id": "col-04",
+          "thai": "เหลือง",
+          "roman": "lʉ̌ang",
+          "german": "gelb",
+          "particle": "none"
+        },
+        {
+          "id": "col-05",
+          "thai": "น้ำเงิน",
+          "roman": "náam-ngən",
+          "german": "blau",
+          "particle": "none"
+        },
+        {
+          "id": "col-06",
+          "thai": "ดำ",
+          "roman": "dam",
+          "german": "schwarz",
+          "particle": "none"
+        },
+        {
+          "id": "col-07",
+          "thai": "ขาว",
+          "roman": "khǎao",
+          "german": "weiß",
+          "particle": "none"
+        },
+        {
+          "id": "col-08",
+          "thai": "ส้ม",
+          "roman": "sôm",
+          "german": "orange",
+          "particle": "none"
+        },
+        {
+          "id": "col-09",
+          "thai": "ชมพู",
+          "roman": "chom-phuu",
+          "german": "rosa",
+          "particle": "none"
+        },
+        {
+          "id": "col-10",
+          "thai": "ม่วง",
+          "roman": "mûang",
+          "german": "lila",
+          "particle": "none"
+        },
+        {
+          "id": "col-11",
+          "thai": "น้ำตาล",
+          "roman": "náam-dtaan",
+          "german": "braun",
+          "particle": "none"
+        },
+        {
+          "id": "col-12",
+          "thai": "สีฟ้า",
+          "roman": "sǐi-fáa",
+          "german": "hellblau",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "adjektive",
+      "title": "Wie etwas ist",
+      "blurb": "Gegensatzpaare. Einer sagt das Wort, der andere das Gegenteil.",
+      "items": [
+        {
+          "id": "adj-01",
+          "thai": "ดี",
+          "roman": "dii",
+          "german": "gut",
+          "particle": "none"
+        },
+        {
+          "id": "adj-02",
+          "thai": "ไม่ดี",
+          "roman": "mâi-dii",
+          "german": "nicht gut",
+          "particle": "none"
+        },
+        {
+          "id": "adj-03",
+          "thai": "ใหม่",
+          "roman": "mài",
+          "german": "neu",
+          "particle": "none"
+        },
+        {
+          "id": "adj-04",
+          "thai": "เก่า",
+          "roman": "gào",
+          "german": "alt, gebraucht",
+          "particle": "none"
+        },
+        {
+          "id": "adj-05",
+          "thai": "ใหญ่",
+          "roman": "yài",
+          "german": "groß",
+          "particle": "none"
+        },
+        {
+          "id": "adj-06",
+          "thai": "เล็ก",
+          "roman": "lék",
+          "german": "klein",
+          "particle": "none"
+        },
+        {
+          "id": "adj-07",
+          "thai": "เร็ว",
+          "roman": "reo",
+          "german": "schnell",
+          "particle": "none"
+        },
+        {
+          "id": "adj-08",
+          "thai": "ช้า",
+          "roman": "cháa",
+          "german": "langsam",
+          "particle": "none"
+        },
+        {
+          "id": "adj-09",
+          "thai": "ง่าย",
+          "roman": "ngâai",
+          "german": "einfach",
+          "particle": "none"
+        },
+        {
+          "id": "adj-10",
+          "thai": "ยาก",
+          "roman": "yâak",
+          "german": "schwierig",
+          "particle": "none"
+        },
+        {
+          "id": "adj-11",
+          "thai": "ไกล",
+          "roman": "glai",
+          "german": "weit",
+          "particle": "none"
+        },
+        {
+          "id": "adj-12",
+          "thai": "ใกล้",
+          "roman": "glài",
+          "german": "nah",
+          "particle": "none"
+        },
+        {
+          "id": "adj-13",
+          "thai": "มาก",
+          "roman": "mâak",
+          "german": "viel, sehr",
+          "particle": "none"
+        },
+        {
+          "id": "adj-14",
+          "thai": "นิดหน่อย",
+          "roman": "nít-nɔ̀i",
+          "german": "ein bisschen",
+          "particle": "none"
+        },
+        {
+          "id": "adj-15",
+          "thai": "ว่าง",
+          "roman": "wâang",
+          "german": "frei, Zeit haben",
+          "particle": "none"
+        },
+        {
+          "id": "adj-16",
+          "thai": "ยุ่ง",
+          "roman": "yûng",
+          "german": "beschäftigt",
+          "particle": "none"
+        },
+        {
+          "id": "adj-17",
+          "thai": "สนุก",
+          "roman": "sà-nùk",
+          "german": "lustig, macht Spaß",
+          "particle": "none"
+        },
+        {
+          "id": "adj-18",
+          "thai": "สำคัญ",
+          "roman": "sǎm-khan",
+          "german": "wichtig",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "verben",
+      "title": "Tun",
+      "blurb": "Kurze Verben tragen einen Dialog. Sagt sie, ohne aufs Handy zu starren.",
+      "items": [
+        {
+          "id": "vrb-01",
+          "thai": "ไป",
+          "roman": "bpai",
+          "german": "gehen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-02",
+          "thai": "มา",
+          "roman": "maa",
+          "german": "kommen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-03",
+          "thai": "กิน",
+          "roman": "gin",
+          "german": "essen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-04",
+          "thai": "ดื่ม",
+          "roman": "dʉ̀ʉm",
+          "german": "trinken",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-05",
+          "thai": "ทำ",
+          "roman": "tham",
+          "german": "machen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-06",
+          "thai": "ซื้อ",
+          "roman": "sʉ́ʉ",
+          "german": "kaufen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-07",
+          "thai": "ขาย",
+          "roman": "khǎai",
+          "german": "verkaufen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-08",
+          "thai": "ให้",
+          "roman": "hài",
+          "german": "geben",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-09",
+          "thai": "เอา",
+          "roman": "ao",
+          "german": "nehmen, haben wollen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-10",
+          "thai": "อยาก",
+          "roman": "yâak",
+          "german": "möchten",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-11",
+          "thai": "ใช้",
+          "roman": "chái",
+          "german": "benutzen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-12",
+          "thai": "ดู",
+          "roman": "duu",
+          "german": "schauen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-13",
+          "thai": "ฟัง",
+          "roman": "fang",
+          "german": "hören",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-14",
+          "thai": "พูด",
+          "roman": "phûut",
+          "german": "sprechen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-15",
+          "thai": "อ่าน",
+          "roman": "àan",
+          "german": "lesen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-16",
+          "thai": "เขียน",
+          "roman": "khǐan",
+          "german": "schreiben",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-17",
+          "thai": "รอ",
+          "roman": "rɔɔ",
+          "german": "warten",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-18",
+          "thai": "หา",
+          "roman": "hǎa",
+          "german": "suchen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-19",
+          "thai": "เจอ",
+          "roman": "jəə",
+          "german": "treffen, finden",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-20",
+          "thai": "รู้",
+          "roman": "rúu",
+          "german": "wissen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-21",
+          "thai": "เข้าใจ",
+          "roman": "khâo-jai",
+          "german": "verstehen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-22",
+          "thai": "นั่ง",
+          "roman": "nâng",
+          "german": "sitzen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-23",
+          "thai": "ยืน",
+          "roman": "yʉʉn",
+          "german": "stehen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-24",
+          "thai": "เดิน",
+          "roman": "dəən",
+          "german": "zu Fuß gehen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-25",
+          "thai": "วิ่ง",
+          "roman": "wîng",
+          "german": "rennen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-26",
+          "thai": "เปิด",
+          "roman": "bpə̀ət",
+          "german": "öffnen, anmachen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-27",
+          "thai": "ปิด",
+          "roman": "bpìt",
+          "german": "schließen, ausmachen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-28",
+          "thai": "ช่วย",
+          "roman": "chûai",
+          "german": "helfen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-29",
+          "thai": "รัก",
+          "roman": "rák",
+          "german": "lieben",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-30",
+          "thai": "ชอบ",
+          "roman": "chɔ̂ɔp",
+          "german": "mögen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-31",
+          "thai": "โทร",
+          "roman": "thoo",
+          "german": "anrufen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-32",
+          "thai": "ส่ง",
+          "roman": "sòng",
+          "german": "schicken, reichen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-33",
+          "thai": "เห็น",
+          "roman": "hěn",
+          "german": "sehen",
+          "particle": "none"
+        },
+        {
+          "id": "vrb-34",
+          "thai": "บอก",
+          "roman": "bɔ̀ɔk",
+          "german": "sagen",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "orte",
+      "title": "Orte",
+      "blurb": "Einer beschreibt den Ort, ohne den Namen zu sagen. Der andere spricht das Thai.",
+      "items": [
+        {
+          "id": "plc-01",
+          "thai": "บ้าน",
+          "roman": "bâan",
+          "german": "Haus, Zuhause",
+          "particle": "none"
+        },
+        {
+          "id": "plc-02",
+          "thai": "ห้อง",
+          "roman": "hɔ̂ɔng",
+          "german": "Zimmer",
+          "particle": "none"
+        },
+        {
+          "id": "plc-03",
+          "thai": "ห้องน้ำ",
+          "roman": "hɔ̂ɔng-náam",
+          "german": "Toilette",
+          "particle": "none"
+        },
+        {
+          "id": "plc-04",
+          "thai": "ครัว",
+          "roman": "khrua",
+          "german": "Küche",
+          "particle": "none"
+        },
+        {
+          "id": "plc-05",
+          "thai": "ตลาด",
+          "roman": "dtà-làat",
+          "german": "Markt",
+          "particle": "none"
+        },
+        {
+          "id": "plc-06",
+          "thai": "ร้าน",
+          "roman": "ráan",
+          "german": "Laden, Stand",
+          "particle": "none"
+        },
+        {
+          "id": "plc-07",
+          "thai": "ร้านอาหาร",
+          "roman": "ráan-aa-hǎan",
+          "german": "Restaurant",
+          "particle": "none"
+        },
+        {
+          "id": "plc-08",
+          "thai": "โรงแรม",
+          "roman": "roong-rɛɛm",
+          "german": "Hotel",
+          "particle": "none"
+        },
+        {
+          "id": "plc-09",
+          "thai": "โรงพยาบาล",
+          "roman": "roong-phá-yaa-baan",
+          "german": "Krankenhaus",
+          "particle": "none"
+        },
+        {
+          "id": "plc-10",
+          "thai": "สนามบิน",
+          "roman": "sà-naam-bin",
+          "german": "Flughafen",
+          "particle": "none"
+        },
+        {
+          "id": "plc-11",
+          "thai": "สถานี",
+          "roman": "sà-thǎa-nii",
+          "german": "Station",
+          "particle": "none"
+        },
+        {
+          "id": "plc-12",
+          "thai": "วัด",
+          "roman": "wát",
+          "german": "Tempel",
+          "particle": "none"
+        },
+        {
+          "id": "plc-13",
+          "thai": "โรงเรียน",
+          "roman": "roong-rian",
+          "german": "Schule",
+          "particle": "none"
+        },
+        {
+          "id": "plc-14",
+          "thai": "ทะเล",
+          "roman": "thá-lee",
+          "german": "Meer",
+          "particle": "none"
+        },
+        {
+          "id": "plc-15",
+          "thai": "หาด",
+          "roman": "hàat",
+          "german": "Strand",
+          "particle": "none"
+        },
+        {
+          "id": "plc-16",
+          "thai": "ภูเขา",
+          "roman": "phuu-khǎo",
+          "german": "Berg",
+          "particle": "none"
+        },
+        {
+          "id": "plc-17",
+          "thai": "เมือง",
+          "roman": "mʉang",
+          "german": "Stadt",
+          "particle": "none"
+        },
+        {
+          "id": "plc-18",
+          "thai": "ถนน",
+          "roman": "thà-nǒn",
+          "german": "Straße",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "weg",
+      "title": "Nach dem Weg",
+      "blurb": "Stellt euch im Raum auf. Eine Person lotst, die andere geht wirklich ein paar Schritte.",
+      "items": [
+        {
+          "id": "way-01",
+          "thai": "ตรงไป",
+          "roman": "dtrong bpai",
+          "german": "geradeaus",
+          "particle": "none"
+        },
+        {
+          "id": "way-02",
+          "thai": "เลี้ยวซ้าย",
+          "roman": "líiao sâai",
+          "german": "links abbiegen",
+          "particle": "none"
+        },
+        {
+          "id": "way-03",
+          "thai": "เลี้ยวขวา",
+          "roman": "líiao khwǎa",
+          "german": "rechts abbiegen",
+          "particle": "none"
+        },
+        {
+          "id": "way-04",
+          "thai": "ซ้าย",
+          "roman": "sâai",
+          "german": "links",
+          "particle": "none"
+        },
+        {
+          "id": "way-05",
+          "thai": "ขวา",
+          "roman": "khwǎa",
+          "german": "rechts",
+          "particle": "none"
+        },
+        {
+          "id": "way-06",
+          "thai": "ตรงนี้",
+          "roman": "dtrong-níi",
+          "german": "hier",
+          "particle": "none"
+        },
+        {
+          "id": "way-07",
+          "thai": "ตรงนั้น",
+          "roman": "dtrong-nán",
+          "german": "dort",
+          "particle": "none"
+        },
+        {
+          "id": "way-08",
+          "thai": "ใกล้",
+          "roman": "glài",
+          "german": "nah",
+          "particle": "none"
+        },
+        {
+          "id": "way-09",
+          "thai": "ไกล",
+          "roman": "glai",
+          "german": "weit",
+          "particle": "none"
+        },
+        {
+          "id": "way-10",
+          "thai": "ข้างหน้า",
+          "roman": "khâang-nâa",
+          "german": "vorne",
+          "particle": "none"
+        },
+        {
+          "id": "way-11",
+          "thai": "ข้างหลัง",
+          "roman": "khâang-lǎng",
+          "german": "hinten",
+          "particle": "none"
+        },
+        {
+          "id": "way-12",
+          "thai": "ตรงข้าม",
+          "roman": "dtrong-khâam",
+          "german": "gegenüber",
+          "particle": "none"
+        },
+        {
+          "id": "way-13",
+          "thai": "มุม",
+          "roman": "mum",
+          "german": "Ecke",
+          "particle": "none"
+        },
+        {
+          "id": "way-14",
+          "thai": "ทางออก",
+          "roman": "thaang-ɔ̀ɔk",
+          "german": "Ausgang",
+          "particle": "none"
+        },
+        {
+          "id": "way-15",
+          "thai": "อยู่ที่ไหน",
+          "roman": "yùu thîi-nǎi",
+          "german": "wo ist das?",
+          "particle": "none"
+        },
+        {
+          "id": "way-16",
+          "thai": "ไกลไหม",
+          "roman": "glai mǎi",
+          "german": "ist es weit?",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "transport",
+      "title": "Unterwegs",
+      "blurb": "Im Taxi sagt eine Person das Ziel, die andere den Preis.",
+      "items": [
+        {
+          "id": "trn-01",
+          "thai": "รถ",
+          "roman": "rót",
+          "german": "Auto, Fahrzeug",
+          "particle": "none"
+        },
+        {
+          "id": "trn-02",
+          "thai": "แท็กซี่",
+          "roman": "thɛ́k-sîi",
+          "german": "Taxi",
+          "particle": "none"
+        },
+        {
+          "id": "trn-03",
+          "thai": "รถเมล์",
+          "roman": "rót mee",
+          "german": "Bus",
+          "particle": "none"
+        },
+        {
+          "id": "trn-04",
+          "thai": "รถไฟฟ้า",
+          "roman": "rót-fai-fáa",
+          "german": "Hochbahn, BTS oder MRT",
+          "particle": "none"
+        },
+        {
+          "id": "trn-05",
+          "thai": "รถตู้",
+          "roman": "rót-dtûu",
+          "german": "Minibus",
+          "particle": "none"
+        },
+        {
+          "id": "trn-06",
+          "thai": "เรือ",
+          "roman": "rʉa",
+          "german": "Boot",
+          "particle": "none"
+        },
+        {
+          "id": "trn-07",
+          "thai": "สนามบิน",
+          "roman": "sà-naam-bin",
+          "german": "Flughafen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-08",
+          "thai": "สถานี",
+          "roman": "sà-thǎa-nii",
+          "german": "Station",
+          "particle": "none"
+        },
+        {
+          "id": "trn-09",
+          "thai": "ตั๋ว",
+          "roman": "dtǔa",
+          "german": "Ticket",
+          "particle": "none"
+        },
+        {
+          "id": "trn-10",
+          "thai": "ขึ้น",
+          "roman": "khʉ̀n",
+          "german": "einsteigen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-11",
+          "thai": "ลง",
+          "roman": "long",
+          "german": "aussteigen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-12",
+          "thai": "จอด",
+          "roman": "jɔ̀ɔt",
+          "german": "anhalten",
+          "particle": "none"
+        },
+        {
+          "id": "trn-13",
+          "thai": "เลี้ยว",
+          "roman": "líiao",
+          "german": "abbiegen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-14",
+          "thai": "มิเตอร์",
+          "roman": "mii-dtəə",
+          "german": "Taxameter",
+          "particle": "none"
+        },
+        {
+          "id": "trn-15",
+          "thai": "เปิดมิเตอร์",
+          "roman": "bpə̀ət mii-dtəə",
+          "german": "den Taxameter anmachen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-16",
+          "thai": "ถึง",
+          "roman": "thʉ̌ng",
+          "german": "ankommen",
+          "particle": "none"
+        },
+        {
+          "id": "trn-17",
+          "thai": "ทางออก",
+          "roman": "thaang-ɔ̀ɔk",
+          "german": "Ausgang",
+          "particle": "none"
+        },
+        {
+          "id": "trn-18",
+          "thai": "ช้าหน่อย",
+          "roman": "cháa nɔ̀i",
+          "german": "etwas langsamer",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "hotel",
+      "title": "Hotel",
+      "blurb": "Eine Person steht an der Rezeption, die andere ist zu Gast.",
+      "items": [
+        {
+          "id": "hot-01",
+          "thai": "ห้องว่าง",
+          "roman": "hɔ̂ɔng wâang",
+          "german": "freies Zimmer",
+          "particle": "none"
+        },
+        {
+          "id": "hot-02",
+          "thai": "คืนกี่คืน",
+          "roman": "khʉʉn gìi khʉʉn",
+          "german": "wie viele Nächte",
+          "particle": "none"
+        },
+        {
+          "id": "hot-03",
+          "thai": "เตียง",
+          "roman": "dtîang",
+          "german": "Bett",
+          "particle": "none"
+        },
+        {
+          "id": "hot-04",
+          "thai": "เตียงใหญ่",
+          "roman": "dtîang yài",
+          "german": "Doppelbett",
+          "particle": "none"
+        },
+        {
+          "id": "hot-05",
+          "thai": "กุญแจ",
+          "roman": "gun-jɛɛ",
+          "german": "Schlüssel",
+          "particle": "none"
+        },
+        {
+          "id": "hot-06",
+          "thai": "เช็คอิน",
+          "roman": "chék-in",
+          "german": "einchecken",
+          "particle": "none"
+        },
+        {
+          "id": "hot-07",
+          "thai": "เช็คเอาท์",
+          "roman": "chék-ao",
+          "german": "auschecken",
+          "particle": "none"
+        },
+        {
+          "id": "hot-08",
+          "thai": "อาหารเช้า",
+          "roman": "aa-hǎan châao",
+          "german": "Frühstück",
+          "particle": "none"
+        },
+        {
+          "id": "hot-09",
+          "thai": "เครื่องปรับอากาศ",
+          "roman": "khrʉ̂ang bpràp aa-gàat",
+          "german": "Klimaanlage",
+          "particle": "none"
+        },
+        {
+          "id": "hot-10",
+          "thai": "ผ้าเช็ดตัว",
+          "roman": "phàa-chét-dtua",
+          "german": "Handtuch",
+          "particle": "none"
+        },
+        {
+          "id": "hot-11",
+          "thai": "ชั้น",
+          "roman": "chán",
+          "german": "Etage",
+          "particle": "none"
+        },
+        {
+          "id": "hot-12",
+          "thai": "ลิฟต์",
+          "roman": "líf",
+          "german": "Aufzug",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "koerper",
+      "title": "Körper",
+      "blurb": "Tippt die Stelle und sagt das Wort. Der andere wiederholt es, ohne hinzusehen.",
+      "items": [
+        {
+          "id": "bod-01",
+          "thai": "หัว",
+          "roman": "hǔa",
+          "german": "Kopf",
+          "particle": "none"
+        },
+        {
+          "id": "bod-02",
+          "thai": "ผม",
+          "roman": "phǒm",
+          "german": "Haar, auch ich männlich",
+          "particle": "none"
+        },
+        {
+          "id": "bod-03",
+          "thai": "ตา",
+          "roman": "dtaa",
+          "german": "Auge",
+          "particle": "none"
+        },
+        {
+          "id": "bod-04",
+          "thai": "หู",
+          "roman": "hǔu",
+          "german": "Ohr",
+          "particle": "none"
+        },
+        {
+          "id": "bod-05",
+          "thai": "จมูก",
+          "roman": "jà-mùuk",
+          "german": "Nase",
+          "particle": "none"
+        },
+        {
+          "id": "bod-06",
+          "thai": "ปาก",
+          "roman": "bpàak",
+          "german": "Mund",
+          "particle": "none"
+        },
+        {
+          "id": "bod-07",
+          "thai": "ฟัน",
+          "roman": "fan",
+          "german": "Zahn",
+          "particle": "none"
+        },
+        {
+          "id": "bod-08",
+          "thai": "มือ",
+          "roman": "mʉʉ",
+          "german": "Hand",
+          "particle": "none"
+        },
+        {
+          "id": "bod-09",
+          "thai": "แขน",
+          "roman": "khɛ̌ɛn",
+          "german": "Arm",
+          "particle": "none"
+        },
+        {
+          "id": "bod-10",
+          "thai": "ขา",
+          "roman": "khǎa",
+          "german": "Bein",
+          "particle": "none"
+        },
+        {
+          "id": "bod-11",
+          "thai": "เท้า",
+          "roman": "tháao",
+          "german": "Fuß",
+          "particle": "none"
+        },
+        {
+          "id": "bod-12",
+          "thai": "ท้อง",
+          "roman": "thɔ́ɔng",
+          "german": "Bauch",
+          "particle": "none"
+        },
+        {
+          "id": "bod-13",
+          "thai": "หลัง",
+          "roman": "lǎng",
+          "german": "Rücken",
+          "particle": "none"
+        },
+        {
+          "id": "bod-14",
+          "thai": "หัวใจ",
+          "roman": "hǔa-jai",
+          "german": "Herz",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "gesundheit",
+      "title": "Apotheke",
+      "blurb": "Keine Diagnose. Nur die Sätze, mit denen man etwas erklärt und nachfragt.",
+      "items": [
+        {
+          "id": "med-01",
+          "thai": "ปวด",
+          "roman": "bpùat",
+          "german": "schmerzen",
+          "particle": "none"
+        },
+        {
+          "id": "med-02",
+          "thai": "ปวดหัว",
+          "roman": "bpùat hǔa",
+          "german": "Kopfschmerzen",
+          "particle": "none"
+        },
+        {
+          "id": "med-03",
+          "thai": "ท้องเสีย",
+          "roman": "thɔ́ɔng-sǐa",
+          "german": "Durchfall",
+          "particle": "none"
+        },
+        {
+          "id": "med-04",
+          "thai": "เป็นไข้",
+          "roman": "bpen-khài",
+          "german": "Fieber haben",
+          "particle": "none"
+        },
+        {
+          "id": "med-05",
+          "thai": "ไอ",
+          "roman": "ai",
+          "german": "husten",
+          "particle": "none"
+        },
+        {
+          "id": "med-06",
+          "thai": "ยา",
+          "roman": "yaa",
+          "german": "Medizin",
+          "particle": "none"
+        },
+        {
+          "id": "med-07",
+          "thai": "แพ้",
+          "roman": "phɛ́ɛ",
+          "german": "allergisch sein",
+          "particle": "none"
+        },
+        {
+          "id": "med-08",
+          "thai": "หมอ",
+          "roman": "mɔ̌ɔ",
+          "german": "Arzt, Ärztin",
+          "particle": "none"
+        },
+        {
+          "id": "med-09",
+          "thai": "เม็ด",
+          "roman": "mét",
+          "german": "Tablette",
+          "particle": "none"
+        },
+        {
+          "id": "med-10",
+          "thai": "ครั้ง",
+          "roman": "khráng",
+          "german": "Mal",
+          "particle": "none"
+        },
+        {
+          "id": "med-11",
+          "thai": "วันละ",
+          "roman": "wan lá",
+          "german": "pro Tag",
+          "particle": "none"
+        },
+        {
+          "id": "med-12",
+          "thai": "หลังอาหาร",
+          "roman": "lǎng aa-hǎan",
+          "german": "nach dem Essen",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "notfall",
+      "title": "Wenn es eilig ist",
+      "blurb": "Diese Sätze laut können. Danach wieder zurück zum Spiel.",
+      "items": [
+        {
+          "id": "emg-01",
+          "thai": "ช่วยด้วย",
+          "roman": "chûai dûai",
+          "german": "Hilfe!",
+          "particle": "none"
+        },
+        {
+          "id": "emg-02",
+          "thai": "ตำรวจ",
+          "roman": "dtam-rûat",
+          "german": "Polizei",
+          "particle": "none"
+        },
+        {
+          "id": "emg-03",
+          "thai": "ไฟไหม้",
+          "roman": "fai-mâi",
+          "german": "Feuer, es brennt",
+          "particle": "none"
+        },
+        {
+          "id": "emg-04",
+          "thai": "อันตราย",
+          "roman": "an-dtà-raai",
+          "german": "Gefahr",
+          "particle": "none"
+        },
+        {
+          "id": "emg-05",
+          "thai": "ระวัง",
+          "roman": "rá-wang",
+          "german": "Vorsicht",
+          "particle": "none"
+        },
+        {
+          "id": "emg-06",
+          "thai": "ห้าม",
+          "roman": "hâam",
+          "german": "verboten, tu das nicht",
+          "particle": "none"
+        },
+        {
+          "id": "emg-07",
+          "thai": "ทางออก",
+          "roman": "thaang-ɔ̀ɔk",
+          "german": "Ausgang",
+          "particle": "none"
+        },
+        {
+          "id": "emg-08",
+          "thai": "หายไป",
+          "roman": "hǎai bpai",
+          "german": "verschwunden",
+          "particle": "none"
+        },
+        {
+          "id": "emg-09",
+          "thai": "เจ็บ",
+          "roman": "jèp",
+          "german": "tut weh, verletzt",
+          "particle": "none"
+        },
+        {
+          "id": "emg-10",
+          "thai": "เรียกรถพยาบาล",
+          "roman": "rîak rót-phá-yaa-baan",
+          "german": "einen Krankenwagen rufen",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "wetter",
+      "title": "Wetter",
+      "blurb": "Schaut aus dem Fenster und sagt einen Satz, bevor ihr das Handy dreht.",
+      "items": [
+        {
+          "id": "wea-01",
+          "thai": "อากาศ",
+          "roman": "aa-gàat",
+          "german": "Wetter, Luft",
+          "particle": "none"
+        },
+        {
+          "id": "wea-02",
+          "thai": "ร้อน",
+          "roman": "rɔ́ɔn",
+          "german": "heiß",
+          "particle": "none"
+        },
+        {
+          "id": "wea-03",
+          "thai": "หนาว",
+          "roman": "nǎao",
+          "german": "kalt",
+          "particle": "none"
+        },
+        {
+          "id": "wea-04",
+          "thai": "เย็น",
+          "roman": "yen",
+          "german": "kühl",
+          "particle": "none"
+        },
+        {
+          "id": "wea-05",
+          "thai": "ฝน",
+          "roman": "fǒn",
+          "german": "Regen",
+          "particle": "none"
+        },
+        {
+          "id": "wea-06",
+          "thai": "ฝนตก",
+          "roman": "fǒn dtòk",
+          "german": "es regnet",
+          "particle": "none"
+        },
+        {
+          "id": "wea-07",
+          "thai": "แดด",
+          "roman": "dɛ̀ɛt",
+          "german": "Sonne, Sonnenschein",
+          "particle": "none"
+        },
+        {
+          "id": "wea-08",
+          "thai": "ลม",
+          "roman": "lom",
+          "german": "Wind",
+          "particle": "none"
+        },
+        {
+          "id": "wea-09",
+          "thai": "เมฆ",
+          "roman": "mêek",
+          "german": "Wolke",
+          "particle": "none"
+        },
+        {
+          "id": "wea-10",
+          "thai": "อากาศดี",
+          "roman": "aa-gàat dii",
+          "german": "schönes Wetter",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "gefuehle",
+      "title": "Wie es euch geht",
+      "blurb": "Einmal am Tag eine ehrliche Runde. Erst Thai, dann die Bedeutung.",
+      "items": [
+        {
+          "id": "emo-01",
+          "thai": "ดีใจ",
+          "roman": "dii-jai",
+          "german": "froh",
+          "particle": "none"
+        },
+        {
+          "id": "emo-02",
+          "thai": "เสียใจ",
+          "roman": "sǐa-jai",
+          "german": "traurig",
+          "particle": "none"
+        },
+        {
+          "id": "emo-03",
+          "thai": "โกรธ",
+          "roman": "gròot",
+          "german": "böse",
+          "particle": "none"
+        },
+        {
+          "id": "emo-04",
+          "thai": "กลัว",
+          "roman": "glua",
+          "german": "Angst haben",
+          "particle": "none"
+        },
+        {
+          "id": "emo-05",
+          "thai": "รัก",
+          "roman": "rák",
+          "german": "lieben",
+          "particle": "none"
+        },
+        {
+          "id": "emo-06",
+          "thai": "คิดถึง",
+          "roman": "khít-thʉ̌ng",
+          "german": "vermissen",
+          "particle": "none"
+        },
+        {
+          "id": "emo-07",
+          "thai": "สนุก",
+          "roman": "sà-nùk",
+          "german": "Spaß haben",
+          "particle": "none"
+        },
+        {
+          "id": "emo-08",
+          "thai": "เบื่อ",
+          "roman": "bʉ̀a",
+          "german": "gelangweilt",
+          "particle": "none"
+        },
+        {
+          "id": "emo-09",
+          "thai": "เหนื่อย",
+          "roman": "nʉ̀ai",
+          "german": "müde",
+          "particle": "none"
+        },
+        {
+          "id": "emo-10",
+          "thai": "ง่วง",
+          "roman": "ngûang",
+          "german": "schläfrig",
+          "particle": "none"
+        },
+        {
+          "id": "emo-11",
+          "thai": "ตกใจ",
+          "roman": "dtòk-jai",
+          "german": "erschrocken",
+          "particle": "none"
+        },
+        {
+          "id": "emo-12",
+          "thai": "ภูมิใจ",
+          "roman": "phuu-mí-jai",
+          "german": "stolz",
+          "particle": "none"
+        },
+        {
+          "id": "emo-13",
+          "thai": "หิว",
+          "roman": "hǐu",
+          "german": "hungrig",
+          "particle": "none"
+        },
+        {
+          "id": "emo-14",
+          "thai": "อิ่ม",
+          "roman": "ìm",
+          "german": "satt",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "alltag",
+      "title": "Alltag",
+      "blurb": "Kleine Sätze für zu Hause. Handy weglegen, sobald der Satz draußen ist.",
+      "items": [
+        {
+          "id": "day-01",
+          "thai": "เงิน",
+          "roman": "ngən",
+          "german": "Geld",
+          "particle": "none"
+        },
+        {
+          "id": "day-02",
+          "thai": "โทรศัพท์",
+          "roman": "thoo-rá-sàp",
+          "german": "Telefon",
+          "particle": "none"
+        },
+        {
+          "id": "day-03",
+          "thai": "มือถือ",
+          "roman": "mʉʉ-thʉ̌ʉ",
+          "german": "Handy",
+          "particle": "none"
+        },
+        {
+          "id": "day-04",
+          "thai": "ของ",
+          "roman": "khɔ̌ɔng",
+          "german": "Sache",
+          "particle": "none"
+        },
+        {
+          "id": "day-05",
+          "thai": "น้ำ",
+          "roman": "náam",
+          "german": "Wasser",
+          "particle": "none"
+        },
+        {
+          "id": "day-06",
+          "thai": "อาหาร",
+          "roman": "aa-hǎan",
+          "german": "Essen",
+          "particle": "none"
+        },
+        {
+          "id": "day-07",
+          "thai": "พร้อม",
+          "roman": "phrɔ́ɔm",
+          "german": "bereit",
+          "particle": "none"
+        },
+        {
+          "id": "day-08",
+          "thai": "เดี๋ยวนี้",
+          "roman": "dìao-níi",
+          "german": "jetzt sofort",
+          "particle": "none"
+        },
+        {
+          "id": "day-09",
+          "thai": "ทีหลัง",
+          "roman": "thii-lǎng",
+          "german": "später",
+          "particle": "none"
+        },
+        {
+          "id": "day-10",
+          "thai": "ด้วยกัน",
+          "roman": "dûai-gan",
+          "german": "zusammen",
+          "particle": "none"
+        },
+        {
+          "id": "day-11",
+          "thai": "คนเดียว",
+          "roman": "khon-diao",
+          "german": "allein",
+          "particle": "none"
+        },
+        {
+          "id": "day-12",
+          "thai": "อีกครั้ง",
+          "roman": "ìik khráng",
+          "german": "noch einmal",
+          "particle": "none"
+        },
+        {
+          "id": "day-13",
+          "thai": "ช้าๆ",
+          "roman": "cháa cháa",
+          "german": "ganz langsam",
+          "particle": "none"
+        },
+        {
+          "id": "day-14",
+          "thai": "เก่งมาก",
+          "roman": "gèng mâak",
+          "german": "sehr gut gemacht",
+          "particle": "none"
+        },
+        {
+          "id": "day-15",
+          "thai": "อีกนิด",
+          "roman": "ìik nít",
+          "german": "noch ein bisschen",
+          "particle": "none"
+        },
+        {
+          "id": "day-16",
+          "thai": "พอ",
+          "roman": "phɔɔ",
+          "german": "genug",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "tiere",
+      "title": "Tiere",
+      "blurb": "Der steigende Ton in หมา mǎa ist derselbe wie in ไหม mǎi.",
+      "items": [
+        {
+          "id": "ani-01",
+          "thai": "หมา",
+          "roman": "mǎa",
+          "german": "Hund",
+          "particle": "none"
+        },
+        {
+          "id": "ani-02",
+          "thai": "แมว",
+          "roman": "mɛɛo",
+          "german": "Katze",
+          "particle": "none"
+        },
+        {
+          "id": "ani-03",
+          "thai": "ช้าง",
+          "roman": "cháang",
+          "german": "Elefant",
+          "particle": "none"
+        },
+        {
+          "id": "ani-04",
+          "thai": "นก",
+          "roman": "nók",
+          "german": "Vogel",
+          "particle": "none"
+        },
+        {
+          "id": "ani-05",
+          "thai": "ปลา",
+          "roman": "bplaa",
+          "german": "Fisch",
+          "particle": "none"
+        },
+        {
+          "id": "ani-06",
+          "thai": "ม้า",
+          "roman": "máa",
+          "german": "Pferd",
+          "particle": "none"
+        },
+        {
+          "id": "ani-07",
+          "thai": "ยุง",
+          "roman": "yung",
+          "german": "Mücke",
+          "particle": "none"
+        },
+        {
+          "id": "ani-08",
+          "thai": "วัว",
+          "roman": "wua",
+          "german": "Rind, Kuh",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "tonreihe",
+      "title": "Fünf Töne nebeneinander",
+      "blurb": "Sagt die Reihe langsam. Der andere zeigt mit dem Finger: tief, fallend, hoch oder steigend.",
+      "items": [
+        {
+          "id": "ton-01",
+          "thai": "ไป",
+          "roman": "bpai",
+          "german": "gehen, Mittelton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-02",
+          "thai": "ใหม่",
+          "roman": "mài",
+          "german": "neu, tiefer Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-03",
+          "thai": "ไม่",
+          "roman": "mâi",
+          "german": "nicht, fallender Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-04",
+          "thai": "ไม้",
+          "roman": "mái",
+          "german": "Holz, hoher Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-05",
+          "thai": "ไหม",
+          "roman": "mǎi",
+          "german": "oder, steigender Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-06",
+          "thai": "มา",
+          "roman": "maa",
+          "german": "kommen, Mittelton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-07",
+          "thai": "ม้า",
+          "roman": "máa",
+          "german": "Pferd, hoher Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-08",
+          "thai": "หมา",
+          "roman": "mǎa",
+          "german": "Hund, steigender Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-09",
+          "thai": "ข้าว",
+          "roman": "khàao",
+          "german": "Reis, tiefer Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-10",
+          "thai": "เข้า",
+          "roman": "khâo",
+          "german": "hinein, fallender Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-11",
+          "thai": "ขาว",
+          "roman": "khǎao",
+          "german": "weiß, steigender Ton",
+          "particle": "none"
+        },
+        {
+          "id": "ton-12",
+          "thai": "ข่าว",
+          "roman": "khàao",
+          "german": "Nachricht, tiefer Ton",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "monate",
+      "title": "Monate",
+      "blurb": "Sagt das Datum eures nächsten gemeinsamen Tags.",
+      "items": [
+        {
+          "id": "mon-01",
+          "thai": "มกราคม",
+          "roman": "mók-gà-raa-khom",
+          "german": "Januar",
+          "particle": "none"
+        },
+        {
+          "id": "mon-02",
+          "thai": "กุมภาพันธ์",
+          "roman": "gum-phaa-phan",
+          "german": "Februar",
+          "particle": "none"
+        },
+        {
+          "id": "mon-03",
+          "thai": "มีนาคม",
+          "roman": "mii-naa-khom",
+          "german": "März",
+          "particle": "none"
+        },
+        {
+          "id": "mon-04",
+          "thai": "เมษายน",
+          "roman": "mee-sǎa-yon",
+          "german": "April",
+          "particle": "none"
+        },
+        {
+          "id": "mon-05",
+          "thai": "พฤษภาคม",
+          "roman": "phrʉ́t-sà-phaa-khom",
+          "german": "Mai",
+          "particle": "none"
+        },
+        {
+          "id": "mon-06",
+          "thai": "มิถุนายน",
+          "roman": "mí-thù-naa-yon",
+          "german": "Juni",
+          "particle": "none"
+        },
+        {
+          "id": "mon-07",
+          "thai": "กรกฎาคม",
+          "roman": "gà-rá-gà-daa-khom",
+          "german": "Juli",
+          "particle": "none"
+        },
+        {
+          "id": "mon-08",
+          "thai": "สิงหาคม",
+          "roman": "sǐng-hǎa-khom",
+          "german": "August",
+          "particle": "none"
+        },
+        {
+          "id": "mon-09",
+          "thai": "กันยายน",
+          "roman": "gan-yaa-yon",
+          "german": "September",
+          "particle": "none"
+        },
+        {
+          "id": "mon-10",
+          "thai": "ตุลาคม",
+          "roman": "dtù-laa-khom",
+          "german": "Oktober",
+          "particle": "none"
+        },
+        {
+          "id": "mon-11",
+          "thai": "พฤศจิกายน",
+          "roman": "phrʉ́t-sà-jì-gaa-yon",
+          "german": "November",
+          "particle": "none"
+        },
+        {
+          "id": "mon-12",
+          "thai": "ธันวาคม",
+          "roman": "than-waa-khom",
+          "german": "Dezember",
+          "particle": "none"
+        }
+      ]
+    },
+    {
+      "id": "laender",
+      "title": "Woher",
+      "blurb": "Zum Kennenlernen. Ersetzt den Ort, wenn ihr woanders seid.",
+      "items": [
+        {
+          "id": "geo-01",
+          "thai": "ไทย",
+          "roman": "thai",
+          "german": "Thailand, Thai",
+          "particle": "none"
+        },
+        {
+          "id": "geo-02",
+          "thai": "ภาษาไทย",
+          "roman": "phaa-sǎa thai",
+          "german": "Thai-Sprache",
+          "particle": "none"
+        },
+        {
+          "id": "geo-03",
+          "thai": "เยอรมนี",
+          "roman": "yəə-rá-má-nii",
+          "german": "Deutschland",
+          "particle": "none"
+        },
+        {
+          "id": "geo-04",
+          "thai": "ภาษาเยอรมัน",
+          "roman": "phaa-sǎa yəə-rá-man",
+          "german": "Deutsch",
+          "particle": "none"
+        },
+        {
+          "id": "geo-05",
+          "thai": "กรุงเทพ",
+          "roman": "grung-thêep",
+          "german": "Bangkok",
+          "particle": "none"
+        },
+        {
+          "id": "geo-06",
+          "thai": "เชียงใหม่",
+          "roman": "chiang-mài",
+          "german": "Chiang Mai",
+          "particle": "none"
+        },
+        {
+          "id": "geo-07",
+          "thai": "ภูเก็ต",
+          "roman": "phuu-gèt",
+          "german": "Phuket",
+          "particle": "none"
+        },
+        {
+          "id": "geo-08",
+          "thai": "มาจาก",
+          "roman": "maa jàak",
+          "german": "kommen aus",
+          "particle": "none"
+        },
+        {
+          "id": "geo-09",
+          "thai": "อยู่ที่",
+          "roman": "yùu thîi",
+          "german": "wohnen in, sich befinden",
+          "particle": "none"
+        },
+        {
+          "id": "geo-10",
+          "thai": "คนไทย",
+          "roman": "khon thai",
+          "german": "Thai",
+          "particle": "none"
+        },
+        {
+          "id": "geo-11",
+          "thai": "คนเยอรมัน",
+          "roman": "khon yəə-rá-man",
+          "german": "Deutsche, Deutscher",
+          "particle": "none"
+        },
+        {
+          "id": "geo-12",
+          "thai": "พาสปอร์ต",
+          "roman": "phâat-bpɔ̀ɔt",
+          "german": "Reisepass",
+          "particle": "none"
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "begruessung",
+      "title": "Begrüßung",
+      "setting": "Morgens, noch bevor der Kaffee kommt. Ihr seid ihr selbst. Schaut euch an, nicht aufs Display.",
+      "emoji": "🌅",
+      "roleA": "Morgenmensch",
+      "roleB": "Noch müde",
+      "lines": [
+        {
+          "id": "beg-1",
+          "role": "a",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo.",
+          "particle": "statement"
+        },
+        {
+          "id": "beg-2",
+          "role": "b",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo.",
+          "particle": "statement"
+        },
+        {
+          "id": "beg-3",
+          "role": "a",
+          "thai": "สบายดีไหม",
+          "roman": "sà-baai-dii mǎi",
+          "german": "Wie geht es dir?",
+          "particle": "question"
+        },
+        {
+          "id": "beg-4",
+          "role": "b",
+          "thai": "สบายดี",
+          "roman": "sà-baai-dii",
+          "german": "Mir geht es gut.",
+          "particle": "statement"
+        },
+        {
+          "id": "beg-5",
+          "role": "b",
+          "thai": "แล้วคุณล่ะ",
+          "roman": "lɛ́ɛo khun lâ",
+          "german": "Und dir?",
+          "particle": "question"
+        },
+        {
+          "id": "beg-6",
+          "role": "a",
+          "thai": "ก็สบายดี",
+          "roman": "gɔ̀ sà-baai-dii",
+          "german": "Auch gut.",
+          "particle": "statement"
+        },
+        {
+          "id": "beg-7",
+          "role": "a",
+          "thai": "วันนี้ไปไหน",
+          "roman": "wan-níi bpai nǎi",
+          "german": "Wo gehst du heute hin?",
+          "particle": "question"
+        },
+        {
+          "id": "beg-8",
+          "role": "b",
+          "thai": "ไปตลาด",
+          "roman": "bpai dtà-làat",
+          "german": "Zum Markt.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "kennenlernen",
+      "title": "Kennenlernen",
+      "setting": "Ihr tut so, als wärt ihr euch gerade begegnet. Den Namen in der Zeile dürft ihr durch euren eigenen ersetzen.",
+      "emoji": "🫶",
+      "roleA": "Neu hier",
+      "roleB": "Auch neu hier",
+      "lines": [
+        {
+          "id": "ken-1",
+          "role": "a",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo.",
+          "particle": "statement"
+        },
+        {
+          "id": "ken-2",
+          "role": "b",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo.",
+          "particle": "statement"
+        },
+        {
+          "id": "ken-3",
+          "role": "a",
+          "thai": "คุณชื่ออะไร",
+          "roman": "khun chʉ̂ʉ à-rai",
+          "german": "Wie heißt du?",
+          "particle": "question"
+        },
+        {
+          "id": "ken-4",
+          "role": "b",
+          "thai": "ชื่อทิม",
+          "roman": "chʉ̂ʉ thim",
+          "german": "Ich heiße Tim.",
+          "particle": "statement"
+        },
+        {
+          "id": "ken-5",
+          "role": "a",
+          "thai": "ยินดีที่ได้รู้จัก",
+          "roman": "yin-dii thîi dâai rúu-jàk",
+          "german": "Freut mich.",
+          "particle": "statement"
+        },
+        {
+          "id": "ken-6",
+          "role": "b",
+          "thai": "มาจากไหน",
+          "roman": "maa jàak nǎi",
+          "german": "Woher kommst du?",
+          "particle": "question"
+        },
+        {
+          "id": "ken-7",
+          "role": "a",
+          "thai": "มาจากเยอรมนี",
+          "roman": "maa jàak yəə-rá-má-nii",
+          "german": "Aus Deutschland.",
+          "particle": "statement"
+        },
+        {
+          "id": "ken-8",
+          "role": "b",
+          "thai": "ดีใจจัง",
+          "roman": "dii-jai jang",
+          "german": "Wie schön.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "restaurant",
+      "title": "Restaurant bestellen",
+      "setting": "Ein kleines Lokal. Eine Person bestellt, die andere spielt den Service. Danach tauscht die Rollen.",
+      "emoji": "🍜",
+      "roleA": "Gast",
+      "roleB": "Service",
+      "lines": [
+        {
+          "id": "resd-1",
+          "role": "a",
+          "thai": "สวัสดี",
+          "roman": "sà-wàt-dii",
+          "german": "Hallo.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-2",
+          "role": "b",
+          "thai": "กี่คน",
+          "roman": "gìi khon",
+          "german": "Wie viele Personen?",
+          "particle": "question"
+        },
+        {
+          "id": "resd-3",
+          "role": "a",
+          "thai": "สองคน",
+          "roman": "sɔ̌ɔng khon",
+          "german": "Zwei Personen.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-4",
+          "role": "a",
+          "thai": "ขอดูเมนู",
+          "roman": "khɔ̌ɔ duu mee-nuu",
+          "german": "Die Karte, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-5",
+          "role": "b",
+          "thai": "เชิญ",
+          "roman": "chəən",
+          "german": "Bitte sehr.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-6",
+          "role": "a",
+          "thai": "เอาผัดไทยจานหนึ่ง",
+          "roman": "ao phàt-thai jaan nʉ̀ng",
+          "german": "Ein Pad Thai, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-7",
+          "role": "b",
+          "thai": "เผ็ดไหม",
+          "roman": "phèt mǎi",
+          "german": "Scharf?",
+          "particle": "question"
+        },
+        {
+          "id": "resd-8",
+          "role": "a",
+          "thai": "ไม่เผ็ด",
+          "roman": "mâi-phèt",
+          "german": "Nicht scharf.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-9",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Kommt sofort.",
+          "particle": "statement"
+        },
+        {
+          "id": "resd-10",
+          "role": "a",
+          "thai": "ขอบคุณ",
+          "roman": "khɔ̀ɔp-khun",
+          "german": "Danke.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "markt",
+      "title": "Markt handeln",
+      "setting": "Stand auf dem Markt. Eine Person will kaufen, die andere verkauft. Schaut euch an, wenn ihr den Preis sagt.",
+      "emoji": "🥭",
+      "roleA": "Käufer",
+      "roleB": "Stand",
+      "lines": [
+        {
+          "id": "mrk-1",
+          "role": "a",
+          "thai": "อันนี้เท่าไหร่",
+          "roman": "an-níi thâo-rài",
+          "german": "Was kostet das?",
+          "particle": "question"
+        },
+        {
+          "id": "mrk-2",
+          "role": "b",
+          "thai": "ร้อยบาท",
+          "roman": "rɔ́ɔi bàat",
+          "german": "Hundert Baht.",
+          "particle": "statement"
+        },
+        {
+          "id": "mrk-3",
+          "role": "a",
+          "thai": "แพงไป",
+          "roman": "phaeng bpai",
+          "german": "Das ist zu teuer.",
+          "particle": "statement"
+        },
+        {
+          "id": "mrk-4",
+          "role": "a",
+          "thai": "ลดได้ไหม",
+          "roman": "lót dâai mǎi",
+          "german": "Geht ein Rabatt?",
+          "particle": "question"
+        },
+        {
+          "id": "mrk-5",
+          "role": "b",
+          "thai": "เก้าสิบบาท",
+          "roman": "kâao-sìp bàat",
+          "german": "Neunzig Baht.",
+          "particle": "statement"
+        },
+        {
+          "id": "mrk-6",
+          "role": "a",
+          "thai": "ห้าสิบได้ไหม",
+          "roman": "hâa-sìp dâai mǎi",
+          "german": "Fünfzig?",
+          "particle": "question"
+        },
+        {
+          "id": "mrk-7",
+          "role": "b",
+          "thai": "เจ็ดสิบบาท",
+          "roman": "jèt-sìp bàat",
+          "german": "Siebzig, letztes Angebot.",
+          "particle": "statement"
+        },
+        {
+          "id": "mrk-8",
+          "role": "a",
+          "thai": "ได้ เอาอันนี้",
+          "roman": "dâai ao an-níi",
+          "german": "Okay, das nehme ich.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "taxi",
+      "title": "Taxi",
+      "setting": "Eine Person steigt ein, die andere sitzt am Steuer. Ziel laut sagen, dann den Preis.",
+      "emoji": "🚕",
+      "roleA": "Fahrgast",
+      "roleB": "Fahrer",
+      "lines": [
+        {
+          "id": "tax-1",
+          "role": "a",
+          "thai": "ไปสนามบิน",
+          "roman": "bpai sà-naam-bin",
+          "german": "Zum Flughafen, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-2",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Alles klar.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-3",
+          "role": "a",
+          "thai": "เปิดมิเตอร์ด้วย",
+          "roman": "bpə̀ət mii-dtəə dûai",
+          "german": "Bitte den Taxameter anmachen.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-4",
+          "role": "b",
+          "thai": "ประมาณสี่สิบนาที",
+          "roman": "bprà-maan sìi-sìp naa-thii",
+          "german": "Ungefähr vierzig Minuten.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-5",
+          "role": "a",
+          "thai": "จอดตรงนี้",
+          "roman": "jɔ̀ɔt dtrong-níi",
+          "german": "Bitte hier halten.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-6",
+          "role": "a",
+          "thai": "เท่าไหร่",
+          "roman": "thâo-rài",
+          "german": "Was macht das?",
+          "particle": "question"
+        },
+        {
+          "id": "tax-7",
+          "role": "b",
+          "thai": "ร้อยห้าสิบบาท",
+          "roman": "rɔ́ɔi-hâa-sìp bàat",
+          "german": "Einhundertfünfzig Baht.",
+          "particle": "statement"
+        },
+        {
+          "id": "tax-8",
+          "role": "a",
+          "thai": "ขอบคุณ",
+          "roman": "khɔ̀ɔp-khun",
+          "german": "Danke.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "weg",
+      "title": "Nach dem Weg fragen",
+      "setting": "Eine Person ist neu in der Stadt, die andere kennt den Tempel. Zeigt wirklich mit der Hand.",
+      "emoji": "🛕",
+      "roleA": "Neu in der Stadt",
+      "roleB": "Kennt den Weg",
+      "lines": [
+        {
+          "id": "weg-1",
+          "role": "a",
+          "thai": "ขอโทษ",
+          "roman": "khɔ̌ɔ-thôot",
+          "german": "Entschuldigung.",
+          "particle": "statement"
+        },
+        {
+          "id": "weg-2",
+          "role": "a",
+          "thai": "วัดพระแก้วอยู่ที่ไหน",
+          "roman": "wát phrá-gɛ̂ɛo yùu thîi-nǎi",
+          "german": "Wo ist Wat Phra Kaew?",
+          "particle": "question"
+        },
+        {
+          "id": "weg-3",
+          "role": "b",
+          "thai": "ตรงไป",
+          "roman": "dtrong bpai",
+          "german": "Immer geradeaus.",
+          "particle": "statement"
+        },
+        {
+          "id": "weg-4",
+          "role": "b",
+          "thai": "แล้วเลี้ยวซ้าย",
+          "roman": "lɛ́ɛo líiao sâai",
+          "german": "Dann links.",
+          "particle": "statement"
+        },
+        {
+          "id": "weg-5",
+          "role": "a",
+          "thai": "ไกลไหม",
+          "roman": "glai mǎi",
+          "german": "Ist es weit?",
+          "particle": "question"
+        },
+        {
+          "id": "weg-6",
+          "role": "b",
+          "thai": "ไม่ไกล",
+          "roman": "mâi glai",
+          "german": "Nicht weit.",
+          "particle": "statement"
+        },
+        {
+          "id": "weg-7",
+          "role": "b",
+          "thai": "เดินห้านาที",
+          "roman": "dəən hâa naa-thii",
+          "german": "Fünf Minuten zu Fuß.",
+          "particle": "statement"
+        },
+        {
+          "id": "weg-8",
+          "role": "a",
+          "thai": "ขอบคุณมาก",
+          "roman": "khɔ̀ɔp-khun mâak",
+          "german": "Vielen Dank.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "cafe",
+      "title": "Im Café",
+      "setting": "Eine Person bestellt, die andere steht hinter dem Tresen. Süße und Milch laut aushandeln.",
+      "emoji": "☕",
+      "roleA": "Gast",
+      "roleB": "Bar",
+      "lines": [
+        {
+          "id": "caf-1",
+          "role": "a",
+          "thai": "ขอกาแฟเย็นหนึ่งแก้ว",
+          "roman": "khɔ̌ɔ gaa-fɛɛ-yen nʉ̀ng gɛ̂ɛo",
+          "german": "Einen Eiskaffee, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "caf-2",
+          "role": "b",
+          "thai": "หวานปกติไหม",
+          "roman": "wǎan bpòk-gà-dtì mǎi",
+          "german": "Normale Süße?",
+          "particle": "question"
+        },
+        {
+          "id": "caf-3",
+          "role": "a",
+          "thai": "หวานน้อย",
+          "roman": "wǎan nɔ́ɔi",
+          "german": "Wenig süß.",
+          "particle": "statement"
+        },
+        {
+          "id": "caf-4",
+          "role": "b",
+          "thai": "เอานมไหม",
+          "roman": "ao nom mǎi",
+          "german": "Mit Milch?",
+          "particle": "question"
+        },
+        {
+          "id": "caf-5",
+          "role": "a",
+          "thai": "เอานม",
+          "roman": "ao nom",
+          "german": "Mit Milch.",
+          "particle": "statement"
+        },
+        {
+          "id": "caf-6",
+          "role": "a",
+          "thai": "ขอน้ำเปล่าด้วย",
+          "roman": "khɔ̌ɔ náam-bplàao dûai",
+          "german": "Und ein Wasser.",
+          "particle": "statement"
+        },
+        {
+          "id": "caf-7",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Kommt.",
+          "particle": "statement"
+        },
+        {
+          "id": "caf-8",
+          "role": "a",
+          "thai": "ขอบคุณ",
+          "roman": "khɔ̀ɔp-khun",
+          "german": "Danke.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "hotel",
+      "title": "Hotel",
+      "setting": "Rezeption. Eine Person fragt nach einem Zimmer, die andere hat den Schlüssel.",
+      "emoji": "🏨",
+      "roleA": "Gast",
+      "roleB": "Rezeption",
+      "lines": [
+        {
+          "id": "hotd-1",
+          "role": "a",
+          "thai": "มีห้องว่างไหม",
+          "roman": "mii hɔ̂ɔng wâang mǎi",
+          "german": "Haben Sie ein Zimmer frei?",
+          "particle": "question"
+        },
+        {
+          "id": "hotd-2",
+          "role": "b",
+          "thai": "มี",
+          "roman": "mii",
+          "german": "Ja.",
+          "particle": "statement"
+        },
+        {
+          "id": "hotd-3",
+          "role": "b",
+          "thai": "อยู่กี่คืน",
+          "roman": "yùu gìi khʉʉn",
+          "german": "Wie viele Nächte?",
+          "particle": "question"
+        },
+        {
+          "id": "hotd-4",
+          "role": "a",
+          "thai": "สองคืน",
+          "roman": "sɔ̌ɔng khʉʉn",
+          "german": "Zwei Nächte.",
+          "particle": "statement"
+        },
+        {
+          "id": "hotd-5",
+          "role": "a",
+          "thai": "ราคาเท่าไหร่",
+          "roman": "raa-khaa thâo-rài",
+          "german": "Was kostet das?",
+          "particle": "question"
+        },
+        {
+          "id": "hotd-6",
+          "role": "b",
+          "thai": "คืนละพันบาท",
+          "roman": "khʉʉn lá phan bàat",
+          "german": "Tausend Baht pro Nacht.",
+          "particle": "statement"
+        },
+        {
+          "id": "hotd-7",
+          "role": "a",
+          "thai": "เอาห้องนี้",
+          "roman": "ao hɔ̂ɔng níi",
+          "german": "Wir nehmen das Zimmer.",
+          "particle": "statement"
+        },
+        {
+          "id": "hotd-8",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Sehr gern.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "streetfood",
+      "title": "Streetfood",
+      "setting": "Papayasalat am Straßenstand. Schärfe aushandeln, dann wirklich so tun, als würde gegessen.",
+      "emoji": "🥗",
+      "roleA": "Hungrig",
+      "roleB": "Stand",
+      "lines": [
+        {
+          "id": "stf-1",
+          "role": "a",
+          "thai": "ขอส้มตำหนึ่งชุด",
+          "roman": "khɔ̌ɔ sôm-dtàm nʉ̀ng chút",
+          "german": "Ein Som Tam, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "stf-2",
+          "role": "b",
+          "thai": "เผ็ดไหม",
+          "roman": "phèt mǎi",
+          "german": "Scharf?",
+          "particle": "question"
+        },
+        {
+          "id": "stf-3",
+          "role": "a",
+          "thai": "เผ็ดน้อย",
+          "roman": "phèt nɔ́ɔi",
+          "german": "Wenig scharf.",
+          "particle": "statement"
+        },
+        {
+          "id": "stf-4",
+          "role": "a",
+          "thai": "ขอข้าวเหนียวด้วย",
+          "roman": "khɔ̌ɔ khàao-nǐao dûai",
+          "german": "Und Klebreis dazu.",
+          "particle": "statement"
+        },
+        {
+          "id": "stf-5",
+          "role": "b",
+          "thai": "อย่างอื่นอีกไหม",
+          "roman": "yàang ʉ̀ʉn ìik mǎi",
+          "german": "Noch etwas?",
+          "particle": "question"
+        },
+        {
+          "id": "stf-6",
+          "role": "a",
+          "thai": "พอแล้ว",
+          "roman": "phɔɔ lɛ́ɛo",
+          "german": "Das reicht.",
+          "particle": "statement"
+        },
+        {
+          "id": "stf-7",
+          "role": "b",
+          "thai": "เชิญชิม",
+          "roman": "chəən chim",
+          "german": "Probiert.",
+          "particle": "statement"
+        },
+        {
+          "id": "stf-8",
+          "role": "a",
+          "thai": "อร่อยมาก",
+          "roman": "à-rɔ̀i mâak",
+          "german": "Sehr lecker.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "souvenir",
+      "title": "Im Laden",
+      "setting": "Ein Souvenir. Eine Person verliebt sich in etwas, die andere nennt den Preis.",
+      "emoji": "🎁",
+      "roleA": "Schaut sich um",
+      "roleB": "Laden",
+      "lines": [
+        {
+          "id": "sov-1",
+          "role": "a",
+          "thai": "ขอดูอันนั้น",
+          "roman": "khɔ̌ɔ duu an-nán",
+          "german": "Darf ich das da ansehen?",
+          "particle": "statement"
+        },
+        {
+          "id": "sov-2",
+          "role": "b",
+          "thai": "เชิญ",
+          "roman": "chəən",
+          "german": "Nur zu.",
+          "particle": "statement"
+        },
+        {
+          "id": "sov-3",
+          "role": "a",
+          "thai": "สวยมาก",
+          "roman": "sǔai mâak",
+          "german": "Sehr schön.",
+          "particle": "statement"
+        },
+        {
+          "id": "sov-4",
+          "role": "a",
+          "thai": "เท่าไหร่",
+          "roman": "thâo-rài",
+          "german": "Was kostet das?",
+          "particle": "question"
+        },
+        {
+          "id": "sov-5",
+          "role": "b",
+          "thai": "สองร้อยบาท",
+          "roman": "sɔ̌ɔng-rɔ́ɔi bàat",
+          "german": "Zweihundert Baht.",
+          "particle": "statement"
+        },
+        {
+          "id": "sov-6",
+          "role": "a",
+          "thai": "ลดได้ไหม",
+          "roman": "lót dâai mǎi",
+          "german": "Geht da noch etwas?",
+          "particle": "question"
+        },
+        {
+          "id": "sov-7",
+          "role": "b",
+          "thai": "ร้อยห้าสิบบาท",
+          "roman": "rɔ́ɔi-hâa-sìp bàat",
+          "german": "Einhundertfünfzig.",
+          "particle": "statement"
+        },
+        {
+          "id": "sov-8",
+          "role": "a",
+          "thai": "ได้ ขอบคุณ",
+          "roman": "dâai khɔ̀ɔp-khun",
+          "german": "Okay. Danke.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "apotheke",
+      "title": "In der Apotheke",
+      "setting": "Kopfschmerzen, nichts Dramatisches. Eine Person fragt, die andere erklärt die Einnahme.",
+      "emoji": "💊",
+      "roleA": "Brauch etwas",
+      "roleB": "Apotheke",
+      "lines": [
+        {
+          "id": "apo-1",
+          "role": "a",
+          "thai": "มียาปวดหัวไหม",
+          "roman": "mii yaa bpùat-hǔa mǎi",
+          "german": "Haben Sie etwas gegen Kopfschmerzen?",
+          "particle": "question"
+        },
+        {
+          "id": "apo-2",
+          "role": "b",
+          "thai": "มี",
+          "roman": "mii",
+          "german": "Ja.",
+          "particle": "statement"
+        },
+        {
+          "id": "apo-3",
+          "role": "b",
+          "thai": "แพ้ยาไหม",
+          "roman": "phɛ́ɛ yaa mǎi",
+          "german": "Allergisch gegen Medikamente?",
+          "particle": "question"
+        },
+        {
+          "id": "apo-4",
+          "role": "a",
+          "thai": "ไม่แพ้",
+          "roman": "mâi phɛ́ɛ",
+          "german": "Nein.",
+          "particle": "statement"
+        },
+        {
+          "id": "apo-5",
+          "role": "b",
+          "thai": "กินวันละหนึ่งเม็ด",
+          "roman": "gin wan lá nʉ̀ng mét",
+          "german": "Eine Tablette am Tag.",
+          "particle": "statement"
+        },
+        {
+          "id": "apo-6",
+          "role": "a",
+          "thai": "กินหลังอาหารไหม",
+          "roman": "gin lǎng aa-hǎan mǎi",
+          "german": "Nach dem Essen?",
+          "particle": "question"
+        },
+        {
+          "id": "apo-7",
+          "role": "b",
+          "thai": "ใช่ สามครั้ง",
+          "roman": "châi sǎam khráng",
+          "german": "Ja, dreimal.",
+          "particle": "statement"
+        },
+        {
+          "id": "apo-8",
+          "role": "a",
+          "thai": "ขอบคุณ",
+          "roman": "khɔ̀ɔp-khun",
+          "german": "Danke.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "verabredung",
+      "title": "Verabredung",
+      "setting": "Das seid ihr. Ein Abend, zwei Stimmen. Handy nur für die eigene Zeile.",
+      "emoji": "🌙",
+      "roleA": "Schlägt vor",
+      "roleB": "Sagt zu",
+      "lines": [
+        {
+          "id": "ver-1",
+          "role": "a",
+          "thai": "เย็นนี้ว่างไหม",
+          "roman": "yen-níi wâang mǎi",
+          "german": "Hast du heute Abend Zeit?",
+          "particle": "question"
+        },
+        {
+          "id": "ver-2",
+          "role": "b",
+          "thai": "ว่าง",
+          "roman": "wâang",
+          "german": "Ja, ich habe Zeit.",
+          "particle": "statement"
+        },
+        {
+          "id": "ver-3",
+          "role": "a",
+          "thai": "ไปกินข้าวกันไหม",
+          "roman": "bpai gin khàao gan mǎi",
+          "german": "Wollen wir essen gehen?",
+          "particle": "question"
+        },
+        {
+          "id": "ver-4",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Sehr gern.",
+          "particle": "statement"
+        },
+        {
+          "id": "ver-5",
+          "role": "b",
+          "thai": "ไปที่ไหน",
+          "roman": "bpai thîi-nǎi",
+          "german": "Wohin?",
+          "particle": "question"
+        },
+        {
+          "id": "ver-6",
+          "role": "a",
+          "thai": "ไปร้านนั้น",
+          "roman": "bpai ráan nán",
+          "german": "Zu dem Laden da.",
+          "particle": "statement"
+        },
+        {
+          "id": "ver-7",
+          "role": "a",
+          "thai": "หกโมงเย็น",
+          "roman": "hòk moong yen",
+          "german": "Um sechs Uhr abends.",
+          "particle": "statement"
+        },
+        {
+          "id": "ver-8",
+          "role": "b",
+          "thai": "แล้วเจอกัน",
+          "roman": "lɛ́ɛo jəə gan",
+          "german": "Bis dann.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "bahn",
+      "title": "In der BTS",
+      "setting": "Ihr steht am Bahnsteig. Eine Person liest die Station, die andere kennt die Ausgänge. Siam und Chit Lom liegen wirklich nebeneinander.",
+      "emoji": "🚇",
+      "roleA": "Schaut aufs Schild",
+      "roleB": "Kennt die Linie",
+      "lines": [
+        {
+          "id": "bts-1",
+          "role": "a",
+          "thai": "สถานีนี้ชื่ออะไร",
+          "roman": "sà-thǎa-nii níi chʉ̂ʉ à-rai",
+          "german": "Wie heißt diese Station?",
+          "particle": "question"
+        },
+        {
+          "id": "bts-2",
+          "role": "b",
+          "thai": "สยาม",
+          "roman": "sà-yaam",
+          "german": "Siam.",
+          "particle": "statement"
+        },
+        {
+          "id": "bts-3",
+          "role": "a",
+          "thai": "เราลงที่ไหน",
+          "roman": "rao long thîi-nǎi",
+          "german": "Wo steigen wir aus?",
+          "particle": "question"
+        },
+        {
+          "id": "bts-4",
+          "role": "b",
+          "thai": "ลงที่ชิดลม",
+          "roman": "long thîi chít-lom",
+          "german": "An Chit Lom.",
+          "particle": "statement"
+        },
+        {
+          "id": "bts-5",
+          "role": "a",
+          "thai": "อีกกี่สถานี",
+          "roman": "ìik gìi sà-thǎa-nii",
+          "german": "Wie viele Stationen noch?",
+          "particle": "question"
+        },
+        {
+          "id": "bts-6",
+          "role": "b",
+          "thai": "อีกสองสถานี",
+          "roman": "ìik sɔ̌ɔng sà-thǎa-nii",
+          "german": "Noch zwei.",
+          "particle": "statement"
+        },
+        {
+          "id": "bts-7",
+          "role": "a",
+          "thai": "ทางออกไหน",
+          "roman": "thaang-ɔ̀ɔk nǎi",
+          "german": "Welcher Ausgang?",
+          "particle": "question"
+        },
+        {
+          "id": "bts-8",
+          "role": "b",
+          "thai": "ทางออกสอง",
+          "roman": "thaang-ɔ̀ɔk sɔ̌ɔng",
+          "german": "Ausgang zwei.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "ausflug",
+      "title": "Ans Meer",
+      "setting": "Ihr plant einen Tag. Eine Person schlägt vor, die andere sagt, wie ihr hinkommt.",
+      "emoji": "🌊",
+      "roleA": "Hat eine Idee",
+      "roleB": "Packt mit",
+      "lines": [
+        {
+          "id": "aus-1",
+          "role": "a",
+          "thai": "พรุ่งนี้ไปทะเลกันไหม",
+          "roman": "phrûng-níi bpai thá-lee gan mǎi",
+          "german": "Wollen wir morgen ans Meer?",
+          "particle": "question"
+        },
+        {
+          "id": "aus-2",
+          "role": "b",
+          "thai": "ไป",
+          "roman": "bpai",
+          "german": "Ja, lass uns fahren.",
+          "particle": "statement"
+        },
+        {
+          "id": "aus-3",
+          "role": "a",
+          "thai": "ไปยังไง",
+          "roman": "bpai yang-ngai",
+          "german": "Wie kommen wir hin?",
+          "particle": "question"
+        },
+        {
+          "id": "aus-4",
+          "role": "b",
+          "thai": "นั่งรถตู้",
+          "roman": "nâng rót-dtûu",
+          "german": "Mit dem Minibus.",
+          "particle": "statement"
+        },
+        {
+          "id": "aus-5",
+          "role": "a",
+          "thai": "กี่โมงออก",
+          "roman": "gìi moong ɔ̀ɔk",
+          "german": "Wann fährt er?",
+          "particle": "question"
+        },
+        {
+          "id": "aus-6",
+          "role": "b",
+          "thai": "แปดโมงเช้า",
+          "roman": "bpɛ̀ɛt moong châao",
+          "german": "Um acht Uhr morgens.",
+          "particle": "statement"
+        },
+        {
+          "id": "aus-7",
+          "role": "a",
+          "thai": "เอาชุดว่ายน้ำไหม",
+          "roman": "ao chút wâai-náam mǎi",
+          "german": "Nehmen wir Badesachen mit?",
+          "particle": "question"
+        },
+        {
+          "id": "aus-8",
+          "role": "b",
+          "thai": "เอาด้วย",
+          "roman": "ao dûai",
+          "german": "Ja, mitnehmen.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "fruehstueck",
+      "title": "Frühstück zu Hause",
+      "setting": "Küche, zwei Teller. Eine Person fragt, die andere sagt, was in die Schüssel kommt.",
+      "emoji": "🥣",
+      "roleA": "Am Herd",
+      "roleB": "Am Tisch",
+      "lines": [
+        {
+          "id": "mor-1",
+          "role": "a",
+          "thai": "หิวไหม",
+          "roman": "hǐu mǎi",
+          "german": "Hungrig?",
+          "particle": "question"
+        },
+        {
+          "id": "mor-2",
+          "role": "b",
+          "thai": "หิว",
+          "roman": "hǐu",
+          "german": "Ja.",
+          "particle": "statement"
+        },
+        {
+          "id": "mor-3",
+          "role": "a",
+          "thai": "กินโจ๊กไหม",
+          "roman": "gin jôok mǎi",
+          "german": "Reisbrei?",
+          "particle": "question"
+        },
+        {
+          "id": "mor-4",
+          "role": "b",
+          "thai": "กิน",
+          "roman": "gin",
+          "german": "Ja, gern.",
+          "particle": "statement"
+        },
+        {
+          "id": "mor-5",
+          "role": "a",
+          "thai": "เผ็ดไหม",
+          "roman": "phèt mǎi",
+          "german": "Scharf?",
+          "particle": "question"
+        },
+        {
+          "id": "mor-6",
+          "role": "b",
+          "thai": "ไม่เผ็ด",
+          "roman": "mâi-phèt",
+          "german": "Nicht scharf.",
+          "particle": "statement"
+        },
+        {
+          "id": "mor-7",
+          "role": "a",
+          "thai": "เอาไข่ดาวด้วย",
+          "roman": "ao khài-daao dûai",
+          "german": "Und ein Spiegelei dazu.",
+          "particle": "statement"
+        },
+        {
+          "id": "mor-8",
+          "role": "b",
+          "thai": "อร่อย",
+          "roman": "à-rɔ̀i",
+          "german": "Lecker.",
+          "particle": "statement"
+        }
+      ]
+    },
+    {
+      "id": "groesse",
+      "title": "Die richtige Größe",
+      "setting": "Ein Kleidungsstück. Eine Person probiert, die andere reicht die nächste Größe.",
+      "emoji": "👕",
+      "roleA": "Probiert",
+      "roleB": "Reicht an",
+      "lines": [
+        {
+          "id": "gro-1",
+          "role": "a",
+          "thai": "มีขนาดอื่นไหม",
+          "roman": "mii khà-nàat ʉ̀ʉn mǎi",
+          "german": "Gibt es eine andere Größe?",
+          "particle": "question"
+        },
+        {
+          "id": "gro-2",
+          "role": "b",
+          "thai": "มี",
+          "roman": "mii",
+          "german": "Ja.",
+          "particle": "statement"
+        },
+        {
+          "id": "gro-3",
+          "role": "a",
+          "thai": "ขอดูตัวใหญ่กว่า",
+          "roman": "khɔ̌ɔ duu dtua yài gwàa",
+          "german": "Eine Nummer größer, bitte.",
+          "particle": "statement"
+        },
+        {
+          "id": "gro-4",
+          "role": "b",
+          "thai": "ตัวนี้",
+          "roman": "dtua níi",
+          "german": "Die hier.",
+          "particle": "statement"
+        },
+        {
+          "id": "gro-5",
+          "role": "a",
+          "thai": "ลองได้ไหม",
+          "roman": "lɔɔng dâai mǎi",
+          "german": "Darf ich anprobieren?",
+          "particle": "question"
+        },
+        {
+          "id": "gro-6",
+          "role": "b",
+          "thai": "ได้เลย",
+          "roman": "dâai ləəi",
+          "german": "Ja, klar.",
+          "particle": "statement"
+        },
+        {
+          "id": "gro-7",
+          "role": "a",
+          "thai": "พอดี",
+          "roman": "phɔɔ-dii",
+          "german": "Passt.",
+          "particle": "statement"
+        },
+        {
+          "id": "gro-8",
+          "role": "a",
+          "thai": "เอาตัวนี้",
+          "roman": "ao dtua níi",
+          "german": "Ich nehme die.",
+          "particle": "statement"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+import SwiftUI
+
+struct DuoView: View {
+    @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var sync: SyncHub
+    @State private var name = ""
+    @State private var busy = false
+
+    var body: some View {
+        NavigationStack {
+            ScreenBackground {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Wir")
+                            .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                        Text(sync.status.text).foregroundStyle(.secondary)
+                        if let error = sync.lastError {
+                            Text(error).foregroundStyle(Theme.coral)
+                        }
+                        WarmCard {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("\(model.me.emoji)  \(model.me.name)")
+                                    .font(.title3.weight(.semibold))
+                                Text(particleLine).font(.subheadline).foregroundStyle(.secondary)
+                                if let partner = model.partner {
+                                    Text("\(partner.emoji)  \(partner.name) ist dabei")
+                                } else {
+                                    Text("Noch kein zweites iPhone. Allein üben geht über „Ein Handy weitergeben“.")
+                                }
+                            }
+                        }
+                        if model.partner == nil {
+                            FillButton(title: busy ? "Einladung entsteht …" : "Duo erstellen und einladen", systemImage: "square.and.arrow.up") {
+                                invite()
+                            }
+                            .disabled(busy || !sync.canShare)
+                        }
+                        if model.duo.members.count >= 2 {
+                            SoftButton(title: "Rollen tauschen") { model.swapRoles() }
+                        }
+                        Text("Dein Name")
+                            .font(.headline)
+                        TextField("Name", text: $name)
+                            .textFieldStyle(.roundedBorder)
+                            .onAppear { name = model.me.name }
+                        FillButton(title: "Name sichern", color: Theme.leaf) {
+                            model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
+                        }
+                        Text("Ein Duo ist eine private iCloud-Zone. Der Einladungslink kommt von Apple. Ohne iCloud bleibt alles auf diesem Gerät.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(20)
+                }
+            }
+        }
+    }
+
+    private var particleLine: String {
+        switch model.me.gender {
+        case .male: return "Höflich mit ครับ khráp"
+        case .female: return "Höflich mit ค่ะ khâ und คะ khá"
+        case .unspecified: return "Noch keine Partikel gewählt"
+        }
+    }
+
+    private func invite() {
+        busy = true
+        Task {
+            do {
+                let share = try await sync.makeShare()
+                if let container = sync.container {
+                    CloudSharingPresenter.present(share: share, container: container) { error in
+                        sync.lastError = error.localizedDescription
+                    }
+                }
+            } catch {
+                sync.lastError = error.localizedDescription
+            }
+            busy = false
+        }
+    }
+}

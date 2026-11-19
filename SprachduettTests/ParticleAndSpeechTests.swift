@@ -1,0 +1,43 @@
+import XCTest
+@testable import SprachduettCore
+
+final class ParticleAndSpeechTests: XCTestCase {
+    func testParticlesFollowGender() {
+        let male = Particles.apply(thai: "สวัสดี", roman: "sà-wàt-dii", particle: .statement, gender: .male)
+        XCTAssertEqual(male.thai, "สวัสดีครับ")
+        XCTAssertEqual(male.roman, "sà-wàt-dii khráp")
+
+        let femaleSaid = Particles.apply(thai: "สวัสดี", roman: "sà-wàt-dii", particle: .statement, gender: .female)
+        XCTAssertEqual(femaleSaid.thai, "สวัสดีค่ะ")
+        XCTAssertEqual(femaleSaid.roman, "sà-wàt-dii khâ")
+
+        let femaleAsked = Particles.apply(thai: "อร่อยไหม", roman: "à-rɔ̀i mǎi", particle: .question, gender: .female)
+        XCTAssertEqual(femaleAsked.thai, "อร่อยไหมคะ")
+        XCTAssertEqual(femaleAsked.roman, "à-rɔ̀i mǎi khá")
+
+        let maleAsked = Particles.apply(thai: "อร่อยไหม", roman: "à-rɔ̀i mǎi", particle: .question, gender: .male)
+        XCTAssertEqual(maleAsked.thai, "อร่อยไหมครับ")
+
+        let plain = Particles.apply(thai: "น้ำ", roman: "náam", particle: .none, gender: .female)
+        XCTAssertEqual(plain.thai, "น้ำ")
+        XCTAssertEqual(plain.roman, "náam")
+
+        let open = Particles.apply(thai: "สวัสดี", roman: "sà-wàt-dii", particle: .statement, gender: .unspecified)
+        XCTAssertEqual(open.thai, "สวัสดี")
+    }
+
+    func testParticleIsNotDoubled() {
+        let spoken = Particles.apply(thai: "สวัสดีครับ", roman: "sà-wàt-dii khráp", particle: .statement, gender: .male)
+        XCTAssertEqual(spoken.thai, "สวัสดีครับ")
+        XCTAssertEqual(spoken.roman, "sà-wàt-dii khráp")
+    }
+
+    func testSpeechAcceptsParticleAndNearMiss() {
+        XCTAssertTrue(SpeechMatch.accepts(recognized: "สวัสดีครับ", expectedThai: "สวัสดี"))
+        XCTAssertTrue(SpeechMatch.accepts(recognized: "สวัสดี ค่ะ", expectedThai: "สวัสดีครับ"))
+        XCTAssertTrue(SpeechMatch.accepts(recognized: "สวัสดีคับ", expectedThai: "สวัสดีครับ"))
+        XCTAssertFalse(SpeechMatch.accepts(recognized: "ขอบคุณ", expectedThai: "สวัสดี"))
+        XCTAssertFalse(SpeechMatch.accepts(recognized: "", expectedThai: "น้ำ"))
+        XCTAssertFalse(SpeechMatch.accepts(recognized: "น้ำ", expectedThai: ""))
+    }
+}

@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+*.xcodeproj/
+DerivedData/
+build-logs/
+.DS_Store
+*.p8
+*.p12
+*.mobileprovision
