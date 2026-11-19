@@ -1,9 +1,41 @@
 import SwiftUI
+import UIKit
 
 @MainActor
 final class HelpRouter: ObservableObject {
     @Published var showTutorial = false
     func open() { showTutorial = true }
+}
+
+@MainActor
+final class ScreenTracker: ObservableObject {
+    @Published var name = "Home"
+}
+
+struct ShakeCatcher: UIViewControllerRepresentable {
+    var onShake: () -> Void
+
+    func makeUIViewController(context: Context) -> ShakeController {
+        let controller = ShakeController()
+        controller.onShake = onShake
+        return controller
+    }
+
+    func updateUIViewController(_ controller: ShakeController, context: Context) {
+        controller.onShake = onShake
+    }
+
+    final class ShakeController: UIViewController {
+        var onShake: () -> Void = {}
+        override var canBecomeFirstResponder: Bool { true }
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            becomeFirstResponder()
+        }
+        override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+            if motion == .motionShake { onShake() }
+        }
+    }
 }
 
 struct HelpButton: View {

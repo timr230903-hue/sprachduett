@@ -107,6 +107,24 @@ final class RoundController: ObservableObject {
         let (next, grade) = RoundEngine.judgeSay(cursor, plan: plan, correct: correct)
         move(next, grade)
     }
+    func finishSpeech(_ grade: SpeechGrade, wordID: String?, speakerID: String) {
+        if let wordID { stats = RoundEngine.applySpeech(stats, wordID: wordID, grade: grade) }
+        var next = cursor
+        if grade == .sure { next.scores[speakerID, default: 0] += 1 }
+        next = RoundEngine.advance(next, plan: plan)
+        move(next, nil)
+    }
+
+    var gameName: String {
+        switch beat {
+        case .intro(_): return "intro"
+        case .listen(_): return "listen"
+        case .say(_): return "say"
+        case .dialog(_): return "dialog"
+        case nil: return "results"
+        }
+    }
+
     func understood() { move(RoundEngine.confirmDialog(cursor, plan: plan), nil) }
 
     private var listenSeats: [String] {
@@ -142,8 +160,11 @@ struct RoundScreen: View {
     let together: Bool
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var speech: SpeechCoach
+    @EnvironmentObject private var screens: ScreenTracker
     @Environment(\.dismiss) private var dismiss
     @AppStorage(TutorialKey.lesson) private var lessonSeen = false
+    @State private var started = Date()
+    @State private var closed = false
     @StateObject private var round = RoundController()
 
     var body: some View {
@@ -174,7 +195,15 @@ struct RoundScreen: View {
                 }
             }
         }
-        .onAppear(perform: boot)
+        .onAppear {
+            screens.name = "Runde"
+            started = Date()
+            model.noteRoundStarted()
+            boot()
+        }
+        .onDisappear {
+            if !closed && !round.done { model.noteAbandoned(game: round.gameName) }
+        }
         .onChange(of: model.duo.liveClaim?.at) { _, _ in
             guard let claim = model.duo.liveClaim else { return }
             round.applyRemote(itemID: claim.itemID, player: claim.playerID, choice: claim.choiceID)
@@ -184,21 +213,33 @@ struct RoundScreen: View {
     @ViewBuilder private var beatBody: some View {
         switch round.beat {
         case .intro(let word):
-            IntroPane(word: word, speak: { speech.speak(word.thai) }, next: round.nextIntro)
+            IntroPane(word: word, speak: { speech.speak(word.thai) }, slow: { speech.speak(word.thai, slow: true) }, next: round.nextIntro)
         case .listen(let item):
             ListenBoard(item: item, mode: round.mode, left: round.leftName, right: round.rightName) { player, choice in
                 round.tap(player: player, choice: choice)
             }
         case .say(let turn):
-            SayPane(
-                turn: turn,
-                revealed: round.cursor.phase == .check,
-                speak: { speech.speak(turn.word.thai) },
-                said: round.saidIt,
-                judge: round.judged
+            SpeechCard(
+                emoji: turn.word.emoji,
+                thai: turn.word.thai,
+                roman: turn.word.roman,
+                german: turn.word.german,
+                hideThaiUntilGraded: true,
+                speech: speech,
+                onGrade: { grade in round.finishSpeech(grade, wordID: turn.word.id, speakerID: turn.speakerID) }
             )
+            .id(turn.id)
         case .dialog(let turn):
-            DialogPane(turn: turn, speak: { speech.speak(turn.line.thai) }, understood: round.understood)
+            SpeechCard(
+                emoji: "💬",
+                thai: turn.line.thai,
+                roman: turn.line.roman,
+                german: turn.line.german,
+                hideThaiUntilGraded: false,
+                speech: speech,
+                onGrade: { grade in round.finishSpeech(grade, wordID: nil, speakerID: turn.speakerID) }
+            )
+            .id(turn.id)
         case nil:
             EmptyView()
         }
@@ -208,6 +249,8 @@ struct RoundScreen: View {
         round.onFinish = { stats in
             lessonSeen = true
             let playedTogether = together && round.mode != .solo
+            closed = true
+            model.noteRoundFinished(seconds: Date().timeIntervalSince(started))
             model.rememberRound(Dictionary(stats.map { ($0.id, $0) }, uniquingKeysWith: { _, next in next }), together: playedTogether)
         }
         round.onClaim = { item, player, choice in
@@ -249,6 +292,7 @@ private struct TurnBanner: View {
 private struct IntroPane: View {
     let word: PathWord
     let speak: () -> Void
+    let slow: () -> Void
     let next: () -> Void
 
     var body: some View {
@@ -257,6 +301,7 @@ private struct IntroPane: View {
             ToneLine(roman: word.roman)
             Text(word.german).font(.title2)
             FillButton(title: "Anhören", systemImage: "speaker.wave.2", action: speak)
+            FillButton(title: "Langsam", systemImage: "tortoise", action: slow)
             FillButton(title: "Weiter", color: Theme.leaf, action: next)
         }
     }
@@ -300,43 +345,64 @@ private struct ListenBoard: View {
     }
 }
 
-private struct SayPane: View {
-    let turn: SayTurn
-    let revealed: Bool
-    let speak: () -> Void
-    let said: () -> Void
-    let judge: (Bool) -> Void
+private struct SpeechCard: View {
+    let emoji: String
+    let thai: String
+    let roman: String
+    let german: String
+    let hideThaiUntilGraded: Bool
+    let speech: SpeechCoach
+    let onGrade: (SpeechGrade) -> Void
+    @State private var grade: SpeechGrade?
+    @State private var fallback = false
 
     var body: some View {
-        VStack(spacing: 14) {
-            Text(turn.word.emoji).font(.system(size: 88))
-            if revealed {
-                Text(turn.word.thai).font(.system(size: 40, weight: .bold, design: .rounded))
-                ToneLine(roman: turn.word.roman)
-                Text(turn.word.german).foregroundStyle(.secondary)
-                FillButton(title: "Anhören", systemImage: "speaker.wave.2", action: speak)
-                FillButton(title: "Richtig", color: Theme.leaf) { judge(true) }
-                SoftButton(title: "Nochmal") { judge(false) }
-            } else {
-                Text(turn.word.german).font(.title)
-                FillButton(title: "Gesagt", color: Theme.leaf, action: said)
+        VStack(spacing: 12) {
+            Text(emoji).font(.system(size: 72))
+            if !hideThaiUntilGraded || grade != nil {
+                Text(thai).font(.system(size: 36, weight: .bold, design: .rounded))
+            }
+            Text(german).font(.title3)
+            if let grade {
+                Text(label(grade))
+                    .font(.headline)
+                    .foregroundStyle(color(grade))
+                if grade != .sure { ToneLine(roman: roman) }
+            }
+            FillButton(title: "Nochmal anhören", systemImage: "tortoise") { speech.speak(thai, slow: true) }
+            FillButton(title: speech.listening ? "Ich höre zu …" : "Sprechen", color: Theme.leaf) {
+                speech.capture { text in
+                    if let text {
+                        fallback = false
+                        grade = SpeechScore.grade(recognized: text, expected: thai)
+                    } else {
+                        fallback = true
+                    }
+                }
+            }
+            if let grade {
+                FillButton(title: "Weiter") { onGrade(grade) }
+            }
+            if fallback {
+                SoftButton(title: "Partner: Richtig") { onGrade(.sure) }
+                SoftButton(title: "Partner: Nochmal") { onGrade(.miss) }
             }
         }
     }
-}
 
-private struct DialogPane: View {
-    let turn: DialogTurn
-    let speak: () -> Void
-    let understood: () -> Void
+    private func label(_ grade: SpeechGrade) -> String {
+        switch grade {
+        case .sure: return "Sicher"
+        case .close: return "Fast – nochmal anhören"
+        case .miss: return "Daneben"
+        }
+    }
 
-    var body: some View {
-        VStack(spacing: 14) {
-            Text(turn.line.thai).font(.system(size: 36, weight: .bold, design: .rounded))
-            ToneLine(roman: turn.line.roman)
-            Text(turn.line.german).font(.title3).foregroundStyle(.secondary)
-            FillButton(title: "Anhören", systemImage: "speaker.wave.2", action: speak)
-            FillButton(title: "Verstanden", color: Theme.leaf, action: understood)
+    private func color(_ grade: SpeechGrade) -> Color {
+        switch grade {
+        case .sure: return Theme.leaf
+        case .close: return Theme.mango
+        case .miss: return Theme.coral
         }
     }
 }

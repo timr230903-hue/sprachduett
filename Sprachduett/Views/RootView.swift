@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject private var help: HelpRouter
+    @State private var feedback = false
     @AppStorage(TutorialKey.intro) private var introSeen = false
 
     var body: some View {
@@ -16,6 +17,8 @@ struct RootView: View {
             TutorialCarousel(onDone: { help.showTutorial = false })
         }
         .modifier(CloudAlert())
+        .background(ShakeCatcher { feedback = true }.frame(width: 0, height: 0))
+        .sheet(isPresented: $feedback) { FeedbackSheet() }
     }
 }
 

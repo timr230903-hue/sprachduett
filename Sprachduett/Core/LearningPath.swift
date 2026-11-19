@@ -86,12 +86,45 @@ public struct WordStat: Codable, Equatable, Identifiable {
     public var reviews: Int
     public var correct: Int
     public var streak: Int
+    public var speechSum: Double
+    public var speechCount: Int
 
-    public init(id: String, reviews: Int = 0, correct: Int = 0, streak: Int = 0) {
+    public init(id: String, reviews: Int = 0, correct: Int = 0, streak: Int = 0, speechSum: Double = 0, speechCount: Int = 0) {
         self.id = id
         self.reviews = reviews
         self.correct = correct
         self.streak = streak
+        self.speechSum = speechSum
+        self.speechCount = speechCount
+    }
+
+    public var pronunciation: Double {
+        guard speechCount > 0 else { return 0 }
+        return speechSum / Double(speechCount)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, reviews, correct, streak, speechSum, speechCount
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        reviews = try container.decodeIfPresent(Int.self, forKey: .reviews) ?? 0
+        correct = try container.decodeIfPresent(Int.self, forKey: .correct) ?? 0
+        streak = try container.decodeIfPresent(Int.self, forKey: .streak) ?? 0
+        speechSum = try container.decodeIfPresent(Double.self, forKey: .speechSum) ?? 0
+        speechCount = try container.decodeIfPresent(Int.self, forKey: .speechCount) ?? 0
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(reviews, forKey: .reviews)
+        try container.encode(correct, forKey: .correct)
+        try container.encode(streak, forKey: .streak)
+        try container.encode(speechSum, forKey: .speechSum)
+        try container.encode(speechCount, forKey: .speechCount)
     }
 
     public var mastered: Bool {
@@ -108,6 +141,13 @@ public struct WordStat: Codable, Equatable, Identifiable {
         } else {
             copy.streak = 0
         }
+        return copy
+    }
+
+    public func recordSpeech(_ grade: SpeechGrade) -> WordStat {
+        var copy = record(correct: grade != .miss)
+        copy.speechSum += grade.value
+        copy.speechCount += 1
         return copy
     }
 }

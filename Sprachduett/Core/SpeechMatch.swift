@@ -1,5 +1,47 @@
 import Foundation
 
+public enum SpeechGrade: String, Codable, Equatable {
+    case sure
+    case close
+    case miss
+
+    public var value: Double {
+        switch self {
+        case .sure: return 1
+        case .close: return 0.6
+        case .miss: return 0
+        }
+    }
+}
+
+public enum SpeechScore {
+    /// Mai ek, tho, tri, chattawa. Ohne sie bleibt die Silbe, der Ton nicht.
+    private static let toneMarks: Set<UInt32> = [0x0E48, 0x0E49, 0x0E4A, 0x0E4B]
+
+    public static func withoutTones(_ text: String) -> String {
+        let source = SpeechMatch.stripParticles(text)
+        let kept = source.unicodeScalars.filter { !toneMarks.contains($0.value) }
+        return String(String.UnicodeScalarView(kept))
+    }
+
+    /// Grün ab klarem Treffer, gelb bei fast gleichem Wort (oft nur der Ton), sonst rot.
+    public static func grade(recognized: String, expected: String, alternates: [String] = []) -> SpeechGrade {
+        let targets = [expected] + alternates.filter { !$0.isEmpty }
+        if targets.contains(where: { SpeechMatch.accepts(recognized: recognized, expectedThai: $0) }) {
+            return .sure
+        }
+        let heardBare = withoutTones(recognized)
+        var bestBare = 0.0
+        var bestFull = 0.0
+        for target in targets {
+            bestBare = max(bestBare, SpeechMatch.similarity(heardBare, withoutTones(target)))
+            bestFull = max(bestFull, SpeechMatch.similarity(SpeechMatch.stripParticles(recognized), SpeechMatch.stripParticles(target)))
+        }
+        if bestBare >= 0.99 || bestFull >= 0.72 || bestBare >= 0.8 { return .close }
+        return .miss
+    }
+}
+
 public enum SpeechMatch {
     /// Längste zuerst, damit ครับผม vor ครับ fällt.
     public static let particleSuffixes = ["ครับผม", "นะครับ", "นะคะ", "ครับ", "ค่ะ", "คะ", "นะ", "จ้า", "จ้ะ"]

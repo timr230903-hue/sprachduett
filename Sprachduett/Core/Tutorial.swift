@@ -22,22 +22,10 @@ public enum TutorialKey {
 public enum TutorialScript {
     public static let pages: [GuideCard] = [
         GuideCard(
-            id: "handy",
+            id: "eins",
             emoji: "📱",
-            title: "Ein Handy reicht",
-            text: "Legt es zwischen euch. Eine Runde dauert ein paar Minuten. Koppeln könnt ihr später."
-        ),
-        GuideCard(
-            id: "spiele",
-            emoji: "🎲",
-            title: "Drei kleine Spiele",
-            text: "Erst hören und tippen, dann das Thai-Wort sagen, dann zwei Sätze vorlesen."
-        ),
-        GuideCard(
-            id: "pfad",
-            emoji: "🌱",
-            title: "Von Hallo bis zum Alltag",
-            text: "Ihr fangt bei null an. Eine Einheit öffnet die nächste, wenn ihr sie könnt."
+            title: "Zusammen",
+            text: "Ihr spielt zu zweit auf einem Handy. Hört zu, sprecht laut, tippt."
         ),
     ]
 
@@ -60,8 +48,8 @@ public enum LessonTour {
     public static let steps: [GuideCard] = [
         GuideCard(id: "intro", emoji: "👂", title: "Zuerst zuhören", text: "Neue Wörter hört ihr gemeinsam und sprecht sie nach. Danach kommt das Spiel."),
         GuideCard(id: "listen", emoji: "👆", title: "Wer tippt zuerst?", text: "Jede Seite hat dieselben Bilder. Der erste richtige Tipp bekommt den Punkt."),
-        GuideCard(id: "say", emoji: "🗣️", title: "Sag das Wort", text: "Eine Person sieht nur das Bild. Die andere hört zu und tippt Richtig."),
-        GuideCard(id: "dialog", emoji: "✅", title: "Zwei Sätze", text: "Lies deinen Satz laut vor. Die andere Person tippt Verstanden."),
+        GuideCard(id: "say", emoji: "🗣️", title: "Sag das Wort", text: "Eine Person sieht das Bild und sagt das Thai. Das Handy hört zu."),
+        GuideCard(id: "dialog", emoji: "✅", title: "Zwei Sätze", text: "Lies deinen Satz laut. Das Handy sagt, ob es angekommen ist."),
     ]
 
     public static func advance(step: Int) -> Int? {

@@ -255,6 +255,58 @@ final class AppModel: ObservableObject {
         }
     }
 
+    var persistedUsage: UsageLog { persisted.usage }
+
+    var headline: String {
+        persisted.checks.max { $0.date < $1.date }?.sentence
+            ?? "Noch kein Alltags-Check. Der kommt, wenn eine Stufe sitzt."
+    }
+
+    func dueCheckLevel() -> Int? {
+        let stages = [2, 1]
+        for stage in stages {
+            let units = pathUnits.filter { $0.stage == stage }
+            let mastered = !units.isEmpty && units.allSatisfy { LearningPath.ratio($0, stats: pathStats) >= LearningPath.unlockRatio }
+            let last = persisted.checks.filter { $0.level == stage }.map(\.date).max()
+            if RealLifeCheck.isDue(stageMastered: mastered, last: last, now: Date()) { return stage }
+        }
+        return nil
+    }
+
+    func saveCheck(_ record: CheckRecord) {
+        persisted.checks.append(record)
+        save()
+    }
+
+    func noteRoundStarted() {
+        persisted.usage = persisted.usage.started()
+        save()
+    }
+
+    func noteRoundFinished(seconds: Double) {
+        persisted.usage = persisted.usage.finished(seconds: seconds)
+        save()
+    }
+
+    func noteAbandoned(game: String) {
+        persisted.usage = persisted.usage.abandoned(game: game)
+        save()
+    }
+
+    func addFeedback(screen: String, note: String) {
+        let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        persisted.feedback.append(FeedbackNote(id: UUID().uuidString, date: Date(), screen: screen, note: trimmed))
+        save()
+    }
+
+    var hasFeedback: Bool { !persisted.feedback.isEmpty }
+
+    var feedbackExport: String {
+        if persisted.feedback.isEmpty { return "Noch keine Notizen." }
+        return persisted.feedback.map(\.exportLine).joined(separator: "\n")
+    }
+
     func rememberRound(_ stats: [String: WordStat], together: Bool) {
         var map = pathStats
         for (key, value) in stats { map[key] = value }
@@ -319,6 +371,9 @@ struct Persisted: Codable, Equatable {
     var sharingStarted: Bool
     var celebratedLength: Int
     var wordStats: [WordStat]
+    var usage: UsageLog
+    var feedback: [FeedbackNote]
+    var checks: [CheckRecord]
 
     var member: MemberProfile {
         MemberProfile(
@@ -353,7 +408,10 @@ struct Persisted: Codable, Equatable {
             zoneOwnerName: "",
             sharingStarted: false,
             celebratedLength: 0,
-            wordStats: []
+            wordStats: [],
+            usage: UsageLog(),
+            feedback: [],
+            checks: []
         )
     }
 
@@ -368,9 +426,20 @@ struct Persisted: Codable, Equatable {
     static func load() -> Persisted? {
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
         let decoder = JSONDecoder()
-        if let full = try? decoder.decode(Persisted.self, from: data) { return full }
+        if let full = try? decoder.decode(Persisted.self, from: patched(data)) { return full }
         guard let legacy = try? decoder.decode(LegacyPersisted.self, from: data) else { return nil }
         return legacy.upgraded()
+    }
+
+    private static func patched(_ data: Data) -> Data {
+        guard var object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return data }
+        if object["wordStats"] == nil { object["wordStats"] = [] }
+        if object["usage"] == nil {
+            object["usage"] = ["roundsStarted": 0, "roundsFinished": 0, "totalSeconds": 0, "abandonedByGame": [:]] as [String: Any]
+        }
+        if object["feedback"] == nil { object["feedback"] = [] }
+        if object["checks"] == nil { object["checks"] = [] }
+        return (try? JSONSerialization.data(withJSONObject: object)) ?? data
     }
 
     func save() {
@@ -405,7 +474,10 @@ private struct LegacyPersisted: Codable {
             zoneOwnerName: zoneOwnerName,
             sharingStarted: sharingStarted,
             celebratedLength: celebratedLength,
-            wordStats: []
+            wordStats: [],
+            usage: UsageLog(),
+            feedback: [],
+            checks: []
         )
     }
 }

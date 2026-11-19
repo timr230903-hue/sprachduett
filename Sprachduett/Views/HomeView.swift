@@ -2,20 +2,37 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var model: AppModel
-    @EnvironmentObject private var help: HelpRouter
+    @EnvironmentObject private var screens: ScreenTracker
     @State private var playing = false
     @State private var together = true
-    @State private var showDuo = false
     @State private var showSettings = false
+    @State private var showCheck = false
+    @State private var feedback = false
 
     var body: some View {
         ScreenBackground {
-            VStack(spacing: 22) {
+            VStack(spacing: 18) {
                 HStack {
-                    Text("Sprachduett").font(.headline)
+                    Text("Sprachduett")
+                        .font(.headline)
+                        .onLongPressGesture { feedback = true }
                     Spacer()
-                    HelpButton()
+                    Button { showSettings = true } label: {
+                        Image(systemName: "gearshape")
+                            .font(.title3)
+                            .foregroundStyle(Theme.coral)
+                    }
+                    .accessibilityLabel("Einstellungen")
                 }
+                Button {
+                    if model.dueCheckLevel() != nil { showCheck = true }
+                } label: {
+                    Text(model.headline)
+                        .font(.body)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
                 Text(model.pathSnapshot.label)
                     .font(.title3.weight(.semibold))
                 Text(model.pathSnapshot.unitTitle)
@@ -34,28 +51,28 @@ struct HomeView: View {
                         .foregroundStyle(.white)
                 }
                 .buttonStyle(.plain)
-                HStack(spacing: 12) {
-                    smallButton("Solo üben") { together = false; playing = true }
-                    smallButton("Duo") { showDuo = true }
-                    smallButton("Einstellungen") { showSettings = true }
-                }
+                Text("Serie \(model.streak.length)")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 Spacer()
             }
             .padding(24)
         }
-        .fullScreenCover(isPresented: $playing) {
-            RoundScreen(together: together)
+        .onAppear { screens.name = "Home" }
+        .fullScreenCover(isPresented: $playing) { RoundScreen(together: together) }
+        .fullScreenCover(isPresented: $showCheck) {
+            if let level = model.dueCheckLevel() {
+                LifeCheckScreen(level: level)
+            }
         }
-        .sheet(isPresented: $showDuo) { DuoView() }
-        .sheet(isPresented: $showSettings) { SettingsSheet() }
-    }
-
-    private func smallButton(_ title: String, action: @escaping () -> Void) -> some View {
-        Button(title, action: action)
-            .font(.subheadline.weight(.semibold))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .sheet(isPresented: $showSettings) {
+            SettingsSheet(playSolo: {
+                together = false
+                showSettings = false
+                playing = true
+            })
+        }
+        .sheet(isPresented: $feedback) { FeedbackSheet() }
     }
 }
 
@@ -75,38 +92,90 @@ private struct ProgressDots: View {
 }
 
 struct SettingsSheet: View {
+    var playSolo: () -> Void
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var help: HelpRouter
+    @EnvironmentObject private var screens: ScreenTracker
     @Environment(\.dismiss) private var dismiss
     @AppStorage(TutorialKey.lesson) private var lessonSeen = false
     @State private var name = ""
+    @State private var showDuo = false
+    @State private var feedback = false
 
     var body: some View {
         NavigationStack {
             ScreenBackground {
-                VStack(alignment: .leading, spacing: 16) {
-                    TextField("Name", text: $name)
-                        .textFieldStyle(.roundedBorder)
-                        .onAppear { name = model.me.name }
-                    FillButton(title: "Name sichern") {
-                        model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 14) {
+                        TextField("Name", text: $name)
+                            .textFieldStyle(.roundedBorder)
+                            .onAppear { name = model.me.name }
+                        FillButton(title: "Name sichern") {
+                            model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
+                        }
+                        SoftButton(title: "Solo üben") { dismiss(); playSolo() }
+                        SoftButton(title: "Duo / Partner") { showDuo = true }
+                        SoftButton(title: "Tutorial ansehen") {
+                            lessonSeen = false
+                            dismiss()
+                            help.open()
+                        }
+                        Text("Serie \(model.streak.length) · Punkte klein, der Alltags-Check zählt.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Text("Debug")
+                            .font(.headline)
+                        Text(debugText)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        SoftButton(title: "Feedback") { feedback = true }
+                        if model.hasFeedback {
+                            ShareLink(item: model.feedbackExport) { Text("Notizen teilen") }
+                        }
                     }
-                    SoftButton(title: "Tutorial ansehen") {
-                        lessonSeen = false
-                        dismiss()
-                        help.open()
-                    }
-                    Spacer()
+                    .padding(20)
                 }
-                .padding(20)
             }
             .navigationTitle("Einstellungen")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Fertig") { dismiss() }
+            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Fertig") { dismiss() } } }
+            .onAppear { screens.name = "Einstellungen" }
+            .sheet(isPresented: $showDuo) { DuoView() }
+            .sheet(isPresented: $feedback) { FeedbackSheet() }
+        }
+    }
+
+    private var debugText: String {
+        let usage = model.persistedUsage
+        let average = usage.averageSeconds.map { String(Int($0)) + " s" } ?? "–"
+        let skips = usage.abandonedByGame.map { "\($0.key) \($0.value)" }.sorted().joined(separator: ", ")
+        return "Runden \(usage.roundsStarted), fertig \(usage.roundsFinished), abgebrochen \(usage.abandoned), Dauer \(average). Abbrüche: \(skips.isEmpty ? "keine" : skips)"
+    }
+}
+
+struct FeedbackSheet: View {
+    @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var screens: ScreenTracker
+    @Environment(\.dismiss) private var dismiss
+    @State private var note = ""
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Bildschirm: \(screens.name)")
+                    .foregroundStyle(.secondary)
+                TextField("Was fühlt sich komisch an?", text: $note, axis: .vertical)
+                    .lineLimit(4...8)
+                    .textFieldStyle(.roundedBorder)
+                FillButton(title: "Merken") {
+                    model.addFeedback(screen: screens.name, note: note)
+                    dismiss()
                 }
+                Spacer()
             }
+            .padding(20)
+            .navigationTitle("Feedback")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

@@ -251,6 +251,13 @@ public enum RoundEngine {
         return copy
     }
 
+    public static func applySpeech(_ stats: [String: WordStat], wordID: String, grade: SpeechGrade) -> [String: WordStat] {
+        var copy = stats
+        let current = copy[wordID] ?? WordStat(id: wordID)
+        copy[wordID] = current.recordSpeech(grade)
+        return copy
+    }
+
     /// Neue Wörter stehen als Intro, bevor sie abgefragt werden.
     public static func introsComeFirst(_ plan: RoundPlan) -> Bool {
         var introduced = Set<String>()

@@ -28,16 +28,92 @@ final class SpeechCoach: ObservableObject {
         AVAudioSession.sharedInstance().requestRecordPermission { _ in }
     }
 
-    func speak(_ text: String) {
+    func speak(_ text: String, slow: Bool = false) {
         stopListening()
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
         try? session.setActive(true)
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "th-TH")
-        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.82
+        utterance.rate = slow ? 0.35 : AVSpeechUtteranceDefaultSpeechRate * 0.82
         synth.stopSpeaking(at: .immediate)
         synth.speak(utterance)
+    }
+
+    /// `nil` heißt: Erkennung fehlt oder ist nicht erlaubt. Dann tippt der Partner.
+    func capture(onText: @escaping (String?) -> Void) {
+        let status = SFSpeechRecognizer.authorizationStatus()
+        if status == .notDetermined {
+            requestPermissions()
+            hint = "Erlaubt Mikrofon und Spracherkennung, dann nochmal."
+            onText(nil)
+            return
+        }
+        guard status == .authorized, let recognizer, recognizer.isAvailable else {
+            hint = "Spracherkennung ist nicht da."
+            onText(nil)
+            return
+        }
+        stopListening()
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playAndRecord, mode: .measurement, options: [.duckOthers, .defaultToSpeaker])
+            try session.setActive(true)
+        } catch {
+            hint = "Das Mikrofon lässt sich nicht starten."
+            onText(nil)
+            return
+        }
+        let next = SFSpeechAudioBufferRecognitionRequest()
+        next.shouldReportPartialResults = true
+        if recognizer.supportsOnDeviceRecognition {
+            next.requiresOnDeviceRecognition = true
+            onDevice = true
+        } else {
+            onDevice = false
+        }
+        request = next
+        let input = audio.inputNode
+        let format = input.outputFormat(forBus: 0)
+        guard format.sampleRate > 0 else {
+            hint = "Das Mikrofon ist nicht bereit."
+            onText(nil)
+            return
+        }
+        if tapInstalled {
+            input.removeTap(onBus: 0)
+            tapInstalled = false
+        }
+        input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
+            next.append(buffer)
+        }
+        tapInstalled = true
+        audio.prepare()
+        do {
+            try audio.start()
+        } catch {
+            hint = "Das Mikrofon lässt sich nicht starten."
+            onText(nil)
+            return
+        }
+        listening = true
+        heard = ""
+        hint = onDevice ? "Ich höre auf dem Gerät zu." : "Ich höre zu."
+        let gate = ListenGate()
+        task = recognizer.recognitionTask(with: next) { [weak self] result, error in
+            let text = result?.bestTranscription.formattedString ?? ""
+            let finished = result?.isFinal ?? false
+            Task { @MainActor in
+                guard let self, gate.open else { return }
+                if !text.isEmpty { self.heard = text }
+                if finished || error != nil {
+                    gate.open = false
+                    let said = self.heard
+                    self.stopListening()
+                    onText(said)
+                }
+            }
+        }
     }
 
     func listen(expected: String, onMatch: @escaping () -> Void) {

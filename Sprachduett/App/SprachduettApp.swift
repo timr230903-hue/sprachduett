@@ -9,6 +9,7 @@ struct SprachduettApp: App {
     @StateObject private var sync = SyncHub.shared
     @StateObject private var coach = SpeechCoach()
     @StateObject private var help = HelpRouter()
+    @StateObject private var screens = ScreenTracker()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -19,6 +20,7 @@ struct SprachduettApp: App {
                 .environmentObject(sync)
                 .environmentObject(coach)
                 .environmentObject(help)
+                .environmentObject(screens)
                 .task {
                     coach.refreshAvailability()
                     await sync.start(model: model)
