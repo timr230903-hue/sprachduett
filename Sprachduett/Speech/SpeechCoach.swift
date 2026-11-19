@@ -8,6 +8,8 @@ final class SpeechCoach: ObservableObject {
     @Published var heard = ""
     @Published var hint = ""
     @Published var level: Double = 0
+    @Published var bufferCount = 0
+    @Published var debugLine = ""
     @Published private(set) var onDevice = false
 
     private var synth = AVSpeechSynthesizer()
@@ -18,9 +20,7 @@ final class SpeechCoach: ObservableObject {
     private var tapInstalled = false
     private var finishHandler: ((String?) -> Void)?
     private var didFinish = false
-    private var triedServer = false
-    private var peak: Double = 0
-    private var meterSamples = 0
+    private var capture = CaptureSnapshot.idle
     private var meterTick = Date.distantPast
     private var timeout: Task<Void, Never>?
     private var player: AVAudioPlayer?
@@ -77,9 +77,18 @@ final class SpeechCoach: ObservableObject {
         return true
     }
 
-    /// `nil` nur wenn Erkennung oder Mikrofon fehlen. Leerer Text heißt: nichts gehört, das ist kein Treffer.
+    /// Tippen startet, nochmal tippen stoppt. `nil` nur wenn Erkennung oder Mikrofon fehlen.
     func capture(expected: String = "", alternates: [String] = [], onText: @escaping (String?) -> Void) {
+        if listening {
+            stopCapture()
+            return
+        }
         Task { await beginCapture(expected: expected, alternates: alternates, onText: onText) }
+    }
+
+    func stopCapture() {
+        guard listening else { return }
+        apply(.userStop)
     }
 
     func stop() {
@@ -89,8 +98,7 @@ final class SpeechCoach: ObservableObject {
 
     private func beginCapture(expected: String, alternates: [String], onText: @escaping (String?) -> Void) async {
         synth.stopSpeaking(at: .immediate)
-        let session = AVAudioSession.sharedInstance()
-        try? session.setActive(false, options: [.notifyOthersOnDeactivation])
+        player?.stop()
         if let blocked = await authorize() {
             hint = blocked
             onText(nil)
@@ -106,52 +114,61 @@ final class SpeechCoach: ObservableObject {
             onText(nil)
             return
         }
-        stopEngine()
+        releaseEngine()
         didFinish = false
-        triedServer = false
-        peak = 0
-        meterSamples = 0
+        bufferCount = 0
         level = 0
         heard = ""
+        capture = CaptureMachine.reduce(.idle, .begin)
         finishHandler = onText
-        let preferDevice = recognizer.supportsOnDeviceRecognition
-        onDevice = preferDevice
+        onDevice = false
         do {
-            try startEngine(recognizer: recognizer, expected: expected, alternates: alternates, onDevice: preferDevice)
+            try startEngine(recognizer: recognizer, expected: expected, alternates: alternates)
         } catch {
-            hint = "Das Mikrofon lässt sich nicht starten."
+            hint = "Das Mikrofon lässt sich nicht starten. \(error.localizedDescription)"
+            debugLine = "Session fehlgeschlagen"
             finish(nil)
         }
     }
 
+    /// Session neu aufnehmen, Engine zurücksetzen, Tap erst danach mit dem echten Eingangsformat.
     private func startEngine(
         recognizer: SFSpeechRecognizer,
         expected: String,
-        alternates: [String],
-        onDevice: Bool
+        alternates: [String]
     ) throws {
         let session = AVAudioSession.sharedInstance()
-        try session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker, .duckOthers])
+        try? session.setActive(false, options: [.notifyOthersOnDeactivation])
+        try session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker, .allowBluetooth])
         try session.setActive(true)
+
+        let input = audio.inputNode
+        var format = input.outputFormat(forBus: 0)
+        if format.sampleRate == 0 || format.channelCount == 0 {
+            audio.reset()
+            try session.setActive(true)
+            format = audio.inputNode.outputFormat(forBus: 0)
+        }
+        guard format.sampleRate > 0, format.channelCount > 0 else {
+            throw ListenError.microphone
+        }
+
         let next = SFSpeechAudioBufferRecognitionRequest()
         next.shouldReportPartialResults = true
-        next.requiresOnDeviceRecognition = onDevice
+        next.requiresOnDeviceRecognition = false
         let context = ([expected] + alternates).filter { !$0.isEmpty }
         if !context.isEmpty {
             next.contextualStrings = context
         }
-        self.onDevice = onDevice
         request = next
-        let input = audio.inputNode
-        let format = input.outputFormat(forBus: 0)
-        guard format.sampleRate > 0, format.channelCount > 0 else {
-            throw ListenError.microphone
-        }
+        let route = recognizer.supportsOnDeviceRecognition ? "Server (on-device nicht erzwungen)" : "Server"
+        debugLine = String(format: "%.0f Hz · %d Kanal · %@", format.sampleRate, format.channelCount, route)
+
         input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
             next.append(buffer)
             let value = SpeechCoach.meterLevel(buffer)
             Task { @MainActor in
-                self?.noteLevel(value)
+                self?.noteBuffer(value)
             }
         }
         tapInstalled = true
@@ -164,39 +181,36 @@ final class SpeechCoach: ObservableObject {
         task = recognizer.recognitionTask(with: next) { [weak self] result, error in
             let text = result?.bestTranscription.formattedString ?? ""
             let finished = result?.isFinal ?? false
+            let message = error?.localizedDescription
             Task { @MainActor in
                 guard let self, self.generation == generation, !self.didFinish else { return }
-                if !text.isEmpty { self.heard = text }
-                if error != nil, onDevice, self.heard.isEmpty, !self.triedServer {
-                    self.triedServer = true
-                    self.hint = "On-Device geht nicht, ich höre über den Server."
-                    self.restartOnServer(recognizer: recognizer, expected: expected, alternates: alternates)
-                    return
+                if !text.isEmpty { self.apply(.partial(text)) }
+                if let message, text.isEmpty, !finished {
+                    self.hint = "Erkennung: \(message)"
+                    self.debugLine = message
                 }
-                if finished || error != nil {
-                    self.finish(self.heard)
+                if finished || (error != nil && !text.isEmpty) {
+                    self.apply(.userStop)
                 }
             }
         }
     }
 
-    private func restartOnServer(recognizer: SFSpeechRecognizer, expected: String, alternates: [String]) {
-        stopEngine()
-        do {
-            try startEngine(recognizer: recognizer, expected: expected, alternates: alternates, onDevice: false)
-        } catch {
-            hint = "Spracherkennung ist gerade nicht verfügbar."
-            finish(nil)
-        }
+    private func noteBuffer(_ value: Double) {
+        bufferCount += 1
+        let now = Date()
+        let tick = now.timeIntervalSince(meterTick) > 0.1
+        if tick { meterTick = now }
+        level = value
+        if tick { apply(.level(value)) }
     }
 
-    private func noteLevel(_ value: Double) {
-        meterSamples += 1
-        peak = max(peak, value)
-        let now = Date()
-        guard now.timeIntervalSince(meterTick) > 0.05 else { return }
-        meterTick = now
-        level = value
+    private func apply(_ event: CaptureEvent) {
+        capture = CaptureMachine.reduce(capture, event)
+        if !capture.transcript.isEmpty { heard = capture.transcript }
+        if let outcome = capture.outcome {
+            finish(outcome)
+        }
     }
 
     private func armTimeout() {
@@ -222,14 +236,14 @@ final class SpeechCoach: ObservableObject {
             return
         }
         let said = text ?? ""
-        let silence = meterSamples > 3 && peak < 0.01
-        if said.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || silence {
-            hint = "Nichts gehört."
+        if said.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            hint = bufferCount == 0 ? "Kein Puffer vom Mikrofon." : "Nichts gehört."
             heard = ""
             handler?("")
             return
         }
         hint = ""
+        heard = said
         handler?(said)
     }
 
@@ -260,6 +274,12 @@ final class SpeechCoach: ObservableObject {
     }
 
     private func stopEngine() {
+        releaseEngine()
+        listening = false
+        level = 0
+    }
+
+    private func releaseEngine() {
         generation += 1
         if audio.isRunning { audio.stop() }
         if tapInstalled {
@@ -270,8 +290,7 @@ final class SpeechCoach: ObservableObject {
         task?.cancel()
         request = nil
         task = nil
-        listening = false
-        level = 0
+        audio.reset()
     }
 }
 
@@ -281,27 +300,36 @@ private enum ListenError: Error {
 
 extension SpeechCoach {
     nonisolated static func meterLevel(_ buffer: AVAudioPCMBuffer) -> Double {
+        ListenMeter.unitLevel(rms: ListenMeter.rms(samples(from: buffer)))
+    }
+
+    nonisolated static func samples(from buffer: AVAudioPCMBuffer) -> [Float] {
         let frames = Int(buffer.frameLength)
-        guard frames > 0 else { return 0 }
-        var sum: Float = 0
+        guard frames > 0 else { return [] }
+        let channels = Int(buffer.format.channelCount)
         if let data = buffer.floatChannelData {
-            let samples = data[0]
-            for index in 0..<frames {
-                let sample = samples[index]
-                sum += sample * sample
+            var values: [Float] = []
+            values.reserveCapacity(frames * max(channels, 1))
+            for channel in 0..<max(channels, 1) {
+                let pointer = data[channel]
+                for index in 0..<frames {
+                    values.append(pointer[index])
+                }
             }
-        } else if let data = buffer.int16ChannelData {
-            let samples = data[0]
-            let scale = Float(Int16.max)
-            for index in 0..<frames {
-                let sample = Float(samples[index]) / scale
-                sum += sample * sample
-            }
-        } else {
-            return 0
+            return values
         }
-        let rms = sqrt(sum / Float(frames))
-        let db = 20 * log10(max(rms, 0.000_01))
-        return Double(min(1, max(0, (db + 48) / 42)))
+        if let data = buffer.int16ChannelData {
+            let scale = Float(Int16.max)
+            var values: [Float] = []
+            values.reserveCapacity(frames * max(channels, 1))
+            for channel in 0..<max(channels, 1) {
+                let pointer = data[channel]
+                for index in 0..<frames {
+                    values.append(Float(pointer[index]) / scale)
+                }
+            }
+            return values
+        }
+        return []
     }
 }

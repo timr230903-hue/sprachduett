@@ -185,6 +185,80 @@ public enum SpeechHint {
     }
 }
 
+public enum ListenMeter {
+    public static func rms(_ samples: [Float]) -> Float {
+        guard !samples.isEmpty else { return 0 }
+        var sum: Float = 0
+        for sample in samples {
+            sum += sample * sample
+        }
+        return sqrt(sum / Float(samples.count))
+    }
+
+    /// 0 ist Stille, gesprochene Silben liegen deutlich darüber.
+    public static func unitLevel(rms: Float) -> Double {
+        let db = 20 * log10(max(rms, 0.000_01))
+        return Double(min(1, max(0, (db + 50) / 40)))
+    }
+}
+
+public struct CaptureSnapshot: Equatable {
+    public var listening: Bool
+    public var heardSpeech: Bool
+    public var transcript: String
+    public var quietFrames: Int
+    public var outcome: String?
+
+    public static let idle = CaptureSnapshot(
+        listening: false, heardSpeech: false, transcript: "", quietFrames: 0, outcome: nil
+    )
+}
+
+public enum CaptureEvent: Equatable {
+    case begin
+    case level(Double)
+    case partial(String)
+    case userStop
+    case timeout
+}
+
+public enum CaptureMachine {
+    public static let speechLevel = 0.18
+    public static let quietLevel = 0.08
+    /// Der Aufrufer schickt Pegel etwa zehnmal pro Sekunde. Sechs ruhige Frames sind etwas über eine halbe Sekunde nach Sprache.
+    public static let quietFramesToStop = 6
+
+    public static func reduce(_ state: CaptureSnapshot, _ event: CaptureEvent) -> CaptureSnapshot {
+        if state.outcome != nil { return state }
+        var next = state
+        switch event {
+        case .begin:
+            return CaptureSnapshot(listening: true, heardSpeech: false, transcript: "", quietFrames: 0, outcome: nil)
+        case .level(let level):
+            guard next.listening else { return next }
+            if level >= speechLevel {
+                next.heardSpeech = true
+                next.quietFrames = 0
+            } else if next.heardSpeech, level < quietLevel {
+                next.quietFrames += 1
+                if next.quietFrames >= quietFramesToStop {
+                    next.listening = false
+                    next.outcome = next.transcript
+                }
+            }
+        case .partial(let text):
+            guard next.listening, !text.isEmpty else { return next }
+            next.transcript = text
+            next.quietFrames = 0
+        case .userStop, .timeout:
+            guard next.listening else { return next }
+            next.listening = false
+            next.outcome = next.transcript
+        }
+        return next
+    }
+}
+
 public enum SpeechPace {
     /// Normal etwas unter dem Systemtempo, langsam knapp über dem Minimum.
     public static func rate(slow: Bool, minimum: Float, defaultRate: Float) -> Float {

@@ -24,6 +24,36 @@ final class SpeechScoreTests: XCTestCase {
         XCTAssertFalse(SpeechMatch.accepts(recognized: "ไอ", expectedThai: "สวัสดี"))
     }
 
+    func testMeterAndCaptureMachine() {
+        XCTAssertEqual(ListenMeter.rms([]), 0)
+        XCTAssertEqual(ListenMeter.rms([0, 0, 0]), 0)
+        XCTAssertEqual(ListenMeter.rms([0.5, -0.5]), 0.5, accuracy: 0.0001)
+        XCTAssertLessThan(ListenMeter.unitLevel(rms: 0.001), ListenMeter.unitLevel(rms: 0.1))
+        XCTAssertEqual(ListenMeter.unitLevel(rms: 1), 1, accuracy: 0.001)
+
+        var state = CaptureMachine.reduce(.idle, .begin)
+        XCTAssertTrue(state.listening)
+        XCTAssertNil(state.outcome)
+        state = CaptureMachine.reduce(state, .level(0.02))
+        XCTAssertFalse(state.heardSpeech)
+        state = CaptureMachine.reduce(state, .partial("สวั"))
+        state = CaptureMachine.reduce(state, .level(0.4))
+        XCTAssertTrue(state.heardSpeech)
+        for _ in 0..<CaptureMachine.quietFramesToStop {
+            state = CaptureMachine.reduce(state, .level(0.01))
+        }
+        XCTAssertEqual(state.outcome, "สวั")
+
+        var stopped = CaptureMachine.reduce(.idle, .begin)
+        stopped = CaptureMachine.reduce(stopped, .partial("สวัสดี"))
+        stopped = CaptureMachine.reduce(stopped, .userStop)
+        XCTAssertEqual(stopped.outcome, "สวัสดี")
+
+        var timed = CaptureMachine.reduce(.idle, .begin)
+        timed = CaptureMachine.reduce(timed, .timeout)
+        XCTAssertEqual(timed.outcome, "")
+    }
+
     func testSlowRateIsClearlySlower() {
         let slow = SpeechPace.rate(slow: true, minimum: 0, defaultRate: 0.5)
         let normal = SpeechPace.rate(slow: false, minimum: 0, defaultRate: 0.5)

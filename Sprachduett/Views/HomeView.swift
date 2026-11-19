@@ -163,6 +163,7 @@ struct SettingsSheet: View {
     @State private var rightGender: SpeakerGender = .unspecified
     @State private var showDuo = false
     @State private var feedback = false
+    @State private var micTest = false
     @State private var studio: StudioRoute?
 
     var body: some View {
@@ -211,6 +212,7 @@ struct SettingsSheet: View {
                             .foregroundStyle(.secondary)
                         Text("Debug")
                             .font(.headline)
+                        SoftButton(title: "Mikrofon-Test") { micTest = true }
                         Text(debugText)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -246,6 +248,7 @@ struct SettingsSheet: View {
             }
             .sheet(isPresented: $showDuo) { DuoView() }
             .sheet(isPresented: $feedback) { FeedbackSheet() }
+            .sheet(isPresented: $micTest) { MicTestScreen() }
             .navigationDestination(item: $studio) { route in
                 switch route {
                 case .tone: ToneDuelScreen()

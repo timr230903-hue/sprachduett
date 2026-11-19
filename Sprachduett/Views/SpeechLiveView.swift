@@ -41,20 +41,12 @@ struct SpeechListenDeck: View {
                     .foregroundStyle(Theme.ink)
             }
             Waveform(level: speech.level, listening: speech.listening)
-            MicButton(listening: speech.listening) {
-                grade = nil
-                fallback = false
-                litSure = 0
-                speech.capture(expected: thai, alternates: alternates) { text in
-                    if let text {
-                        fallback = false
-                        grade = SpeechScore.grade(recognized: text, expected: thai, alternates: alternates)
-                    } else {
-                        fallback = true
-                        grade = nil
-                    }
-                }
-            }
+            MicButton(
+                listening: speech.listening,
+                toggle: { startOrStop() },
+                holdBegan: { if !speech.listening { startOrStop() } },
+                holdEnded: { speech.stopCapture() }
+            )
             if let grade {
                 let note = SpeechHint.explain(recognized: speech.heard, expected: thai, roman: roman)
                 Text(resultTitle(grade))
@@ -91,6 +83,25 @@ struct SpeechListenDeck: View {
             if count > litSure {
                 Haptics.success()
                 litSure = count
+            }
+        }
+    }
+
+    private func startOrStop() {
+        if speech.listening {
+            speech.stopCapture()
+            return
+        }
+        grade = nil
+        fallback = false
+        litSure = 0
+        speech.capture(expected: thai, alternates: alternates) { text in
+            if let text {
+                fallback = false
+                grade = SpeechScore.grade(recognized: text, expected: thai, alternates: alternates)
+            } else {
+                fallback = true
+                grade = nil
             }
         }
     }
@@ -182,29 +193,94 @@ struct SpeechListenDeck: View {
 
 struct MicButton: View {
     let listening: Bool
-    let action: () -> Void
+    let toggle: () -> Void
+    var holdBegan: () -> Void = {}
+    var holdEnded: () -> Void = {}
+    @State private var holding = false
 
     var body: some View {
-        Button(action: action) {
-            TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: !listening)) { context in
-                let time = context.date.timeIntervalSinceReferenceDate
-                let wave = listening ? 0.5 + 0.5 * sin(time * 5) : 0
-                ZStack {
-                    Circle()
-                        .fill(Theme.accent.opacity(0.22))
-                        .frame(width: 104, height: 104)
-                        .scaleEffect(1 + wave * 0.16)
-                    Circle()
-                        .fill(Theme.button)
-                        .frame(width: 74, height: 74)
-                    Image(systemName: listening ? "waveform" : "mic.fill")
-                        .font(.title)
-                        .foregroundStyle(Color.white)
-                }
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: !listening)) { context in
+            let time = context.date.timeIntervalSinceReferenceDate
+            let wave = listening ? 0.5 + 0.5 * sin(time * 5) : 0
+            ZStack {
+                Circle()
+                    .fill(Theme.accent.opacity(0.22))
+                    .frame(width: 104, height: 104)
+                    .scaleEffect(1 + wave * 0.16)
+                Circle()
+                    .fill(Theme.button)
+                    .frame(width: 74, height: 74)
+                Image(systemName: listening ? "stop.fill" : "mic.fill")
+                    .font(.title)
+                    .foregroundStyle(Color.white)
             }
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(listening ? "Ich höre zu" : "Sprechen")
+        .contentShape(Circle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    guard !holding else { return }
+                    holding = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
+                        guard holding, !listening else { return }
+                        holdBegan()
+                    }
+                }
+                .onEnded { _ in
+                    let wasHold = listening
+                    let pressed = holding
+                    holding = false
+                    if pressed, wasHold {
+                        holdEnded()
+                    } else if pressed {
+                        toggle()
+                    }
+                }
+        )
+        .accessibilityLabel(listening ? "Aufnahme stoppen" : "Sprechen")
+        .accessibilityHint("Tippen startet und stoppt. Gedrückt halten spricht nur so lange.")
+    }
+}
+
+struct MicTestScreen: View {
+    @EnvironmentObject private var speech: SpeechCoach
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ScreenBackground {
+            VStack(spacing: 14) {
+                CloseBar { speech.stopCapture(); dismiss() }
+                Text("Mikrofon-Test")
+                    .font(.system(.title2, design: .rounded).weight(.bold))
+                Text(String(format: "Pegel %.2f · Puffer %d", speech.level, speech.bufferCount))
+                    .font(.system(.title3, design: .rounded).weight(.bold).monospacedDigit())
+                Waveform(level: speech.level, listening: speech.listening)
+                Text(speech.heard.isEmpty ? "Noch kein Text" : speech.heard)
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                Text(speech.debugLine.isEmpty ? speech.hint : speech.debugLine)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                MicButton(
+                    listening: speech.listening,
+                    toggle: { startOrStop() },
+                    holdBegan: { if !speech.listening { startOrStop() } },
+                    holdEnded: { speech.stopCapture() }
+                )
+                Spacer()
+            }
+            .padding(20)
+        }
+        .navigationBarBackButtonHidden(true)
+    }
+
+    private func startOrStop() {
+        if speech.listening {
+            speech.stopCapture()
+            return
+        }
+        speech.capture(expected: "สวัสดี", alternates: ["สบายดี"]) { _ in }
     }
 }
 

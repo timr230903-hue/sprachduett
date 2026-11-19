@@ -20,7 +20,8 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 - [x] Locale `th-TH`, on-device, sonst Server. Leise oder fremde Laute sind rot, nie ein Treffer.
 - [x] Langsam ist höchstens halb so schnell wie normal (`SpeechPace`).
 - [x] Liegt `Audio/<id>.m4a` im Bundle, spielt sie im normalen Tempo. Langsam und fehlende Dateien nutzen die Synthese. Die 300 Sätze stehen in `docs/AUDIO-SCRIPT.csv`. Es sind keine erfundenen Aufnahmen im Bundle.
-- [ ] Am Gerät: Pegel, Live-Text, Silbenfarben, Haptik, hörbar langsames Tempo, und ob eine echte Aufnahme die Stimme ersetzt.
+- [x] Pegel und Aufnahme-Automat sind als reine Funktion getestet. Profil → Debug → Mikrofon-Test zeigt Pegel, Pufferzahl und Teiltext. Die Erkennung erzwingt kein On-Device-Modell.
+- [ ] Am Gerät: Pegel bewegt sich, Teiltext erscheint, Tippen und Gedrückthalten stoppen, nach einer Sprechpause endet die Aufnahme.
 
 ## Aussehen und Zugang
 
