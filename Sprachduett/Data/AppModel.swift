@@ -369,7 +369,8 @@ struct Persisted: Codable, Equatable {
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
         let decoder = JSONDecoder()
         if let full = try? decoder.decode(Persisted.self, from: data) { return full }
-        return try? decoder.decode(LegacyPersisted.self, from: data)?.upgraded()
+        guard let legacy = try? decoder.decode(LegacyPersisted.self, from: data) else { return nil }
+        return legacy.upgraded()
     }
 
     func save() {
