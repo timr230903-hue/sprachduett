@@ -84,9 +84,7 @@ private struct PathScreen: View {
                         if model.pausedRound != nil {
                             Button("Neue Runde") {
                                 model.clearPausedRound()
-                                together = true
-                                resume = false
-                                playing = true
+                                lessons.start(together: true, resume: false)
                             }
                             .font(.system(.body, design: .rounded).weight(.bold))
                             .foregroundStyle(Theme.accent)
