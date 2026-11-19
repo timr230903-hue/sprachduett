@@ -31,14 +31,10 @@ final class NavigationUITests: XCTestCase {
         app.launchArguments = ["-ui-testing"]
         app.launch()
 
-        let gear = app.buttons["Einstellungen"]
-        XCTAssertTrue(gear.waitForExistence(timeout: 10))
-        gear.tap()
-
-        let done = app.buttons["Fertig"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
-        done.tap()
-
+        let profile = app.tabBars.buttons["Profil"]
+        XCTAssertTrue(profile.waitForExistence(timeout: 10))
+        profile.tap()
+        app.tabBars.buttons["Lernen"].tap()
         XCTAssertTrue(app.buttons["play-together"].waitForExistence(timeout: 5))
     }
 }

@@ -21,6 +21,12 @@ final class RoundController: ObservableObject {
     var beat: Beat? { RoundEngine.beat(plan, cursor) }
     var done: Bool { cursor.finished }
 
+    var lessonProgress: Double {
+        let total = max(plan.beats.count, 1)
+        if cursor.finished { return 1 }
+        return Double(min(max(cursor.index, 0), total)) / Double(total)
+    }
+
     var bannerTitle: String {
         switch beat {
         case .listen(let item):
@@ -284,34 +290,45 @@ struct RoundScreen: View {
     @State private var started = Date()
     @State private var closed = false
     @State private var confirmLeave = false
+    @State private var pending: SpeechGrade?
+    @State private var picked: String?
     @StateObject private var round = RoundController()
 
     var body: some View {
         ScreenBackground {
-            VStack(spacing: 16) {
-                CloseBar {
-                    if round.done {
-                        closed = true
-                        dismiss()
-                    } else {
-                        confirmLeave = true
+            VStack(spacing: 12) {
+                HStack(spacing: 12) {
+                    CloseBar {
+                        if round.done {
+                            closed = true
+                            dismiss()
+                        } else {
+                            confirmLeave = true
+                        }
                     }
+                    .frame(width: 132)
+                    ProgressView(value: round.lessonProgress)
+                        .tint(Theme.sage)
+                        .accessibilityLabel("Lektion \(Int(round.lessonProgress * 100)) Prozent")
                 }
                 TurnBanner(name: round.bannerTitle, left: round.turnIsLeft, text: round.bannerDetail)
                 if round.done {
                     ResultsPane(
+                        title: round.plan.unitTitle,
                         leftName: round.leftName,
                         rightName: round.rightName,
                         leftPoints: round.points(left: true),
                         rightPoints: round.points(left: false),
                         solo: round.mode == .solo,
-                        streak: model.streak.length,
-                        again: { dismiss() }
+                        again: {
+                            closed = true
+                            dismiss()
+                        }
                     )
                 } else {
-                    beatBody
+                    ScrollView { beatBody.padding(.bottom, 8) }
+                    lessonDock
                 }
-                Spacer(minLength: 0)
             }
             .padding(16)
         }
@@ -321,6 +338,10 @@ struct RoundScreen: View {
                     round.dismissCoach()
                 }
             }
+        }
+        .onChange(of: round.beat?.id) { _, _ in
+            pending = nil
+            picked = nil
         }
         .onAppear {
             screens.name = "Runde"
@@ -365,11 +386,9 @@ struct RoundScreen: View {
                 romanOpacity: romanOpacity(wordID: item.answer.id),
                 speech: speech,
                 listener: round.display(item.listenerID),
-                onExplain: round.acceptExplain,
-                onSpoken: round.noteListenSpeech,
-                onHandoff: round.confirmHandoff,
-                onPicture: round.choosePicture,
-                onNext: round.finishListen
+                pending: $pending,
+                picked: picked,
+                onPick: { picked = $0 }
             )
             .id(item.id + round.cursor.listenPhase.rawValue)
             .transition(.opacity.combined(with: .move(edge: .trailing)))
@@ -386,7 +405,7 @@ struct RoundScreen: View {
                 speech: speech,
                 wordID: turn.word.id,
                 ownerID: turn.speakerID,
-                onGrade: { grade in round.finishSpeech(grade, wordID: turn.word.id, speakerID: turn.speakerID) }
+                pending: $pending
             )
             .id(turn.id)
         case .dialog(let turn):
@@ -400,7 +419,7 @@ struct RoundScreen: View {
                 hideThaiUntilGraded: false,
                 romanOpacity: 1,
                 speech: speech,
-                onGrade: { grade in round.finishSpeech(grade, wordID: nil, speakerID: turn.speakerID) }
+                pending: $pending
             )
             .id(turn.id)
         case .build(let item):
@@ -466,6 +485,47 @@ struct RoundScreen: View {
         )
     }
 
+    @ViewBuilder private var lessonDock: some View {
+        if let pending {
+            FeedbackBanner(grade: pending) { commit(pending) }
+        } else if case .listen = round.beat, round.cursor.listenPhase == .point {
+            FillButton(title: "CHECK", enabled: picked != nil) {
+                guard let picked else { return }
+                round.choosePicture(picked)
+                self.picked = nil
+            }
+        } else if case .listen = round.beat, round.cursor.listenPhase == .result {
+            let ok = round.cursor.speechUnderstood && round.cursor.pictureRight
+            FeedbackBanner(grade: ok ? .sure : .miss) { round.finishListen() }
+        } else if case .intro = round.beat {
+            FillButton(title: "WEITER") { round.nextIntro() }
+        } else if case .listen = round.beat, round.cursor.listenPhase == .explain || round.cursor.listenPhase == .pending {
+            FillButton(title: "WEITER") { round.acceptExplain() }
+        } else if case .listen = round.beat, round.cursor.listenPhase == .handoff {
+            FillButton(title: "WEITER") { round.confirmHandoff() }
+        } else if case .say = round.beat {
+            FillButton(title: "CHECK", enabled: false) {}
+        } else if case .dialog = round.beat {
+            FillButton(title: "CHECK", enabled: false) {}
+        }
+    }
+
+    private func commit(_ grade: SpeechGrade) {
+        switch round.beat {
+        case .listen:
+            round.noteListenSpeech(grade)
+        case .say(let turn):
+            if grade != .miss { Haptics.success() } else { Haptics.warning() }
+            round.finishSpeech(grade, wordID: turn.word.id, speakerID: turn.speakerID)
+        case .dialog(let turn):
+            if grade != .miss { Haptics.success() } else { Haptics.warning() }
+            round.finishSpeech(grade, wordID: nil, speakerID: turn.speakerID)
+        default:
+            break
+        }
+        pending = nil
+    }
+
     private func romanOpacity(wordID: String) -> Double {
         let stat = model.pathStats[wordID]
         return RomanFade.opacity(
@@ -521,7 +581,6 @@ private struct IntroPane: View {
                 FillButton(title: "Partnerstimme", systemImage: "person.wave.2") { partner(partnerURL) }
             }
             FillButton(title: "Langsam", systemImage: "tortoise", action: slow)
-            FillButton(title: "Weiter", action: next)
         }
     }
 }
@@ -532,12 +591,9 @@ private struct ListenDuet: View {
     let romanOpacity: Double
     let speech: SpeechCoach
     let listener: String
-    let onExplain: () -> Void
-    let onSpoken: (SpeechGrade) -> Void
-    let onHandoff: () -> Void
-    let onPicture: (String) -> Void
-    let onNext: () -> Void
-    @State private var grade: SpeechGrade?
+    @Binding var pending: SpeechGrade?
+    var picked: String?
+    let onPick: (String) -> Void
     @State private var fallback = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -549,7 +605,6 @@ private struct ListenDuet: View {
                     .font(.title3)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
-                FillButton(title: "Los", action: onExplain)
             case .speak:
                 Text(item.answer.emoji).font(.system(size: 72)).accessibilityHidden(true)
                 Text(item.answer.german).font(.title2)
@@ -559,16 +614,11 @@ private struct ListenDuet: View {
                     alternates: [],
                     romanOpacity: romanOpacity,
                     speech: speech,
-                    grade: $grade,
+                    grade: $pending,
                     fallback: $fallback
                 )
                 FillButton(title: "Anhören", systemImage: "speaker.wave.2") { speech.speak(item.answer.thai, clipID: item.answer.id) }
                 FillButton(title: "Langsam", systemImage: "tortoise") { speech.speak(item.answer.thai, slow: true, clipID: item.answer.id) }
-                if grade != nil || fallback {
-                    FillButton(title: "Handy weitergeben") {
-                        onSpoken(grade ?? .miss)
-                    }
-                }
             case .handoff:
                 Image(systemName: "iphone.gen3")
                     .font(.system(size: 64))
@@ -579,25 +629,28 @@ private struct ListenDuet: View {
                      : "\(listener) nimmt das Handy. Das Wort bleibt verdeckt.")
                     .font(.title3)
                     .multilineTextAlignment(.center)
-                FillButton(title: item.speakerID == item.listenerID ? "Bilder zeigen" : "\(listener) hat das Handy", action: onHandoff)
             case .point:
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(Array(item.choices.enumerated()), id: \.element.id) { index, choice in
                         Button {
                             Haptics.tap()
-                            onPicture(choice.id)
+                            onPick(choice.id)
                         } label: {
                             Text(choice.emoji)
                                 .font(.system(size: 56))
                                 .frame(maxWidth: .infinity, minHeight: 96)
                                 .background(Theme.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                        .stroke(picked == choice.id ? Theme.accent : Color.clear, lineWidth: 4)
+                                )
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("Bild \(index + 1)")
                     }
                 }
             case .result:
-                FillButton(title: "Weiter", action: onNext)
+                EmptyView()
             }
         }
         .animation(reduceMotion ? nil : .spring(duration: 0.35), value: phase)
@@ -615,8 +668,7 @@ private struct SpeechCard: View {
     let speech: SpeechCoach
     var wordID: String? = nil
     var ownerID: String = "p1"
-    let onGrade: (SpeechGrade) -> Void
-    @State private var grade: SpeechGrade?
+    @Binding var pending: SpeechGrade?
     @State private var fallback = false
 
     var body: some View {
@@ -629,46 +681,79 @@ private struct SpeechCard: View {
                 alternates: alternates,
                 romanOpacity: romanOpacity,
                 speech: speech,
-                grade: $grade,
+                grade: $pending,
                 fallback: $fallback,
                 hidesThaiUntilListening: hideThaiUntilGraded
             )
             FillButton(title: "Nochmal anhören", systemImage: "tortoise") { speech.speak(thai, slow: true) }
-            if let grade {
-                if grade == .sure, let wordID {
-                    VoiceSaveButton(wordID: wordID, ownerID: ownerID, thai: thai)
-                }
-                FillButton(title: "Weiter") { onGrade(grade) }
+            if pending == .sure, let wordID {
+                VoiceSaveButton(wordID: wordID, ownerID: ownerID, thai: thai)
             }
         }
     }
 }
 
+private struct FeedbackBanner: View {
+    let grade: SpeechGrade
+    let weiter: () -> Void
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(grade == .miss ? "Noch nicht" : "Richtig")
+                .font(.system(.title2, design: .rounded).weight(.heavy))
+                .foregroundStyle(grade == .miss ? Theme.brick : Theme.sage)
+            FillButton(title: "WEITER", color: grade == .miss ? Theme.brick : Theme.sage, action: weiter)
+        }
+        .padding(12)
+        .background((grade == .miss ? Theme.brick : Theme.sage).opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .accessibilityElement(children: .contain)
+    }
+}
+
 private struct ResultsPane: View {
+    let title: String
     let leftName: String
     let rightName: String
     let leftPoints: Int
     let rightPoints: Int
     let solo: Bool
-    let streak: Int
     let again: () -> Void
 
     var body: some View {
-        VStack(spacing: 12) {
-            Text("🎉").font(.system(size: 64))
-            Text("Runde geschafft").font(.title.weight(.bold))
-            Text("\(leftName): \(leftPoints)")
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(Theme.navy)
-            if !solo {
-                Text("\(rightName): \(rightPoints)")
-                    .font(.title3)
+        ZStack {
+            Confetti()
+            VStack(spacing: 12) {
+                Text("🐘").font(.system(size: 72))
+                Text("Ihr habt \(title) geschafft")
+                    .font(.system(.title, design: .rounded).weight(.bold))
+                    .multilineTextAlignment(.center)
+                Text("\(leftPoints + rightPoints) XP")
+                    .font(.system(.title2, design: .rounded).weight(.heavy))
                     .foregroundStyle(Theme.accent)
+                Text(solo ? leftName : "\(leftName) und \(rightName)")
+                    .foregroundStyle(.secondary)
+                FillButton(title: "Zurück zum Pfad", action: again)
             }
-            Text("Serie: \(streak)")
-                .foregroundStyle(.secondary)
-            FillButton(title: "Nochmal", action: again)
         }
+    }
+}
+
+private struct Confetti: View {
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 20.0)) { context in
+            Canvas { ctx, size in
+                let time = context.date.timeIntervalSinceReferenceDate
+                for index in 0..<28 {
+                    let x = CGFloat((index * 53) % max(Int(size.width), 1))
+                    let travel = (time * 36 + Double(index * 28)).truncatingRemainder(dividingBy: Double(size.height + 20))
+                    let rect = CGRect(x: x, y: travel, width: 8, height: 8)
+                    let color = index % 2 == 0 ? Theme.accent : Theme.sage
+                    ctx.fill(Path(ellipseIn: rect), with: .color(color))
+                }
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 

@@ -4,7 +4,9 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 
 ## Navigation
 
-- [x] Start, Einstellungen, Runde, Alltags-Check, Tutorial, Duo, Feedback, Ton-Duell, Schrift, eigene Sätze, Reise, Rollenspiel und die Teilkarte haben Zurück, Fertig oder Schließen.
+- [x] Der Start ist ein Pfad mit LOS, gesperrten und fertigen Knoten und einer Truhe am Kapitelende. Unten vier Reiter: Lernen, Üben, Fortschritt, Profil.
+- [x] Die Lektion hat einen Balken, ein X mit Pause-Frage, ein Banner wer dran ist, und CHECK oder WEITER. Am Ende Konfetti und zurück auf den Pfad.
+- [x] Start, Profil, Runde, Alltags-Check, Tutorial, Duo, Feedback, Ton-Duell, Schrift, eigene Sätze, Reise, Rollenspiel und die Teilkarte haben Zurück, X oder einen Reiter.
 - [x] Die Runde fragt „Runde pausieren?“ und der Start bietet Weiterspielen.
 - [x] Wischen vom Rand ist auf Runde und Alltags-Check an.
 - [x] Leerer Lernpfad und leere Tonpaare zeigen einen Satz, keinen Absturz.

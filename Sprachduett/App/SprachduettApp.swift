@@ -17,17 +17,20 @@ struct SprachduettApp: App {
     @StateObject private var coach = SpeechCoach()
     @StateObject private var help = HelpRouter()
     @StateObject private var screens = ScreenTracker()
+    @StateObject private var lessons = LessonLaunch()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .tint(Theme.accent)
+                .environment(\.font, .system(.body, design: .rounded))
                 .environmentObject(model)
                 .environmentObject(sync)
                 .environmentObject(coach)
                 .environmentObject(help)
                 .environmentObject(screens)
+                .environmentObject(lessons)
                 .task {
                     coach.refreshAvailability()
                     if !ProcessInfo.processInfo.arguments.contains("-ui-testing") {

@@ -6,9 +6,7 @@ struct RootView: View {
     @AppStorage(TutorialKey.intro) private var introSeen = false
 
     var body: some View {
-        NavigationStack {
-            HomeView()
-        }
+        ShellView()
         .fullScreenCover(isPresented: Binding(get: { !introSeen }, set: { shown in
             if !shown { introSeen = true }
         })) {

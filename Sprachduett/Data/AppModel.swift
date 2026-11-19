@@ -4,6 +4,7 @@ import Foundation
 final class AppModel: ObservableObject {
     @Published private(set) var persisted: Persisted
     @Published var celebration: String?
+    @Published var launchSolo = false
     @Published var pausedRound: SavedRound?
     let catalog: ThaiCatalog
 
@@ -277,6 +278,12 @@ final class AppModel: ObservableObject {
     var pathSnapshot: PathSnapshot {
         LearningPath.snapshot(units: pathUnits, stats: pathStats)
     }
+
+    var checkedStages: Set<Int> { Set(persisted.checks.map(\.level)) }
+
+    var stars: Int { pathStats.values.reduce(0) { $0 + $1.correct } }
+
+    var persistedChecks: [CheckRecord] { persisted.checks }
 
     var partnerConnected: Bool {
         guard partner != nil else { return false }

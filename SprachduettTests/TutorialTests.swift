@@ -4,7 +4,7 @@ import XCTest
 final class TutorialTests: XCTestCase {
     func testOneScreenOnboarding() {
         XCTAssertEqual(TutorialScript.pages.count, 1)
-        XCTAssertEqual(TutorialScript.pages[0].text, "Ihr spielt zu zweit auf einem Handy. Hört zu, sprecht laut, tippt.")
+        XCTAssertEqual(TutorialScript.pages[0].text, "Tippt LOS auf dem Pfad. Eine Lektion, ein Schritt, dann zurück auf den Weg.")
         XCTAssertNil(TutorialScript.advance(index: 0))
         XCTAssertEqual(TutorialScript.buttonTitle(index: 0), "Los geht's")
     }

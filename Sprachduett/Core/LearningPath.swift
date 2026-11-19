@@ -219,4 +219,84 @@ public enum LearningPath {
         let label = "Stufe \(stage) · Einheit \(position) von \(inStage.count)"
         return PathSnapshot(stage: stage, unitIndex: position, unitCount: inStage.count, unitTitle: title, label: label)
     }
+
+    public static func chapterTitle(stage: Int) -> String {
+        switch stage {
+        case 1: return "Kapitel 1: Erste Worte"
+        case 2: return "Kapitel 2: Im Restaurant"
+        default: return "Kapitel \(stage)"
+        }
+    }
+}
+
+public enum MapNodeState: String, Equatable {
+    case locked, current, done
+}
+
+public struct MapNode: Equatable, Identifiable {
+    public let id: String
+    public let title: String
+    public let emoji: String
+    public let chapter: String?
+    public let state: MapNodeState
+    public let chest: Bool
+    public let stage: Int
+
+    public init(id: String, title: String, emoji: String, chapter: String?, state: MapNodeState, chest: Bool, stage: Int) {
+        self.id = id
+        self.title = title
+        self.emoji = emoji
+        self.chapter = chapter
+        self.state = state
+        self.chest = chest
+        self.stage = stage
+    }
+}
+
+public enum PathMap {
+    public static func nodes(units: [LearnUnit], stats: [String: WordStat], checkedStages: Set<Int>) -> [MapNode] {
+        let current = LearningPath.currentIndex(units: units, stats: stats)
+        var nodes: [MapNode] = []
+        var lastStage = 0
+        for (index, unit) in units.enumerated() {
+            let chapter = unit.stage != lastStage ? LearningPath.chapterTitle(stage: unit.stage) : nil
+            lastStage = unit.stage
+            let state = lessonState(index: index, unit: unit, current: current, units: units, stats: stats)
+            nodes.append(MapNode(
+                id: unit.id,
+                title: unit.title,
+                emoji: unit.words.first?.emoji ?? "🐘",
+                chapter: chapter,
+                state: state,
+                chest: false,
+                stage: unit.stage
+            ))
+            let endOfStage = index + 1 == units.count || units[index + 1].stage != unit.stage
+            if endOfStage {
+                let done = units.enumerated().filter { $0.element.stage == unit.stage }.allSatisfy {
+                    LearningPath.ratio($0.element, stats: stats) >= LearningPath.unlockRatio
+                }
+                let chestState: MapNodeState
+                if checkedStages.contains(unit.stage) { chestState = .done }
+                else if done { chestState = .current }
+                else { chestState = .locked }
+                nodes.append(MapNode(
+                    id: "chest-\(unit.stage)",
+                    title: unit.stage >= 2 ? "Restaurant-Test" : "Alltags-Check",
+                    emoji: "🎁",
+                    chapter: nil,
+                    state: chestState,
+                    chest: true,
+                    stage: unit.stage
+                ))
+            }
+        }
+        return nodes
+    }
+
+    private static func lessonState(index: Int, unit: LearnUnit, current: Int, units: [LearnUnit], stats: [String: WordStat]) -> MapNodeState {
+        if LearningPath.ratio(unit, stats: stats) >= LearningPath.unlockRatio { return .done }
+        if !LearningPath.isUnlocked(index, units: units, stats: stats) { return .locked }
+        return index == current ? .current : .locked
+    }
 }

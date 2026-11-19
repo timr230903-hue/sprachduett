@@ -65,6 +65,21 @@ final class RoundTests: XCTestCase {
         XCTAssertEqual(PlayMode.resolve(together: false, partnerConnected: true), .solo)
     }
 
+    func testPathIsALockedWindingLessonList() {
+        let units = sampleUnits()
+        let fresh = PathMap.nodes(units: units, stats: [:], checkedStages: [])
+        XCTAssertEqual(fresh.first?.state, .current)
+        XCTAssertEqual(fresh.first?.chapter, "Kapitel 1: Erste Worte")
+        XCTAssertTrue(fresh.contains { $0.chest && $0.state == .locked })
+        var stats: [String: WordStat] = [:]
+        for word in units[0].words {
+            stats[word.id] = WordStat(id: word.id, reviews: 2, correct: 2, streak: 2)
+        }
+        let next = PathMap.nodes(units: units, stats: stats, checkedStages: [1])
+        XCTAssertEqual(next.first?.state, .done)
+        XCTAssertTrue(next.contains { $0.chest && $0.state == .done })
+    }
+
     func testSoloListenUsesOneVoice() throws {
         let units = sampleUnits()
         let plan = RoundBuilder.build(units: units, stats: [:], seed: 3, together: false)

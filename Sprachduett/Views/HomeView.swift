@@ -150,6 +150,7 @@ enum StudioRoute: Hashable {
 }
 
 struct SettingsSheet: View {
+    var embedded = false
     var playSolo: () -> Void
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var help: HelpRouter
@@ -191,7 +192,14 @@ struct SettingsSheet: View {
                         FillButton(title: "Sichern") {
                             model.updateSeats(name: name, gender: leftGender, partnerName: partnerName, partnerGender: rightGender)
                         }
-                        SoftButton(title: "Solo üben") { dismiss(); playSolo() }
+                        SoftButton(title: "Solo üben") {
+                            if embedded {
+                                model.launchSolo = true
+                            } else {
+                                dismiss()
+                                playSolo()
+                            }
+                        }
                         SoftButton(title: "Duo / Partner") { showDuo = true }
                         SoftButton(title: "Tutorial ansehen") {
                             lessonSeen = false
@@ -224,7 +232,11 @@ struct SettingsSheet: View {
             .navigationTitle("Einstellungen")
             .navigationBarBackButtonHidden(false)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Fertig") { dismiss() } } }
+            .toolbar {
+                if !embedded {
+                    ToolbarItem(placement: .topBarTrailing) { Button("Fertig") { dismiss() } }
+                }
+            }
             .onAppear {
                 screens.name = "Einstellungen"
                 name = model.me.name

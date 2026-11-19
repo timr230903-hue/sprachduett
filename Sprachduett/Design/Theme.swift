@@ -1,3 +1,4 @@
+import AudioToolbox
 import SwiftUI
 import UIKit
 
@@ -68,6 +69,7 @@ struct FillButton: View {
     let title: String
     var systemImage: String? = nil
     var color: Color = Theme.button
+    var enabled: Bool = true
     let action: () -> Void
 
     var body: some View {
@@ -78,14 +80,34 @@ struct FillButton: View {
                 }
                 Text(title)
             }
-            .font(.body.weight(.semibold))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(color, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .minimumScaleFactor(0.8)
-            .foregroundStyle(Color.white)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(RaisedButtonStyle(color: color))
+        .disabled(!enabled)
+        .opacity(enabled ? 1 : 0.45)
+    }
+}
+
+struct RaisedButtonStyle: ButtonStyle {
+    var color: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(.title3, design: .rounded).weight(.heavy))
+            .minimumScaleFactor(0.7)
+            .foregroundStyle(Color.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.black.opacity(0.28))
+                        .offset(y: configuration.isPressed ? 1 : 6)
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(color)
+                        .offset(y: configuration.isPressed ? 4 : 0)
+                }
+            )
+            .padding(.bottom, 6)
     }
 }
 
@@ -152,6 +174,7 @@ extension UINavigationController: UIGestureRecognizerDelegate {
 enum Haptics {
     static func success() {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        AudioServicesPlaySystemSound(1057)
     }
 
     static func tap() {
@@ -160,5 +183,6 @@ enum Haptics {
 
     static func warning() {
         UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        AudioServicesPlaySystemSound(1053)
     }
 }
