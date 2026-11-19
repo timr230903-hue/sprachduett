@@ -36,7 +36,7 @@ def get(token: str, path: str, params: dict) -> tuple[int, dict]:
     url = API + path + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"Authorization": "Bearer " + token})
     try:
-        with urllib.request.urlopen(req, timeout: 30) as response:
+        with urllib.request.urlopen(req, timeout=30) as response:
             return response.status, json.loads(response.read() or b"{}")
     except urllib.error.HTTPError as error:
         return error.code, json.loads(error.read() or b"{}")
