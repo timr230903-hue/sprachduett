@@ -11,7 +11,7 @@ final class SpeechCoach: ObservableObject {
     @Published private(set) var onDevice = false
 
     private var synth = AVSpeechSynthesizer()
-    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: "th-TH"))
+    private let recognizer = SFSpeechRecognizer(locale: Locale(identifier: ThaiLanguage().speechLocale))
     private let audio = AVAudioEngine()
     private var task: SFSpeechRecognitionTask?
     private var request: SFSpeechAudioBufferRecognitionRequest?
@@ -56,7 +56,7 @@ final class SpeechCoach: ObservableObject {
         )
         for (index, piece) in pieces.enumerated() {
             let utterance = AVSpeechUtterance(string: piece)
-            utterance.voice = AVSpeechSynthesisVoice(language: "th-TH")
+            utterance.voice = AVSpeechSynthesisVoice(language: ThaiLanguage().speechLocale)
             utterance.prefersAssistiveTechnologySettings = false
             utterance.rate = rate
             if slow, index > 0 {

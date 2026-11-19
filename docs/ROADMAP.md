@@ -32,19 +32,21 @@ Erst die Konsonantenklassen, die den Ton bestimmen, dann die Vokale, dann kurze 
 
 Dasselbe Duo, ein zweites JSON. Vietnamesisch und Italienisch liegen nah, weil das Paar sie braucht und die Rollenlogik gleich bleibt. Die Erkennung wechselt das Locale (`vi-VN`, `it-IT`). Töne, Partikel und Schrift bleiben sprachspezifisch im Katalog, nicht im View-Code.
 
-## Freigegeben, noch nicht in diesem Stand
+## Im Pfad und in den Reitern
 
-Jeder Punkt bekommt einen eigenen TestFlight-Stand, ohne Bezahlschranke. Thai bleibt die einzige ausgelieferte Sprache, bis ein Sprachpaket wirklich fertig ist.
+Ohne Bezahlschranke. Thai ist das einzige geladene Paket (`ContentPacks`, Sprache `th-TH`).
 
-1. Aufnahmen: `Audio/<id>.m4a` abspielen, sonst Vorlesen. Die Liste der Sätze steht in `docs/AUDIO-SCRIPT.csv`. Die Dateien nimmt ein Mensch auf, die App erfindet sie nicht.
-2. Ton-Duell: Minimalpaare, die sich nur im Ton unterscheiden. Abwechselnd tippen, welcher Ton gemeint war.
-3. Schrift, ein paar Buchstaben am Tag, dann Schilder und Speisekarten als gezeichnete Texte, keine Fotos.
-4. Eigene Sätze: deutsches Suchwort im Kuratieren, Thai von Hand, Aufnahme vom Partner, Karte für beide. Keine Cloud-KI.
-5. Reise-Modus: große Karten für Taxi, Markt, Arzt, Hotel, offline.
-6. Abend-Erinnerung lokal: „Partner hat heute schon gespielt, jetzt du?“ Kein Serien-Verlust.
-7. Rollenspiel mit erzeugter Umgebungsfläche (Markt, Massage, Tuk-Tuk), nichts Lizenziertes.
-8. Teilbare Fortschrittskarte, zum Beispiel „Wir können jetzt im Restaurant bestellen“.
-9. Widget „Wort des Tages“. Die Auswahl steckt in `WordOfDay` und steht auf dem Startbildschirm. Die WidgetKit-Extension (`SprachduettWidget/WordOfDayWidget.swift`) ist absichtlich nicht im signierten Archiv.
+1. Aufnahmen: `Audio/<id>.m4a` ersetzt die Stimme im normalen Tempo. Sonst Vorlesen. Die Liste ist `docs/AUDIO-SCRIPT.csv`. Es liegen keine erfundenen Dateien im Bundle.
+2. Ton-Duell unter Üben.
+3. Schrift unter Üben: ein paar Buchstaben am Tag, dann ein gezeichnetes Schild.
+4. Eigene Sätze unter Üben. Treffer aus dem Heft oder Thai von Hand, Aufnahme vom Partner, Karte in der nächsten Runde.
+5. Reise unter Üben: Taxi, Markt, Arzt, Hotel, offline.
+6. Abend-Hinweis lokal, sobald der Pfad offen ist: „Partner hat heute schon gespielt, jetzt du?“ Die Serie wird nicht gekürzt.
+7. Rollenspiel unter Üben. Markt, Massage, Tuk-Tuk sind erzeugtes Rauschen.
+8. Fortschritt zeigt die Checks und teilt eine Karte.
+9. Wort des Tages steht auf dem Pfad. Die Widget-Extension liegt in `SprachduettWidget/WordOfDayWidget.swift` und ist nicht im Archiv.
 
-   Tim braucht dafür: eine App-ID `de.timroot.sprachduett.widget`, eine App Group `group.de.timroot.sprachduett`, ein App-Store-Profil für die Extension und das bestehende Profil der App um die App Group erweitert. Ohne diese Profile bricht das TestFlight-Archiv, deshalb bleibt die Extension draußen.
-10. Sprachpakete: der Katalog hängt an einer Sprache. Ausgeliefert wird weiter nur Thai.
+   Tim braucht dafür: eine App-ID `de.timroot.sprachduett.widget`, eine App Group `group.de.timroot.sprachduett`, ein App-Store-Profil für die Extension und das App-Profil um die Gruppe erweitert. Vorher bleibt das Widget draußen, sonst scheitert die Signierung.
+10. Weitere Sprachen wären ein zweites Paket. Der View lädt nur das Thai-Paket.
+
+Geschlecht (ผม/ครับ, ฉัน/ค่ะ) und „Umschrift ausblenden“ liegen im Profil. Ab A1 blendet die Paiboon-Umschrift aus, wenn ein Wort sitzt. Die Truhe am Kapitelende ist der Alltag-Check oder der Restaurant-Test. Feedback liegt bei Fortschritt, im Profil und beim Schütteln. Die Nutzungszahlen stehen unter Fortschritt und bleiben auf dem Gerät.

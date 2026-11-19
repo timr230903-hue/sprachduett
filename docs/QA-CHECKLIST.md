@@ -36,7 +36,8 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 - [x] Links und rechts wählen ผม/ครับ oder ฉัน/ค่ะ. Ab A1 blendet die Umschrift aus, wenn das Wort sitzt. „Umschrift ausblenden“ nimmt sie ganz weg.
 - [x] Eine gelbe oder rote Bewertung nennt Ton oder Vokallänge und bietet langsames Hören. Nach Grün kann die eigene Stimme gemerkt und später als Partnerstimme gespielt werden.
 - [x] Alltagssprache: kein อรุณสวัสดิ์, kein ราตรีสวัสดิ์, kein ดิฉัน. ข้าว ist `khâao`.
-- [x] Ton-Duell, Schrift pro Tag, Reise offline, eigene Karten, erzeugte Geräusche, Teilkarte, Abend-Hinweis ohne Serienverlust, nur Thai als Sprache.
+- [x] Üben öffnet Ton-Duell, Schrift, Reise, eigene Sätze und Rollenspiel. Fortschritt zeigt Checks, lokale Zahlen, die Teilkarte und Feedback. Der Pfad zeigt das Wort des Tages, die Quest und startet die Abend-Erinnerung. Profil hat Geschlecht und Umschrift.
+- [x] Der Restaurant-Test nutzt denselben Balken, dasselbe X und CHECK wie eine Lektion.
 
 ## Vor dem Upload
 

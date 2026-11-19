@@ -68,6 +68,17 @@ private struct PathScreen: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
+                        if let daily = model.dailyWord {
+                            Text("Wort des Tages · \(daily.thai) · \(daily.german)")
+                                .font(.subheadline)
+                                .foregroundStyle(Theme.accent)
+                                .padding(.horizontal, 20)
+                                .accessibilityLabel("Wort des Tages, \(daily.thai), \(daily.german)")
+                        }
+                        Text(model.quest.line)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 20)
                         ForEach(Array(nodes.enumerated()), id: \.element.id) { index, node in
                             if let chapter = node.chapter {
                                 Text(chapter)
@@ -96,7 +107,11 @@ private struct PathScreen: View {
             }
         }
         .navigationBarHidden(true)
-        .onAppear { screens.name = "Pfad" }
+        .onAppear {
+            screens.name = "Pfad"
+            model.refreshQuestWeek()
+            model.refreshNudge()
+        }
         .navigationDestination(item: $checkLevel) { level in
             LifeCheckScreen(level: level)
         }
@@ -255,6 +270,7 @@ struct PracticeScreen: View {
 struct ProgressScreen: View {
     @EnvironmentObject private var model: AppModel
     @State private var share = false
+    @State private var feedback = false
 
     var body: some View {
         ScreenBackground {
@@ -276,7 +292,11 @@ struct ProgressScreen: View {
                             }
                         }
                     }
+                    Text(model.usageLine)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                     FillButton(title: "Karte teilen", systemImage: "square.and.arrow.up") { share = true }
+                    FillButton(title: "Feedback", systemImage: "bubble.left") { feedback = true }
                 }
                 .padding(20)
             }
@@ -285,5 +305,6 @@ struct ProgressScreen: View {
         .navigationDestination(isPresented: $share) {
             ShareProgressScreen(sentence: model.headline)
         }
+        .sheet(isPresented: $feedback) { FeedbackSheet() }
     }
 }

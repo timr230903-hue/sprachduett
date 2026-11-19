@@ -693,7 +693,7 @@ private struct SpeechCard: View {
     }
 }
 
-private struct FeedbackBanner: View {
+struct FeedbackBanner: View {
     let grade: SpeechGrade
     let weiter: () -> Void
 

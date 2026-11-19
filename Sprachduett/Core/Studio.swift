@@ -21,6 +21,23 @@ public enum LanguageLibrary {
     }
 }
 
+public struct ShippedPack {
+    public let language: ThaiLanguage
+    public let catalog: ThaiCatalog
+
+    public init(language: ThaiLanguage, catalog: ThaiCatalog) {
+        self.language = language
+        self.catalog = catalog
+    }
+}
+
+public enum ContentPacks {
+    /// Nur Thai wird geladen. Weitere Sprachen kämen als eigenes Paket, nicht als zweiter Pfad im View.
+    public static func loadThai(catalog: ThaiCatalog) -> ShippedPack {
+        ShippedPack(language: ThaiLanguage(), catalog: catalog)
+    }
+}
+
 public enum ClipLibrary {
     public static func fileName(id: String) -> String { "\(id).m4a" }
 

@@ -4,6 +4,9 @@ import XCTest
 final class StudioTests: XCTestCase {
     func testOnlyThaiShipsAndClipsStayOptional() {
         XCTAssertEqual(LanguageLibrary.shipped, ["th"])
+        let pack = ContentPacks.loadThai(catalog: ThaiCatalog(language: "th", title: "Thai", tones: [], topics: [], scenes: []))
+        XCTAssertEqual(pack.language.speechLocale, "th-TH")
+        XCTAssertEqual(pack.catalog.language, "th")
         XCTAssertEqual(ThaiLanguage().speechLocale, "th-TH")
         XCTAssertEqual(ClipLibrary.fileName(id: "pol-01"), "pol-01.m4a")
         XCTAssertTrue(ClipLibrary.prefersRecording(hasFile: true, slow: false))

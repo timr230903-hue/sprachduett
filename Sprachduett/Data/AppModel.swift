@@ -6,12 +6,16 @@ final class AppModel: ObservableObject {
     @Published var celebration: String?
     @Published var launchSolo = false
     @Published var pausedRound: SavedRound?
+    let language: ThaiLanguage
     let catalog: ThaiCatalog
 
     init() {
-        catalog = (try? CatalogLoader.loadBundled()) ?? ThaiCatalog(
+        let loaded = (try? CatalogLoader.loadBundled()) ?? ThaiCatalog(
             language: "th", title: "Thai", tones: [], topics: [], scenes: []
         )
+        let pack = ContentPacks.loadThai(catalog: loaded)
+        language = pack.language
+        catalog = pack.catalog
         persisted = Persisted.load() ?? Persisted.fresh()
     }
 
@@ -284,6 +288,12 @@ final class AppModel: ObservableObject {
     var stars: Int { pathStats.values.reduce(0) { $0 + $1.correct } }
 
     var persistedChecks: [CheckRecord] { persisted.checks }
+
+    var usageLine: String {
+        let usage = persisted.usage
+        let average = usage.averageSeconds.map { "\(Int($0)) s" } ?? "–"
+        return "Runden \(usage.roundsStarted), fertig \(usage.roundsFinished), abgebrochen \(usage.abandoned), Dauer \(average). Nur auf diesem Gerät."
+    }
 
     var partnerConnected: Bool {
         guard partner != nil else { return false }
