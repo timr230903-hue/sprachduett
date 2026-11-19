@@ -1,41 +1,19 @@
 import SwiftUI
 
-enum AppTab: Hashable {
-    case today, duets, words, us
-}
-
 struct RootView: View {
-    @EnvironmentObject private var model: AppModel
-    @EnvironmentObject private var sync: SyncHub
-    @EnvironmentObject private var coach: SpeechCoach
     @EnvironmentObject private var help: HelpRouter
     @AppStorage(TutorialKey.intro) private var introSeen = false
-    @State private var tab: AppTab = .today
 
     var body: some View {
-        TabView(selection: $tab) {
-            HomeView(openDuets: { tab = .duets })
-                .tabItem { Label("Heute", systemImage: "sun.max.fill") }
-                .tag(AppTab.today)
-            SceneListView()
-                .tabItem { Label("Duette", systemImage: "bubble.left.and.bubble.right.fill") }
-                .tag(AppTab.duets)
-            WordsView()
-                .tabItem { Label("Wörter", systemImage: "text.book.closed.fill") }
-                .tag(AppTab.words)
-            DuoView()
-                .tabItem { Label("Wir", systemImage: "person.2.fill") }
-                .tag(AppTab.us)
+        NavigationStack {
+            HomeView()
         }
-        .fullScreenCover(isPresented: Binding(get: { !introSeen || !model.onboarded }, set: { _ in })) {
+        .fullScreenCover(isPresented: Binding(get: { !introSeen }, set: { _ in })) {
             OnboardingView()
                 .interactiveDismissDisabled()
         }
         .sheet(isPresented: $help.showTutorial) {
-            TutorialCarousel(onDone: { help.showTutorial = false }, onAllowSpeech: coach.requestPermissions)
-        }
-        .onChange(of: sync.focusDuo) { _, focus in
-            if focus { tab = .us }
+            TutorialCarousel(onDone: { help.showTutorial = false })
         }
         .modifier(CloudAlert())
     }

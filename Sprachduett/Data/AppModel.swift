@@ -237,6 +237,46 @@ final class AppModel: ObservableObject {
         persisted.duo.member(for: role)?.gender ?? persisted.learnerGender
     }
 
+    var pathUnits: [LearnUnit] { LearningPath.load(from: catalog) }
+
+    var pathStats: [String: WordStat] {
+        Dictionary(persisted.wordStats.map { ($0.id, $0) }, uniquingKeysWith: { _, next in next })
+    }
+
+    var pathSnapshot: PathSnapshot {
+        LearningPath.snapshot(units: pathUnits, stats: pathStats)
+    }
+
+    var partnerConnected: Bool {
+        guard partner != nil else { return false }
+        switch SyncHub.shared.status {
+        case .idle, .syncing: return true
+        default: return false
+        }
+    }
+
+    func rememberRound(_ stats: [String: WordStat], together: Bool) {
+        var map = pathStats
+        for (key, value) in stats { map[key] = value }
+        persisted.wordStats = map.values.sorted { $0.id < $1.id }
+        let day = today
+        var ids = [me.id]
+        if together, let partner { ids.append(partner.id) }
+        for id in ids {
+            let stamp = PracticeStamp(userID: id, day: day)
+            if !persisted.duo.stamps.contains(stamp) { persisted.duo.stamps.append(stamp) }
+        }
+        persisted.duo.updatedAt = Date()
+        saveAndPush()
+        noteStreak()
+    }
+
+    func publishClaim(itemID: String, playerID: String, choiceID: String) {
+        persisted.duo.liveClaim = LiveClaim(itemID: itemID, playerID: playerID, choiceID: choiceID, at: Date())
+        persisted.duo.updatedAt = Date()
+        saveAndPush()
+    }
+
     private func refreshMember() {
         var members = persisted.duo.members.filter { $0.id != persisted.learnerID }
         members.append(persisted.member)
@@ -278,6 +318,7 @@ struct Persisted: Codable, Equatable {
     var zoneOwnerName: String
     var sharingStarted: Bool
     var celebratedLength: Int
+    var wordStats: [WordStat]
 
     var member: MemberProfile {
         MemberProfile(
@@ -311,7 +352,8 @@ struct Persisted: Codable, Equatable {
             isSharedZone: false,
             zoneOwnerName: "",
             sharingStarted: false,
-            celebratedLength: 0
+            celebratedLength: 0,
+            wordStats: []
         )
     }
 
@@ -325,11 +367,44 @@ struct Persisted: Codable, Equatable {
 
     static func load() -> Persisted? {
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
-        return try? JSONDecoder().decode(Persisted.self, from: data)
+        let decoder = JSONDecoder()
+        if let full = try? decoder.decode(Persisted.self, from: data) { return full }
+        return try? decoder.decode(LegacyPersisted.self, from: data)?.upgraded()
     }
 
     func save() {
         guard let data = try? JSONEncoder().encode(self) else { return }
         try? data.write(to: Self.fileURL, options: .atomic)
+    }
+}
+
+private struct LegacyPersisted: Codable {
+    var onboarded: Bool
+    var learnerID: String
+    var learnerName: String
+    var learnerGender: SpeakerGender
+    var learnerEmoji: String
+    var myRole: DuettRole
+    var duo: DuoCloudState
+    var isSharedZone: Bool
+    var zoneOwnerName: String
+    var sharingStarted: Bool
+    var celebratedLength: Int
+
+    func upgraded() -> Persisted {
+        Persisted(
+            onboarded: onboarded,
+            learnerID: learnerID,
+            learnerName: learnerName,
+            learnerGender: learnerGender,
+            learnerEmoji: learnerEmoji,
+            myRole: myRole,
+            duo: duo,
+            isSharedZone: isSharedZone,
+            zoneOwnerName: zoneOwnerName,
+            sharingStarted: sharingStarted,
+            celebratedLength: celebratedLength,
+            wordStats: []
+        )
     }
 }

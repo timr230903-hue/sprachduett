@@ -2,7 +2,6 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject private var model: AppModel
-    @EnvironmentObject private var coach: SpeechCoach
     @AppStorage(TutorialKey.intro) private var introSeen = false
     @State private var name = ""
     @State private var gender: SpeakerGender = .unspecified
@@ -13,7 +12,12 @@ struct OnboardingView: View {
         if introSeen {
             profile
         } else {
-            TutorialCarousel(onDone: { introSeen = true }, onAllowSpeech: coach.requestPermissions)
+            TutorialCarousel(onDone: {
+                if model.me.name.isEmpty {
+                    model.finishOnboarding(name: "Du", gender: .unspecified, emoji: model.me.emoji)
+                }
+                introSeen = true
+            })
         }
     }
 

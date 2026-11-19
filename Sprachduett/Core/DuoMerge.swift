@@ -16,6 +16,20 @@ public struct MemberProfile: Codable, Equatable, Identifiable {
     }
 }
 
+public struct LiveClaim: Codable, Equatable {
+    public var itemID: String
+    public var playerID: String
+    public var choiceID: String
+    public var at: Date
+
+    public init(itemID: String, playerID: String, choiceID: String, at: Date) {
+        self.itemID = itemID
+        self.playerID = playerID
+        self.choiceID = choiceID
+        self.at = at
+    }
+}
+
 public struct DuoCloudState: Codable, Equatable {
     public var duoID: String
     public var title: String
@@ -23,17 +37,35 @@ public struct DuoCloudState: Codable, Equatable {
     public var stamps: [PracticeStamp]
     public var confirmed: [ConfirmedLine]
     public var session: SessionSnapshot?
+    public var liveClaim: LiveClaim?
     public var updatedAt: Date
 
     public init(duoID: String, title: String, members: [MemberProfile], stamps: [PracticeStamp],
-                confirmed: [ConfirmedLine], session: SessionSnapshot?, updatedAt: Date) {
+                confirmed: [ConfirmedLine], session: SessionSnapshot?, updatedAt: Date, liveClaim: LiveClaim? = nil) {
         self.duoID = duoID
         self.title = title
         self.members = members
         self.stamps = stamps
         self.confirmed = confirmed
         self.session = session
+        self.liveClaim = liveClaim
         self.updatedAt = updatedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case duoID, title, members, stamps, confirmed, session, liveClaim, updatedAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        duoID = try container.decode(String.self, forKey: .duoID)
+        title = try container.decode(String.self, forKey: .title)
+        members = try container.decode([MemberProfile].self, forKey: .members)
+        stamps = try container.decode([PracticeStamp].self, forKey: .stamps)
+        confirmed = try container.decode([ConfirmedLine].self, forKey: .confirmed)
+        session = try container.decodeIfPresent(SessionSnapshot.self, forKey: .session)
+        liveClaim = try container.decodeIfPresent(LiveClaim.self, forKey: .liveClaim)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
     }
 
     public func member(for role: DuettRole) -> MemberProfile? {
@@ -71,6 +103,7 @@ public enum DuoMerge {
         case (let left, nil):
             session = left
         }
+        let claim = Self.earlierClaim(local.liveClaim, remote.liveClaim)
         return DuoCloudState(
             duoID: local.duoID,
             title: newer.title,
@@ -86,7 +119,21 @@ public enum DuoMerge {
                 return lhs.day < rhs.day
             },
             session: session,
-            updatedAt: max(local.updatedAt, remote.updatedAt)
+            updatedAt: max(local.updatedAt, remote.updatedAt),
+            liveClaim: claim
         )
+    }
+
+    private static func earlierClaim(_ local: LiveClaim?, _ remote: LiveClaim?) -> LiveClaim? {
+        switch (local, remote) {
+        case let (left?, right?) where left.itemID == right.itemID:
+            return left.at <= right.at ? left : right
+        case let (left?, right?):
+            return left.at >= right.at ? left : right
+        case (nil, let right):
+            return right
+        case (let left, nil):
+            return left
+        }
     }
 }

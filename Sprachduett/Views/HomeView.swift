@@ -2,115 +2,111 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var model: AppModel
-    var openDuets: () -> Void
+    @EnvironmentObject private var help: HelpRouter
+    @State private var playing = false
+    @State private var together = true
+    @State private var showDuo = false
+    @State private var showSettings = false
+
+    var body: some View {
+        ScreenBackground {
+            VStack(spacing: 22) {
+                HStack {
+                    Text("Sprachduett").font(.headline)
+                    Spacer()
+                    HelpButton()
+                }
+                Text(model.pathSnapshot.label)
+                    .font(.title3.weight(.semibold))
+                Text(model.pathSnapshot.unitTitle)
+                    .foregroundStyle(.secondary)
+                ProgressDots(done: model.pathSnapshot.unitIndex, total: model.pathSnapshot.unitCount)
+                Spacer()
+                Button {
+                    together = true
+                    playing = true
+                } label: {
+                    Text("Zusammen spielen")
+                        .font(.system(.title, design: .rounded).weight(.bold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 28)
+                        .background(Theme.coral, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                        .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
+                HStack(spacing: 12) {
+                    smallButton("Solo üben") { together = false; playing = true }
+                    smallButton("Duo") { showDuo = true }
+                    smallButton("Einstellungen") { showSettings = true }
+                }
+                Spacer()
+            }
+            .padding(24)
+        }
+        .fullScreenCover(isPresented: $playing) {
+            RoundScreen(together: together)
+        }
+        .sheet(isPresented: $showDuo) { DuoView() }
+        .sheet(isPresented: $showSettings) { SettingsSheet() }
+    }
+
+    private func smallButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .font(.subheadline.weight(.semibold))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(Theme.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+}
+
+private struct ProgressDots: View {
+    let done: Int
+    let total: Int
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(0..<max(total, 1), id: \.self) { index in
+                Circle()
+                    .fill(index < done ? Theme.leaf : Theme.mango.opacity(0.35))
+                    .frame(width: 12, height: 12)
+            }
+        }
+    }
+}
+
+struct SettingsSheet: View {
+    @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var help: HelpRouter
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage(TutorialKey.lesson) private var lessonSeen = false
+    @State private var name = ""
 
     var body: some View {
         NavigationStack {
             ScreenBackground {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Heute")
-                            .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                        peopleCard
-                        streakCard
-                        FillButton(title: "Ein Duett sprechen", systemImage: "bubble.left.and.bubble.right") {
-                            openDuets()
-                        }
+                VStack(alignment: .leading, spacing: 16) {
+                    TextField("Name", text: $name)
+                        .textFieldStyle(.roundedBorder)
+                        .onAppear { name = model.me.name }
+                    FillButton(title: "Name sichern") {
+                        model.updateProfile(name: name, gender: model.me.gender, emoji: model.me.emoji)
                     }
-                    .padding(20)
+                    SoftButton(title: "Tutorial ansehen") {
+                        lessonSeen = false
+                        dismiss()
+                        help.open()
+                    }
+                    Spacer()
+                }
+                .padding(20)
+            }
+            .navigationTitle("Einstellungen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Fertig") { dismiss() }
                 }
             }
-            .overlay {
-                if let text = model.celebration {
-                    CelebrationCover(text: text) { model.dismissCelebration() }
-                }
-            }
-            .onChange(of: model.celebration) { _, text in
-                if text != nil { Haptics.success() }
-            }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
-        }
-    }
-
-    private var peopleCard: some View {
-        WarmCard {
-            HStack(spacing: 16) {
-                PersonBubble(emoji: model.me.emoji, name: model.me.name, points: model.points(for: model.me.id), done: model.streak.practicedToday.contains(model.me.id))
-                Image(systemName: "heart.fill").foregroundStyle(Theme.mango)
-                if let partner = model.partner {
-                    PersonBubble(emoji: partner.emoji, name: partner.name, points: model.points(for: partner.id), done: model.streak.practicedToday.contains(partner.id))
-                } else {
-                    PersonBubble(emoji: "➕", name: "Partner", points: 0, done: false)
-                }
-            }
-        }
-    }
-
-    private var streakCard: some View {
-        WarmCard {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Serie")
-                    .font(.headline)
-                Text("\(model.streak.length)")
-                    .font(.system(size: 48, weight: .bold, design: .rounded))
-                Text(streakLine)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private var streakLine: String {
-        if model.memberIDs.count >= 2 && !model.streak.todayBoth {
-            return "Die Serie zählt erst, wenn ihr heute beide eine Zeile laut gesagt habt."
-        }
-        if model.streak.todayBoth {
-            return "Heute seid ihr dran. Weiter so."
-        }
-        return "Eine Zeile laut gesagt reicht, um den Tag zu zählen."
-    }
-}
-
-struct PersonBubble: View {
-    let emoji: String
-    let name: String
-    let points: Int
-    let done: Bool
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text(emoji).font(.system(size: 40))
-            Text(name.isEmpty ? "Ich" : name).font(.headline)
-            Text("\(points) Punkte").font(.caption).foregroundStyle(.secondary)
-            Image(systemName: done ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(done ? Theme.leaf : Color.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-struct CelebrationCover: View {
-    let text: String
-    let close: () -> Void
-    @State private var on = false
-
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.28).ignoresSafeArea()
-            VStack(spacing: 14) {
-                Text("🔥")
-                    .font(.system(size: 64))
-                    .scaleEffect(on ? 1 : 0.3)
-                Text(text)
-                    .font(.title2.weight(.bold))
-                    .multilineTextAlignment(.center)
-                FillButton(title: "Weiter", action: close)
-            }
-            .padding(24)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-            .padding(32)
-        }
-        .onAppear {
-            withAnimation(.spring(duration: 0.45)) { on = true }
         }
     }
 }

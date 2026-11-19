@@ -1,5 +1,15 @@
 # Sprachduett – Roadmap
 
+Eine Runde folgt dem Lernpfad. Stufe 1 (A0) und Stufe 2 (A1) sind in der App: Hallo, Ja/Nein, Zahlen, Töne, Essen, Trinken, Bestellen, Einkaufen, Weg, Familie, Zeit, Farben, Tiere, Unterwegs. Eine Einheit öffnet die nächste, wenn etwa 80 Prozent der Wörter sitzen.
+
+## Stufe 3 · A2
+
+Vergangenheit und Zukunft im Satz (`แล้ว`, `จะ`, `กำลัง`), Alltagsgespräche über den Tag, Pläne, Wetter, Befinden. Dieselben drei Spiele, längere Mini-Dialoge, Wiederholung aus A0 und A1.
+
+## Stufe 4 · B1 und Schrift
+
+Thai-Schrift Buchstabe für Buchstabe, dann Silben lesen, längere Dialoge und Hörverstehen ohne Umschrift. Die Töne bleiben an der Schrift hängen, weil die Klasse des Konsonanten den Ton bestimmt.
+
 V1 ist der gemeinsame Thai-Dialog: koppeln, abwechselnd laut sprechen, Serie nur zu zweit, kuratierter Wortschatz. Alles darunter kommt danach und bleibt ohne Cloud-KI.
 
 ## Pantomime und Erklär-Runden

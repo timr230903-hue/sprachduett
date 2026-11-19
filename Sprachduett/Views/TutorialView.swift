@@ -21,7 +21,6 @@ struct HelpButton: View {
 
 struct TutorialCarousel: View {
     var onDone: () -> Void
-    var onAllowSpeech: () -> Void
     @State private var index = 0
 
     var body: some View {
@@ -36,9 +35,6 @@ struct TutorialCarousel: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .always))
                 FillButton(title: TutorialScript.buttonTitle(index: index)) {
-                    if TutorialScript.page(at: index)?.asksForSpeech == true {
-                        onAllowSpeech()
-                    }
                     if let next = TutorialScript.advance(index: index) {
                         index = next
                     } else {
@@ -66,12 +62,6 @@ private struct TutorialCard: View {
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
-            if page.asksForSpeech {
-                Text("Dafür brauchen wir Mikrofon und Spracherkennung. Die Aufnahme prüft nur diese Zeile.")
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-            }
             Spacer()
         }
     }
