@@ -1,3 +1,5 @@
+import AudioToolbox
+import AVFoundation
 import SwiftUI
 
 @MainActor
@@ -35,6 +37,7 @@ final class RoundController: ObservableObject {
             }
         case .say(let turn): return display(turn.speakerID)
         case .dialog(let turn): return display(turn.speakerID)
+        case .build: return "Gemeinsam bauen"
         case .intro, nil:
             return mode == .solo ? leftName : "\(leftName)  ·  \(rightName)"
         }
@@ -52,6 +55,7 @@ final class RoundController: ObservableObject {
         case .say where cursor.phase == .speak: return "Sag das Thai-Wort laut."
         case .say: return "War es richtig?"
         case .dialog: return "Lies deinen Satz laut vor."
+        case .build: return "Jeder legt seine Hälfte in die richtige Reihenfolge. Der Punkt gilt nur für beide."
         case nil: return "Geschafft."
         default: return ""
         }
@@ -64,6 +68,7 @@ final class RoundController: ObservableObject {
             id = cursor.listenPhase == .point || cursor.listenPhase == .handoff ? item.listenerID : item.speakerID
         case .say(let turn): id = turn.speakerID
         case .dialog(let turn): id = turn.speakerID
+        case .build: return true
         default: return true
         }
         return id != "p2" && id != partnerID
@@ -176,6 +181,32 @@ final class RoundController: ObservableObject {
         move(RoundEngine.advance(cursor, plan: plan), nil)
     }
 
+    func tapBuild(_ token: Int) {
+        guard case .build(let item) = beat else { return }
+        guard let placed = BuildEngine.place(cursor.buildPlaced, token: token) else {
+            Haptics.warning()
+            return
+        }
+        cursor.buildPlaced = placed
+        guard BuildEngine.complete(placed, count: item.tokens.count) else {
+            Haptics.tap()
+            return
+        }
+        var next = cursor
+        next.scores["p1", default: 0] += 1
+        if item.tokens.contains(where: { $0.owner == "p2" }) {
+            next.scores["p2", default: 0] += 1
+        }
+        Haptics.success()
+        move(RoundEngine.advance(next, plan: plan), nil)
+    }
+
+    func failBuild() {
+        guard case .build = beat else { return }
+        Haptics.warning()
+        move(RoundEngine.advance(cursor, plan: plan), nil)
+    }
+
     func applyRemote(itemID: String, player: String, choice: String) {
         guard mode == .twoPhones, case .listen(let item) = beat, item.id == itemID, player != localID else { return }
         choosePicture(choice)
@@ -200,6 +231,7 @@ final class RoundController: ObservableObject {
         case .listen(_): return "listen"
         case .say(_): return "say"
         case .dialog(_): return "dialog"
+        case .build: return "build"
         case nil: return "results"
         }
     }
@@ -221,6 +253,7 @@ final class RoundController: ObservableObject {
         case .listen(_): key = "listen"
         case .say(_): key = "say"
         case .dialog(_): key = "dialog"
+        case .build: key = "dialog"
         }
         guard !hinted.contains(key), let card = LessonTour.steps.first(where: { $0.id == key }) else { return }
         coach = card
@@ -318,7 +351,10 @@ struct RoundScreen: View {
         case .intro(let word):
             IntroPane(
                 word: word,
+                romanOpacity: romanOpacity(wordID: word.id),
+                partnerURL: model.partnerVoiceURL(wordID: word.id),
                 speak: { speech.speak(word.thai, clipID: word.id) },
+                partner: { url in speech.speak(word.thai, file: url) },
                 slow: { speech.speak(word.thai, slow: true, clipID: word.id) },
                 next: round.nextIntro
             )
@@ -348,6 +384,8 @@ struct RoundScreen: View {
                 hideThaiUntilGraded: true,
                 romanOpacity: romanOpacity(wordID: turn.word.id),
                 speech: speech,
+                wordID: turn.word.id,
+                ownerID: turn.speakerID,
                 onGrade: { grade in round.finishSpeech(grade, wordID: turn.word.id, speakerID: turn.speakerID) }
             )
             .id(turn.id)
@@ -365,6 +403,16 @@ struct RoundScreen: View {
                 onGrade: { grade in round.finishSpeech(grade, wordID: nil, speakerID: turn.speakerID) }
             )
             .id(turn.id)
+        case .build(let item):
+            BuildBoard(
+                item: item,
+                placed: round.cursor.buildPlaced,
+                leftName: round.leftName,
+                rightName: round.rightName,
+                onTap: round.tapBuild,
+                onFail: round.failBuild
+            )
+            .id(item.id)
         case nil:
             EmptyView()
         }
@@ -420,7 +468,13 @@ struct RoundScreen: View {
 
     private func romanOpacity(wordID: String) -> Double {
         let stat = model.pathStats[wordID]
-        return RomanFade.opacity(reviews: stat?.reviews ?? 0, pronunciation: stat?.pronunciation ?? 0)
+        return RomanFade.opacity(
+            stage: model.pathSnapshot.stage,
+            mastered: stat?.mastered == true,
+            reviews: stat?.reviews ?? 0,
+            pronunciation: stat?.pronunciation ?? 0,
+            hidden: model.hideRoman
+        )
     }
 }
 
@@ -448,16 +502,24 @@ private struct TurnBanner: View {
 
 private struct IntroPane: View {
     let word: PathWord
+    var romanOpacity: Double = 1
+    var partnerURL: URL? = nil
     let speak: () -> Void
+    var partner: (URL) -> Void = { _ in }
     let slow: () -> Void
     let next: () -> Void
 
     var body: some View {
         VStack(spacing: 14) {
             Text(word.emoji).font(.system(size: 88))
-            ToneLine(roman: word.roman)
+            if romanOpacity > 0.05 {
+                ToneLine(roman: word.roman).opacity(romanOpacity)
+            }
             Text(word.german).font(.title2)
             FillButton(title: "Anhören", systemImage: "speaker.wave.2", action: speak)
+            if let partnerURL {
+                FillButton(title: "Partnerstimme", systemImage: "person.wave.2") { partner(partnerURL) }
+            }
             FillButton(title: "Langsam", systemImage: "tortoise", action: slow)
             FillButton(title: "Weiter", action: next)
         }
@@ -551,6 +613,8 @@ private struct SpeechCard: View {
     let hideThaiUntilGraded: Bool
     var romanOpacity: Double = 1
     let speech: SpeechCoach
+    var wordID: String? = nil
+    var ownerID: String = "p1"
     let onGrade: (SpeechGrade) -> Void
     @State private var grade: SpeechGrade?
     @State private var fallback = false
@@ -571,6 +635,9 @@ private struct SpeechCard: View {
             )
             FillButton(title: "Nochmal anhören", systemImage: "tortoise") { speech.speak(thai, slow: true) }
             if let grade {
+                if grade == .sure, let wordID {
+                    VoiceSaveButton(wordID: wordID, ownerID: ownerID, thai: thai)
+                }
                 FillButton(title: "Weiter") { onGrade(grade) }
             }
         }
@@ -602,6 +669,119 @@ private struct ResultsPane: View {
                 .foregroundStyle(.secondary)
             FillButton(title: "Nochmal", action: again)
         }
+    }
+}
+
+private struct BuildBoard: View {
+    let item: BuildChallenge
+    let placed: [Int]
+    let leftName: String
+    let rightName: String
+    let onTap: (Int) -> Void
+    let onFail: () -> Void
+    @State private var started = Date()
+    @State private var failed = false
+
+    var body: some View {
+        VStack(spacing: 12) {
+            TimelineView(.animation(minimumInterval: 0.2)) { context in
+                let left = max(0, item.seconds - Int(context.date.timeIntervalSince(started)))
+                Text("\(left) s")
+                    .font(.title.weight(.bold).monospacedDigit())
+                    .foregroundStyle(left < 6 ? Theme.brick : Theme.ink)
+                    .onChange(of: left) { _, value in
+                        if value == 0, !failed, placed.count < item.tokens.count {
+                            failed = true
+                            onFail()
+                        }
+                    }
+            }
+            Text(placed.map { item.tokens[$0].text }.joined(separator: " "))
+                .font(.title2.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .accessibilityLabel("Bisher \(placed.count) von \(item.tokens.count)")
+            Text(item.german).foregroundStyle(.secondary)
+            HStack(alignment: .top, spacing: 10) {
+                column(owner: "p1", title: leftName, color: Theme.navy)
+                column(owner: "p2", title: rightName, color: Theme.accent)
+            }
+        }
+        .onAppear { started = Date() }
+    }
+
+    private func column(owner: String, title: String, color: Color) -> some View {
+        VStack(spacing: 8) {
+            Text(title).font(.headline).foregroundStyle(color)
+            ForEach(item.tokens.filter { $0.owner == owner }) { token in
+                let used = placed.contains(token.id)
+                Button {
+                    guard !used else { return }
+                    onTap(token.id)
+                } label: {
+                    Text(token.text)
+                        .font(.title3.weight(.bold))
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .background(color.opacity(used ? 0.08 : 0.18), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+                .buttonStyle(.plain)
+                .disabled(used)
+                .accessibilityLabel("\(title), Teil \(token.id + 1)")
+            }
+        }
+    }
+}
+
+private struct VoiceSaveButton: View {
+    let wordID: String
+    let ownerID: String
+    let thai: String
+    @EnvironmentObject private var model: AppModel
+    @State private var recorder: AVAudioRecorder?
+    @State private var recording = false
+    @State private var saved = false
+
+    var body: some View {
+        Button {
+            if saved { return }
+            if recording {
+                finish()
+            } else {
+                begin()
+            }
+        } label: {
+            Text(saved ? "Stimme gemerkt" : (recording ? "Stopp" : "Stimme merken"))
+                .font(.body.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Speichert eure Aussprache für spätere Runden.")
+    }
+
+    private func begin() {
+        let url = model.voiceFile(wordID: wordID, ownerID: ownerID)
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker])
+        try? session.setActive(true)
+        let settings: [String: Any] = [
+            AVFormatIDKey: kAudioFormatMPEG4AAC,
+            AVSampleRateKey: 16_000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderBitRateKey: 24_000,
+        ]
+        recorder = try? AVAudioRecorder(url: url, settings: settings)
+        recorder?.record()
+        recording = recorder?.isRecording ?? false
+    }
+
+    private func finish() {
+        recorder?.stop()
+        recording = false
+        let url = model.voiceFile(wordID: wordID, ownerID: ownerID)
+        guard let data = try? Data(contentsOf: url), !data.isEmpty else { return }
+        model.saveVoice(wordID: wordID, ownerID: ownerID, data: data)
+        saved = true
+        Haptics.success()
     }
 }
 

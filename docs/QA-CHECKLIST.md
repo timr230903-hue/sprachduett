@@ -9,6 +9,8 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 - [x] Wischen vom Rand ist auf Runde und Alltags-Check an.
 - [x] Leerer Lernpfad und leere Tonpaare zeigen einen Satz, keinen Absturz.
 - [x] Hör & Zeig erklärt den Ablauf in einem Satz, nennt die aktive Person, gibt das Handy weiter und wertet nur gemeinsam.
+- [x] Gemeinsam bauen verteilt einen Satz auf beide. Nur die richtige Reihenfolge vor der Zeit gibt beiden den Punkt.
+- [x] Die Wochenquest steht neben der Serie: 5 Runden und ein Restaurant-Test. Sie nimmt keine Serie weg.
 
 ## Sprache
 
@@ -29,7 +31,8 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 ## Inhalt
 
 - [x] Tutorial ist ein Satz und vier Karten, die zum Sagen-und-Zeigen passen.
-- [x] Links und rechts wählen ผม/ครับ oder ฉัน/ค่ะ. Die Umschrift blendet aus, wenn das Wort sitzt.
+- [x] Links und rechts wählen ผม/ครับ oder ฉัน/ค่ะ. Ab A1 blendet die Umschrift aus, wenn das Wort sitzt. „Umschrift ausblenden“ nimmt sie ganz weg.
+- [x] Eine gelbe oder rote Bewertung nennt Ton oder Vokallänge und bietet langsames Hören. Nach Grün kann die eigene Stimme gemerkt und später als Partnerstimme gespielt werden.
 - [x] Alltagssprache: kein อรุณสวัสดิ์, kein ราตรีสวัสดิ์, kein ดิฉัน. ข้าว ist `khâao`.
 - [x] Ton-Duell, Schrift pro Tag, Reise offline, eigene Karten, erzeugte Geräusche, Teilkarte, Abend-Hinweis ohne Serienverlust, nur Thai als Sprache.
 

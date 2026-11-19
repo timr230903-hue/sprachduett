@@ -224,12 +224,14 @@ final class AppModel: ObservableObject {
                 persisted.duo = state
                 save()
                 noteStreak()
+                materializeVoices()
                 return true
             }
             persisted.myRole = state.members.first { $0.id == mine.id }?.role ?? .b
             persisted.duo = state
             save()
             noteStreak()
+            materializeVoices()
             return false
         }
         let merged = DuoMerge.merge(persisted.duo, remote)
@@ -242,6 +244,7 @@ final class AppModel: ObservableObject {
         }
         save()
         noteStreak()
+        materializeVoices()
         return merged != remote
     }
 
@@ -361,6 +364,80 @@ final class AppModel: ObservableObject {
     func saveCheck(_ record: CheckRecord) {
         persisted.checks.append(record)
         save()
+        if record.level >= 2 { noteQuest(check: true) }
+    }
+
+    var hideRoman: Bool { persisted.hideRoman }
+
+    func setHideRoman(_ hidden: Bool) {
+        persisted.hideRoman = hidden
+        save()
+    }
+
+    var quest: QuestProgress {
+        QuestProgress(rounds: persisted.questRounds, checks: persisted.questChecks, celebrated: persisted.questCelebrated)
+    }
+
+    func refreshQuestWeek() {
+        let key = PairQuest.weekKey(Date())
+        guard persisted.questWeek != key else { return }
+        persisted.questWeek = key
+        persisted.questRounds = 0
+        persisted.questChecks = 0
+        persisted.questCelebrated = false
+        save()
+    }
+
+    func noteQuest(round: Bool = false, check: Bool = false) {
+        refreshQuestWeek()
+        let before = quest.done
+        let next = PairQuest.record(
+            rounds: persisted.questRounds,
+            checks: persisted.questChecks,
+            celebrated: persisted.questCelebrated,
+            addRound: round,
+            addCheck: check
+        )
+        persisted.questRounds = next.rounds
+        persisted.questChecks = next.checks
+        if next.done, !before, !next.celebrated {
+            persisted.questCelebrated = true
+            celebration = "Paar-Quest geschafft"
+            Haptics.success()
+        }
+        save()
+    }
+
+    func voiceFile(wordID: String, ownerID: String) -> URL {
+        audioFolder().appendingPathComponent("voice-\(ownerID)-\(wordID).m4a")
+    }
+
+    func saveVoice(wordID: String, ownerID: String, data: Data) {
+        let url = voiceFile(wordID: wordID, ownerID: ownerID)
+        try? data.write(to: url, options: .atomic)
+        let clip = VoiceClip(wordID: wordID, ownerID: ownerID, updatedAt: Date(), audioBase64: data.base64EncodedString())
+        persisted.duo.voiceClips = VoiceLibrary.merge(persisted.duo.voiceClips, [clip])
+        persisted.duo.updatedAt = Date()
+        saveAndPush()
+    }
+
+    func partnerVoiceURL(wordID: String) -> URL? {
+        materializeVoices()
+        let owners = [partner?.id, "p2", "p1", me.id].compactMap { $0 }
+        for owner in owners {
+            let url = voiceFile(wordID: wordID, ownerID: owner)
+            if FileManager.default.fileExists(atPath: url.path) { return url }
+        }
+        return nil
+    }
+
+    func materializeVoices() {
+        for clip in persisted.duo.voiceClips {
+            let url = voiceFile(wordID: clip.wordID, ownerID: clip.ownerID)
+            if FileManager.default.fileExists(atPath: url.path) { continue }
+            guard let data = Data(base64Encoded: clip.audioBase64), !data.isEmpty else { continue }
+            try? data.write(to: url, options: .atomic)
+        }
     }
 
     func noteRoundStarted() {
@@ -416,6 +493,7 @@ final class AppModel: ObservableObject {
         saveAndPush()
         noteStreak()
         refreshNudge()
+        if together { noteQuest(round: true) }
     }
 
     func publishClaim(itemID: String, playerID: String, choiceID: String) {
@@ -474,6 +552,11 @@ struct Persisted: Codable, Equatable {
     var ownCards: [OwnCard]
     var scriptDone: Int
     var scriptDay: String
+    var questWeek: String
+    var questRounds: Int
+    var questChecks: Int
+    var questCelebrated: Bool
+    var hideRoman: Bool
 
     var member: MemberProfile {
         MemberProfile(
@@ -516,7 +599,12 @@ struct Persisted: Codable, Equatable {
             checks: [],
             ownCards: [],
             scriptDone: 0,
-            scriptDay: ""
+            scriptDay: "",
+            questWeek: "",
+            questRounds: 0,
+            questChecks: 0,
+            questCelebrated: false,
+            hideRoman: false
         )
     }
 
@@ -549,6 +637,11 @@ struct Persisted: Codable, Equatable {
         if object["ownCards"] == nil { object["ownCards"] = [] }
         if object["scriptDone"] == nil { object["scriptDone"] = 0 }
         if object["scriptDay"] == nil { object["scriptDay"] = "" }
+        if object["questWeek"] == nil { object["questWeek"] = "" }
+        if object["questRounds"] == nil { object["questRounds"] = 0 }
+        if object["questChecks"] == nil { object["questChecks"] = 0 }
+        if object["questCelebrated"] == nil { object["questCelebrated"] = false }
+        if object["hideRoman"] == nil { object["hideRoman"] = false }
         return (try? JSONSerialization.data(withJSONObject: object)) ?? data
     }
 
@@ -592,7 +685,12 @@ private struct LegacyPersisted: Codable {
             checks: [],
             ownCards: [],
             scriptDone: 0,
-            scriptDay: ""
+            scriptDay: "",
+            questWeek: "",
+            questRounds: 0,
+            questChecks: 0,
+            questCelebrated: false,
+            hideRoman: false
         )
     }
 }

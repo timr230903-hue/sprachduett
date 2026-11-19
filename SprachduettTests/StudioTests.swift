@@ -53,6 +53,33 @@ final class StudioTests: XCTestCase {
         XCTAssertTrue(CoupleReminder.body.contains("jetzt du"))
     }
 
+    func testQuestBuildHintAndVoices() {
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let date = Date(timeIntervalSince1970: 1_763_600_000)
+        XCTAssertFalse(PairQuest.weekKey(date, calendar: calendar).isEmpty)
+        let open = PairQuest.record(rounds: 4, checks: 0, celebrated: false, addRound: true, addCheck: true)
+        XCTAssertTrue(open.done)
+        XCTAssertTrue(open.line.contains("5/5"))
+        let built = BuildEngine.challenge(id: "s", thai: "เอา ข้าว", german: "Reis", together: true)
+        XCTAssertEqual(built?.tokens.map(\.owner), ["p1", "p2"])
+        XCTAssertEqual(BuildEngine.place([], token: 0), [0])
+        XCTAssertNil(BuildEngine.place([], token: 1))
+        XCTAssertTrue(BuildEngine.complete([0, 1], count: 2))
+        let tone = SpeechHint.explain(recognized: "ก้า", expected: "กา", roman: "kâa")
+        XCTAssertTrue(tone.message.contains("Ton"))
+        XCTAssertEqual(tone.tone, .falling)
+        let length = SpeechHint.explain(recognized: "น้ำา", expected: "น้ำ", roman: "náam")
+        XCTAssertFalse(length.message.isEmpty)
+        let kept = VoiceLibrary.merge(
+            [VoiceClip(wordID: "a", ownerID: "p1", updatedAt: date, audioBase64: "old")],
+            [VoiceClip(wordID: "a", ownerID: "p1", updatedAt: date.addingTimeInterval(10), audioBase64: "new")]
+        )
+        XCTAssertEqual(kept.count, 1)
+        XCTAssertEqual(kept[0].audioBase64, "new")
+        XCTAssertEqual(RomanFade.opacity(stage: 2, mastered: true, reviews: 2, pronunciation: 0.4, hidden: false), 0)
+    }
+
     func testShareCaptionAndDailyWordAreStable() {
         XCTAssertEqual(ProgressShare.caption("  Wir können jetzt bestellen. "), "Wir können jetzt bestellen.")
         XCTAssertEqual(ProgressShare.caption("  "), "Wir lernen Thai zusammen.")

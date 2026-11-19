@@ -49,12 +49,14 @@ final class ParticleAndSpeechTests: XCTestCase {
     }
 
     func testRomanizationFadesAsTheWordSticks() {
-        XCTAssertEqual(RomanFade.opacity(reviews: 0, pronunciation: 0), 1, accuracy: 0.001)
+        XCTAssertEqual(RomanFade.opacity(stage: 1, mastered: true, reviews: 9, pronunciation: 1, hidden: false), 1, accuracy: 0.001)
+        XCTAssertEqual(RomanFade.opacity(stage: 2, mastered: true, reviews: 4, pronunciation: 0.5, hidden: false), 0, accuracy: 0.001)
+        XCTAssertEqual(RomanFade.opacity(stage: 2, mastered: false, reviews: 0, pronunciation: 0, hidden: false), 1, accuracy: 0.001)
         XCTAssertGreaterThan(
-            RomanFade.opacity(reviews: 2, pronunciation: 0.4),
-            RomanFade.opacity(reviews: 6, pronunciation: 0.7)
+            RomanFade.opacity(stage: 2, mastered: false, reviews: 1, pronunciation: 0.2, hidden: false),
+            RomanFade.opacity(stage: 2, mastered: false, reviews: 5, pronunciation: 0.8, hidden: false)
         )
-        XCTAssertEqual(RomanFade.opacity(reviews: 8, pronunciation: 0.9), 0, accuracy: 0.001)
+        XCTAssertEqual(RomanFade.opacity(stage: 1, mastered: false, reviews: 0, pronunciation: 0, hidden: true), 0, accuracy: 0.001)
     }
 
     func testSpeechAcceptsParticleAndNearMiss() {

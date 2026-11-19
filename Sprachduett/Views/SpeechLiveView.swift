@@ -56,13 +56,25 @@ struct SpeechListenDeck: View {
                 }
             }
             if let grade {
+                let note = SpeechHint.explain(recognized: speech.heard, expected: thai, roman: roman)
                 Text(resultTitle(grade))
                     .font(.title2.weight(.bold))
                     .foregroundStyle(resultColor(grade))
-                Text(resultDetail(grade))
+                Text(note.message)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                if let tone = note.tone, grade != .sure {
+                    Text("\(note.syllable ?? "") \(tone.arrow)")
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(toneColor(tone))
+                        .accessibilityLabel("Ton \(tone.arrow)")
+                }
+                if grade != .sure {
+                    FillButton(title: "Langsam hören", systemImage: "tortoise") {
+                        speech.speak(thai, slow: true)
+                    }
+                }
             }
             if !speech.hint.isEmpty, grade == nil || speech.hint == "Nichts gehört." {
                 Text(speech.hint)

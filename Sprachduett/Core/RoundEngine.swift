@@ -74,6 +74,7 @@ public enum Beat: Equatable, Identifiable {
     case listen(ListenChallenge)
     case say(SayTurn)
     case dialog(DialogTurn)
+    case build(BuildChallenge)
 
     public var id: String {
         switch self {
@@ -81,6 +82,7 @@ public enum Beat: Equatable, Identifiable {
         case .listen(let item): return "listen-\(item.id)"
         case .say(let turn): return "say-\(turn.id)"
         case .dialog(let turn): return "dialog-\(turn.id)"
+        case .build(let item): return "build-\(item.id)"
         }
     }
 
@@ -89,7 +91,7 @@ public enum Beat: Equatable, Identifiable {
         case .intro(let word): return word.id
         case .listen(let item): return item.answer.id
         case .say(let turn): return turn.word.id
-        case .dialog: return nil
+        case .dialog, .build: return nil
         }
     }
 }
@@ -119,6 +121,7 @@ public struct RoundCursor: Equatable {
     public var listenPhase: ListenPhase
     public var speechUnderstood: Bool
     public var pictureRight: Bool
+    public var buildPlaced: [Int]
 
     public init(
         index: Int = 0,
@@ -127,7 +130,8 @@ public struct RoundCursor: Equatable {
         missed: Set<String> = [],
         listenPhase: ListenPhase = .pending,
         speechUnderstood: Bool = false,
-        pictureRight: Bool = false
+        pictureRight: Bool = false,
+        buildPlaced: [Int] = []
     ) {
         self.index = index
         self.phase = phase
@@ -136,6 +140,7 @@ public struct RoundCursor: Equatable {
         self.listenPhase = listenPhase
         self.speechUnderstood = speechUnderstood
         self.pictureRight = pictureRight
+        self.buildPlaced = buildPlaced
     }
 
     public var finished: Bool { index < 0 }
@@ -211,6 +216,15 @@ public enum RoundBuilder {
             let speaker = offset % 2 == 0 ? first : second
             beats.append(.say(SayTurn(id: "own-\(word.id)", word: word, speakerID: speaker)))
         }
+        if let line = unit.dialogs.first,
+           let built = BuildEngine.challenge(
+            id: line.id,
+            thai: line.a.thai + " " + line.b.thai,
+            german: line.a.german + " " + line.b.german,
+            together: together
+           ) {
+            beats.append(.build(built))
+        }
         return RoundPlan(beats: beats, label: snapshot.label, unitTitle: unit.title)
     }
 
@@ -244,6 +258,7 @@ public enum RoundEngine {
         next.listenPhase = .pending
         next.speechUnderstood = false
         next.pictureRight = false
+        next.buildPlaced = []
         if next.index >= plan.beats.count { next.index = -1 }
         return next
     }
@@ -346,7 +361,7 @@ public enum RoundEngine {
             case .say(let turn):
                 if (plan.beats.contains { if case .intro(let word) = $0 { return word.id == turn.word.id } else { return false } })
                     && !introduced.contains(turn.word.id) { return false }
-            case .dialog:
+            case .dialog, .build:
                 break
             }
         }

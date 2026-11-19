@@ -38,10 +38,11 @@ public struct DuoCloudState: Codable, Equatable {
     public var confirmed: [ConfirmedLine]
     public var session: SessionSnapshot?
     public var liveClaim: LiveClaim?
+    public var voiceClips: [VoiceClip]
     public var updatedAt: Date
 
     public init(duoID: String, title: String, members: [MemberProfile], stamps: [PracticeStamp],
-                confirmed: [ConfirmedLine], session: SessionSnapshot?, updatedAt: Date, liveClaim: LiveClaim? = nil) {
+                confirmed: [ConfirmedLine], session: SessionSnapshot?, updatedAt: Date, liveClaim: LiveClaim? = nil, voiceClips: [VoiceClip] = []) {
         self.duoID = duoID
         self.title = title
         self.members = members
@@ -49,11 +50,12 @@ public struct DuoCloudState: Codable, Equatable {
         self.confirmed = confirmed
         self.session = session
         self.liveClaim = liveClaim
+        self.voiceClips = voiceClips
         self.updatedAt = updatedAt
     }
 
     private enum CodingKeys: String, CodingKey {
-        case duoID, title, members, stamps, confirmed, session, liveClaim, updatedAt
+        case duoID, title, members, stamps, confirmed, session, liveClaim, voiceClips, updatedAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -65,6 +67,7 @@ public struct DuoCloudState: Codable, Equatable {
         confirmed = try container.decode([ConfirmedLine].self, forKey: .confirmed)
         session = try container.decodeIfPresent(SessionSnapshot.self, forKey: .session)
         liveClaim = try container.decodeIfPresent(LiveClaim.self, forKey: .liveClaim)
+        voiceClips = try container.decodeIfPresent([VoiceClip].self, forKey: .voiceClips) ?? []
         updatedAt = try container.decode(Date.self, forKey: .updatedAt)
     }
 
@@ -120,7 +123,8 @@ public enum DuoMerge {
             },
             session: session,
             updatedAt: max(local.updatedAt, remote.updatedAt),
-            liveClaim: claim
+            liveClaim: claim,
+            voiceClips: VoiceLibrary.merge(local.voiceClips, remote.voiceClips)
         )
     }
 

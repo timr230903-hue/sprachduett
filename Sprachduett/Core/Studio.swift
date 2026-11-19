@@ -278,6 +278,128 @@ public enum ProgressShare {
     }
 }
 
+public struct QuestProgress: Equatable {
+    public var rounds: Int
+    public var checks: Int
+    public var celebrated: Bool
+
+    public init(rounds: Int, checks: Int, celebrated: Bool) {
+        self.rounds = rounds
+        self.checks = checks
+        self.celebrated = celebrated
+    }
+
+    public var done: Bool { rounds >= PairQuest.roundGoal && checks >= PairQuest.checkGoal }
+
+    public var line: String {
+        let restaurant = checks >= PairQuest.checkGoal ? "Restaurant geschafft" : "Restaurant-Test noch offen"
+        return "Diese Woche: \(min(rounds, PairQuest.roundGoal))/\(PairQuest.roundGoal) Runden · \(restaurant)"
+    }
+}
+
+public enum PairQuest {
+    public static let roundGoal = 5
+    public static let checkGoal = 1
+    public static let title = "Diese Woche: 5 Runden + 1 Restaurant-Test zusammen"
+
+    public static func weekKey(_ date: Date, calendar: Calendar = .current) -> String {
+        let week = calendar.component(.weekOfYear, from: date)
+        let year = calendar.component(.yearForWeekOfYear, from: date)
+        return "\(year)-W\(week)"
+    }
+
+    public static func record(rounds: Int, checks: Int, celebrated: Bool, addRound: Bool, addCheck: Bool) -> QuestProgress {
+        var next = QuestProgress(rounds: rounds, checks: checks, celebrated: celebrated)
+        if addRound { next.rounds += 1 }
+        if addCheck { next.checks += 1 }
+        return next
+    }
+}
+
+public struct BuildToken: Equatable, Identifiable {
+    public let id: Int
+    public let text: String
+    public let owner: String
+
+    public init(id: Int, text: String, owner: String) {
+        self.id = id
+        self.text = text
+        self.owner = owner
+    }
+}
+
+public struct BuildChallenge: Equatable, Identifiable {
+    public let id: String
+    public let german: String
+    public let tokens: [BuildToken]
+    public let seconds: Int
+
+    public init(id: String, german: String, tokens: [BuildToken], seconds: Int) {
+        self.id = id
+        self.german = german
+        self.tokens = tokens
+        self.seconds = seconds
+    }
+}
+
+public enum BuildEngine {
+    public static let seconds = 25
+
+    public static func challenge(id: String, thai: String, german: String, together: Bool) -> BuildChallenge? {
+        var words = thai.split(whereSeparator: \.isWhitespace).map(String.init).filter { !$0.isEmpty }
+        if words.count < 2 {
+            let chars = Array(thai)
+            guard chars.count >= 2 else { return nil }
+            let mid = max(chars.count / 2, 1)
+            words = [String(chars[..<mid]), String(chars[mid...])]
+        }
+        let tokens = words.enumerated().map { index, text in
+            let owner = together && index % 2 == 1 ? "p2" : "p1"
+            return BuildToken(id: index, text: text, owner: owner)
+        }
+        return BuildChallenge(id: id, german: german, tokens: tokens, seconds: seconds)
+    }
+
+    /// Nur das nächste Wort in der Reihenfolge zählt. Ein falsches Tippen ändert nichts.
+    public static func place(_ placed: [Int], token: Int) -> [Int]? {
+        guard token == placed.count else { return nil }
+        return placed + [token]
+    }
+
+    public static func complete(_ placed: [Int], count: Int) -> Bool {
+        placed.count == count && count > 0
+    }
+}
+
+public struct VoiceClip: Codable, Equatable, Identifiable {
+    public var wordID: String
+    public var ownerID: String
+    public var updatedAt: Date
+    public var audioBase64: String
+    public var id: String { ownerID + ":" + wordID }
+
+    public init(wordID: String, ownerID: String, updatedAt: Date, audioBase64: String) {
+        self.wordID = wordID
+        self.ownerID = ownerID
+        self.updatedAt = updatedAt
+        self.audioBase64 = audioBase64
+    }
+}
+
+public enum VoiceLibrary {
+    public static let cap = 24
+
+    public static func merge(_ local: [VoiceClip], _ remote: [VoiceClip]) -> [VoiceClip] {
+        var best: [String: VoiceClip] = [:]
+        for clip in local + remote {
+            let key = clip.id
+            if let existing = best[key], existing.updatedAt > clip.updatedAt { continue }
+            best[key] = clip
+        }
+        return best.values.sorted { $0.updatedAt > $1.updatedAt }.prefix(cap).map { $0 }
+    }
+}
+
 public enum WordOfDay {
     public static func index(day: String, count: Int) -> Int {
         guard count > 0 else { return 0 }

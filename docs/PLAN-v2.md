@@ -29,3 +29,15 @@ Locale `th-TH`, on-device wenn das Gerät es kann, sonst die Server-Erkennung. D
 ## Aufräumen
 
 Nicht verlinkte Lektions-, Wort- und Szenenbildschirme fliegen raus. Der Inhalt (JSON, Lernpfad, Dialoge) bleibt.
+
+## Paar, nicht zwei Einzelspieler
+
+Neben der gemeinsamen Serie liegt eine Wochenquest: fünf Runden und ein Restaurant-Test zusammen. Sie setzt die Serie nicht zurück und feiert nur das Erreichen.
+
+In jeder Runde gibt es „Gemeinsam bauen“: die Wörter eines Satzes sind auf beide verteilt, und nur die richtige Reihenfolge vor Ablauf der Zeit gibt beiden den Punkt. Hör & Zeig bleibt genauso kooperativ: Wort verstanden und Bild richtig, sonst keiner.
+
+Nach einem grünen Treffer kann jede Person ihre Aussprache aufnehmen. Spätere Runden spielen diese Partnerstimme statt der Synthese, wenn die Datei da ist. Die Aufnahme liegt auf dem Gerät und reist im Duo-Record mit, höchstens 24 Clips, damit der Abgleich klein bleibt.
+
+Eine knappe Bewertung sagt, was daneben lag: der Ton mit farbigem Pfeil, oder ein langer Vokal. Daneben gibt es immer langsames Vorsprechen.
+
+Die Umschrift ist eine Krücke. „Umschrift ausblenden“ in den Einstellungen nimmt sie ganz weg. Ab Stufe 2 (A1) blendet sie von selbst aus, sobald ein Wort sitzt, und kommt bei einem Fehlversuch zurück, damit der Ton noch erklärbar ist. Keine Bezahlschranke.

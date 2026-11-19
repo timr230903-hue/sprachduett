@@ -118,6 +118,73 @@ public struct LiveToken: Equatable, Identifiable {
     }
 }
 
+public struct PronunciationNote: Equatable {
+    public let message: String
+    public let syllable: String?
+    public let tone: ToneColor?
+
+    public init(message: String, syllable: String? = nil, tone: ToneColor? = nil) {
+        self.message = message
+        self.syllable = syllable
+        self.tone = tone
+    }
+}
+
+public enum SpeechHint {
+    /// Sagt, welcher Ton oder welche Vokallänge wahrscheinlich daneben lag.
+    public static func explain(recognized: String, expected: String, roman: String) -> PronunciationNote {
+        let grade = SpeechScore.grade(recognized: recognized, expected: expected)
+        let syllables = RomanTones.syllables(roman)
+        let marked = syllables.first { $0.tone != .mid } ?? syllables.first
+        if grade == .sure {
+            return PronunciationNote(message: "Das war die Zeile.")
+        }
+        let expectedCore = SpeechMatch.stripParticles(expected)
+        let heardCore = SpeechMatch.stripParticles(recognized)
+        if heardCore.isEmpty {
+            return PronunciationNote(message: "Nichts gehört. Näher ans Mikrofon, dann langsam noch einmal.")
+        }
+        if !heardCore.isEmpty, SpeechScore.withoutTones(heardCore) == SpeechScore.withoutTones(expectedCore) {
+            let name = toneName(marked?.tone ?? .mid)
+            return PronunciationNote(
+                message: "Der Ton sitzt noch nicht: \(name). Hört langsam und folgt dem Pfeil.",
+                syllable: marked?.text,
+                tone: marked?.tone
+            )
+        }
+        if grade == .close, hasLongVowel(roman) {
+            return PronunciationNote(
+                message: "Der Vokal ist lang. Zieht ihn, dann langsam noch einmal.",
+                syllable: marked?.text,
+                tone: marked?.tone
+            )
+        }
+        if grade == .close {
+            return PronunciationNote(
+                message: "Fast dasselbe Wort. Hört langsam die Silben einzeln.",
+                syllable: marked?.text,
+                tone: marked?.tone
+            )
+        }
+        return PronunciationNote(message: "Das war ein anderes Wort. Langsam noch einmal, Silbe für Silbe.")
+    }
+
+    private static func toneName(_ tone: ToneColor) -> String {
+        switch tone {
+        case .mid: return "Mittelton"
+        case .low: return "tiefer Ton"
+        case .falling: return "fallender Ton"
+        case .high: return "hoher Ton"
+        case .rising: return "steigender Ton"
+        }
+    }
+
+    private static func hasLongVowel(_ roman: String) -> Bool {
+        let bare = roman.folding(options: .diacriticInsensitive, locale: Locale(identifier: "en"))
+        return bare.range(of: "aa|ee|ii|oo|uu|ʉʉ|ɯɯ", options: .regularExpression) != nil
+    }
+}
+
 public enum SpeechPace {
     /// Normal etwas unter dem Systemtempo, langsam knapp über dem Minimum.
     public static func rate(slow: Bool, minimum: Float, defaultRate: Float) -> Float {

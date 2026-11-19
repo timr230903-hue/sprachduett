@@ -67,6 +67,25 @@ struct HomeView: View {
                     .font(.body.weight(.semibold))
                     .foregroundStyle(Theme.accent)
                 }
+                Text(model.quest.line)
+                    .font(.subheadline.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                Text(PairQuest.title)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                if model.quest.done {
+                    Text("Paar-Quest geschafft")
+                        .font(.headline)
+                        .foregroundStyle(Theme.sage)
+                }
+                if let party = model.celebration {
+                    Text(party)
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                    Button("Schließen") { model.dismissCelebration() }
+                        .foregroundStyle(Theme.accent)
+                }
                 Text("Serie \(model.streak.length)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -76,6 +95,7 @@ struct HomeView: View {
         }
         .onAppear {
             screens.name = "Home"
+            model.refreshQuestWeek()
             model.refreshNudge()
         }
         .navigationDestination(isPresented: $playing) {
@@ -163,6 +183,11 @@ struct SettingsSheet: View {
                         Text(preview(rightGender))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                        Toggle("Umschrift ausblenden", isOn: Binding(
+                            get: { model.hideRoman },
+                            set: { model.setHideRoman($0) }
+                        ))
+                        .tint(Theme.accent)
                         FillButton(title: "Sichern") {
                             model.updateSeats(name: name, gender: leftGender, partnerName: partnerName, partnerGender: rightGender)
                         }

@@ -42,14 +42,15 @@ public enum RomanTones {
     }
 }
 
-/// Umschrift ist am Anfang voll da und blendet aus, wenn das Wort sitzt.
+/// Umschrift ist eine Krücke. A0 zeigt sie. Ab A1 blendet sie aus, sobald das Wort sitzt.
 public enum RomanFade {
-    public static func opacity(reviews: Int, pronunciation: Double) -> Double {
+    public static func opacity(stage: Int, mastered: Bool, reviews: Int, pronunciation: Double, hidden: Bool) -> Double {
+        if hidden { return 0 }
+        guard stage >= 2 else { return 1 }
+        if mastered { return 0 }
         if reviews <= 0 { return 1 }
+        let practiced = min(Double(reviews), 6) / 6
         let known = min(max(pronunciation, 0), 1)
-        if reviews >= 8, known >= 0.8 { return 0 }
-        let practiced = min(Double(reviews), 8) / 8
-        let hide = min(1, practiced * 0.7 + known * 0.3)
-        return 1 - hide * 0.75
+        return max(0, 1 - (practiced * 0.7 + known * 0.3))
     }
 }
