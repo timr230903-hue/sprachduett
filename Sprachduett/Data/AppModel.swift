@@ -4,6 +4,7 @@ import Foundation
 final class AppModel: ObservableObject {
     @Published private(set) var persisted: Persisted
     @Published var celebration: String?
+    @Published var pausedRound: SavedRound?
     let catalog: ThaiCatalog
 
     init() {
@@ -307,7 +308,16 @@ final class AppModel: ObservableObject {
         return persisted.feedback.map(\.exportLine).joined(separator: "\n")
     }
 
+    func pauseRound(_ round: SavedRound) {
+        pausedRound = round
+    }
+
+    func clearPausedRound() {
+        pausedRound = nil
+    }
+
     func rememberRound(_ stats: [String: WordStat], together: Bool) {
+        pausedRound = nil
         var map = pathStats
         for (key, value) in stats { map[key] = value }
         persisted.wordStats = map.values.sorted { $0.id < $1.id }

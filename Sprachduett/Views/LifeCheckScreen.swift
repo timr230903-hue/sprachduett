@@ -18,6 +18,7 @@ struct LifeCheckScreen: View {
     var body: some View {
         ScreenBackground {
             VStack(spacing: 16) {
+                CloseBar { dismiss() }
                 Text(level >= 2 ? "Restaurant-Test" : "Alltags-Check")
                     .font(.title2.weight(.bold))
                 if let outcome {
@@ -31,6 +32,8 @@ struct LifeCheckScreen: View {
             .padding(20)
         }
         .onAppear { screens.name = "Alltags-Check" }
+        .navigationBarBackButtonHidden(true)
+        .background(SwipeBackEnabler())
     }
 
     @ViewBuilder private func stepView(_ step: CheckStep) -> some View {

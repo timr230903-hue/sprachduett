@@ -59,6 +59,35 @@ final class RoundController: ObservableObject {
         return leftName
     }
 
+    func snapshot(together: Bool) -> SavedRound {
+        SavedRound(
+            together: together,
+            plan: plan,
+            cursor: cursor,
+            stats: Array(stats.values),
+            leftName: leftName,
+            rightName: rightName,
+            mode: mode,
+            localID: localID,
+            partnerID: partnerID,
+            showCoach: showCoach
+        )
+    }
+
+    func restore(_ saved: SavedRound) {
+        plan = saved.plan
+        cursor = saved.cursor
+        stats = Dictionary(saved.stats.map { ($0.id, $0) }, uniquingKeysWith: { _, next in next })
+        leftName = saved.leftName
+        rightName = saved.rightName
+        mode = saved.mode
+        localID = saved.localID
+        partnerID = saved.partnerID
+        showCoach = saved.showCoach
+        coach = nil
+        presentCoachIfNeeded()
+    }
+
     func start(units: [LearnUnit], stats: [String: WordStat], together: Bool, partnerConnected: Bool,
                left: String, right: String, localID: String, partnerID: String, coach: Bool) {
         self.stats = stats
@@ -156,8 +185,22 @@ final class RoundController: ObservableObject {
     }
 }
 
+struct SavedRound: Equatable {
+    var together: Bool
+    var plan: RoundPlan
+    var cursor: RoundCursor
+    var stats: [WordStat]
+    var leftName: String
+    var rightName: String
+    var mode: PlayMode
+    var localID: String
+    var partnerID: String
+    var showCoach: Bool
+}
+
 struct RoundScreen: View {
     let together: Bool
+    var resume: Bool = false
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var speech: SpeechCoach
     @EnvironmentObject private var screens: ScreenTracker
@@ -165,11 +208,20 @@ struct RoundScreen: View {
     @AppStorage(TutorialKey.lesson) private var lessonSeen = false
     @State private var started = Date()
     @State private var closed = false
+    @State private var confirmLeave = false
     @StateObject private var round = RoundController()
 
     var body: some View {
         ScreenBackground {
             VStack(spacing: 16) {
+                CloseBar {
+                    if round.done {
+                        closed = true
+                        dismiss()
+                    } else {
+                        confirmLeave = true
+                    }
+                }
                 TurnBanner(name: round.turnName, left: round.turnIsLeft, text: round.instruction)
                 if round.done {
                     ResultsPane(
@@ -202,8 +254,17 @@ struct RoundScreen: View {
             boot()
         }
         .onDisappear {
-            if !closed && !round.done { model.noteAbandoned(game: round.gameName) }
+            guard !closed, !round.done else { return }
+            model.pauseRound(round.snapshot(together: together))
         }
+        .alert("Runde pausieren?", isPresented: $confirmLeave) {
+            Button("Pausieren") { leave() }
+            Button("Weiter spielen", role: .cancel) {}
+        } message: {
+            Text("Zusammen spielen bietet danach Weiterspielen an.")
+        }
+        .background(SwipeBackEnabler())
+        .navigationBarBackButtonHidden(true)
         .onChange(of: model.duo.liveClaim?.at) { _, _ in
             guard let claim = model.duo.liveClaim else { return }
             round.applyRemote(itemID: claim.itemID, player: claim.playerID, choice: claim.choiceID)
@@ -245,6 +306,14 @@ struct RoundScreen: View {
         }
     }
 
+    private func leave() {
+        closed = true
+        if !round.done {
+            model.pauseRound(round.snapshot(together: together))
+        }
+        dismiss()
+    }
+
     private func boot() {
         round.onFinish = { stats in
             lessonSeen = true
@@ -256,6 +325,11 @@ struct RoundScreen: View {
         round.onClaim = { item, player, choice in
             model.publishClaim(itemID: item, playerID: player, choiceID: choice)
         }
+        if resume, let saved = model.pausedRound {
+            round.restore(saved)
+            return
+        }
+        model.clearPausedRound()
         round.start(
             units: model.pathUnits,
             stats: model.pathStats,
@@ -279,7 +353,7 @@ private struct TurnBanner: View {
         VStack(spacing: 6) {
             Text(name)
                 .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundStyle(left ? Theme.coral : Theme.mango)
+                .foregroundStyle(left ? Theme.navy : Theme.accent)
                 .multilineTextAlignment(.center)
             Text(text)
                 .font(.title3)
@@ -317,11 +391,11 @@ private struct ListenBoard: View {
     var body: some View {
         if mode == .togetherOnePhone {
             HStack(alignment: .top, spacing: 8) {
-                choiceColumn(title: left, player: "p1", color: Theme.coral)
-                choiceColumn(title: right, player: "p2", color: Theme.mango)
+                choiceColumn(title: left, player: "p1", color: Theme.navy)
+                choiceColumn(title: right, player: "p2", color: Theme.accent)
             }
         } else {
-            choiceColumn(title: "", player: "p1", color: Theme.coral)
+            choiceColumn(title: "", player: "p1", color: Theme.navy)
         }
     }
 
@@ -422,11 +496,11 @@ private struct ResultsPane: View {
             Text("Runde geschafft").font(.title.weight(.bold))
             Text("\(leftName): \(leftPoints)")
                 .font(.title2.weight(.semibold))
-                .foregroundStyle(Theme.coral)
+                .foregroundStyle(Theme.navy)
             if !solo {
                 Text("\(rightName): \(rightPoints)")
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(Theme.mango)
+                    .font(.title3)
+                    .foregroundStyle(Theme.accent)
             }
             Text("Serie: \(streak)")
                 .foregroundStyle(.secondary)
@@ -453,9 +527,9 @@ struct ToneLine: View {
         switch tone {
         case .mid: return .primary
         case .low: return Color(red: 0.20, green: 0.45, blue: 0.75)
-        case .falling: return Theme.coral
-        case .high: return Theme.mango
-        case .rising: return Theme.leaf
+        case .falling: return Theme.brick
+        case .high: return Theme.accent
+        case .rising: return Theme.sage
         }
     }
 }

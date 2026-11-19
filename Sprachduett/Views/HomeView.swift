@@ -5,6 +5,7 @@ struct HomeView: View {
     @EnvironmentObject private var screens: ScreenTracker
     @State private var playing = false
     @State private var together = true
+    @State private var resume = false
     @State private var showSettings = false
     @State private var showCheck = false
     @State private var feedback = false
@@ -20,7 +21,7 @@ struct HomeView: View {
                     Button { showSettings = true } label: {
                         Image(systemName: "gearshape")
                             .font(.title3)
-                            .foregroundStyle(Theme.coral)
+                            .foregroundStyle(Theme.accent)
                     }
                     .accessibilityLabel("Einstellungen")
                 }
@@ -39,18 +40,27 @@ struct HomeView: View {
                     .foregroundStyle(.secondary)
                 ProgressDots(done: model.pathSnapshot.unitIndex, total: model.pathSnapshot.unitCount)
                 Spacer()
-                Button {
-                    together = true
-                    playing = true
-                } label: {
-                    Text("Zusammen spielen")
-                        .font(.system(.title, design: .rounded).weight(.bold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 28)
-                        .background(Theme.coral, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-                        .foregroundStyle(.white)
+                if model.pausedRound == nil {
+                    playButton("Zusammen spielen") {
+                        together = true
+                        resume = false
+                        playing = true
+                    }
+                } else {
+                    playButton("Weiterspielen") {
+                        together = model.pausedRound?.together ?? true
+                        resume = true
+                        playing = true
+                    }
+                    Button("Neue Runde") {
+                        model.clearPausedRound()
+                        together = true
+                        resume = false
+                        playing = true
+                    }
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
                 }
-                .buttonStyle(.plain)
                 Text("Serie \(model.streak.length)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -59,20 +69,34 @@ struct HomeView: View {
             .padding(24)
         }
         .onAppear { screens.name = "Home" }
-        .fullScreenCover(isPresented: $playing) { RoundScreen(together: together) }
-        .fullScreenCover(isPresented: $showCheck) {
-            if let level = model.dueCheckLevel() {
-                LifeCheckScreen(level: level)
-            }
+        .navigationDestination(isPresented: $playing) {
+            RoundScreen(together: together, resume: resume)
+        }
+        .navigationDestination(isPresented: $showCheck) {
+            LifeCheckScreen(level: model.dueCheckLevel() ?? 1)
         }
         .sheet(isPresented: $showSettings) {
             SettingsSheet(playSolo: {
                 together = false
+                resume = false
                 showSettings = false
                 playing = true
             })
         }
         .sheet(isPresented: $feedback) { FeedbackSheet() }
+    }
+}
+
+private func playButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(.title, design: .rounded).weight(.bold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 28)
+                .background(Theme.accent, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .foregroundStyle(Color.white)
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -137,6 +161,7 @@ struct SettingsSheet: View {
                 }
             }
             .navigationTitle("Einstellungen")
+            .navigationBarBackButtonHidden(false)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Fertig") { dismiss() } } }
             .onAppear { screens.name = "Einstellungen" }
@@ -176,6 +201,7 @@ struct FeedbackSheet: View {
             .padding(20)
             .navigationTitle("Feedback")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Schließen") { dismiss() } } }
         }
     }
 }

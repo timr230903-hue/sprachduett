@@ -9,9 +9,10 @@ struct RootView: View {
         NavigationStack {
             HomeView()
         }
-        .fullScreenCover(isPresented: Binding(get: { !introSeen }, set: { _ in })) {
+        .fullScreenCover(isPresented: Binding(get: { !introSeen }, set: { shown in
+            if !shown { introSeen = true }
+        })) {
             OnboardingView()
-                .interactiveDismissDisabled()
         }
         .sheet(isPresented: $help.showTutorial) {
             TutorialCarousel(onDone: { help.showTutorial = false })

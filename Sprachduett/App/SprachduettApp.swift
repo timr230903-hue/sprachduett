@@ -15,7 +15,7 @@ struct SprachduettApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .tint(Theme.coral)
+                .tint(Theme.accent)
                 .environmentObject(model)
                 .environmentObject(sync)
                 .environmentObject(coach)

@@ -4,6 +4,7 @@ struct DuoView: View {
     @EnvironmentObject private var model: AppModel
     @EnvironmentObject private var sync: SyncHub
     @EnvironmentObject private var help: HelpRouter
+    @Environment(\.dismiss) private var dismiss
     @AppStorage(TutorialKey.lesson) private var lessonSeen = false
     @State private var name = ""
     @State private var busy = false
@@ -56,7 +57,10 @@ struct DuoView: View {
                     .padding(20)
                 }
             }
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { HelpButton() } }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) { CloseBar { dismiss() } }
+                ToolbarItem(placement: .topBarTrailing) { HelpButton() }
+            }
         }
     }
 

@@ -45,7 +45,7 @@ struct HelpButton: View {
         Button(action: help.open) {
             Image(systemName: "questionmark.circle")
                 .font(.title3)
-                .foregroundStyle(Theme.coral)
+                .foregroundStyle(Theme.accent)
         }
         .accessibilityLabel("Hilfe")
     }
@@ -58,6 +58,9 @@ struct TutorialCarousel: View {
     var body: some View {
         ScreenBackground {
             VStack(spacing: 12) {
+                CloseBar(title: "Schließen", action: onDone)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 12)
                 TabView(selection: $index) {
                     ForEach(Array(TutorialScript.pages.enumerated()), id: \.element.id) { item in
                         TutorialCard(page: item.element)
