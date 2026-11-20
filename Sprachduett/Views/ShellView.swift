@@ -49,6 +49,7 @@ private struct PathScreen: View {
     @EnvironmentObject private var screens: ScreenTracker
     @EnvironmentObject private var lessons: LessonLaunch
     @State private var checkLevel: Int?
+    @State private var info: PathInfo?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var nodes: [MapNode] {
@@ -65,27 +66,30 @@ private struct PathScreen: View {
                             Text("🐘").font(.largeTitle).accessibilityHidden(true)
                             Text("Euer Pfad")
                                 .font(.system(.title2, design: .rounded).weight(.bold))
+                                .foregroundStyle(.white)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
                         if let daily = model.dailyWord {
                             Text("Wort des Tages · \(daily.thai) · \(daily.german)")
                                 .font(.subheadline)
-                                .foregroundStyle(Theme.accent)
+                                .foregroundStyle(.white)
                                 .padding(.horizontal, 20)
                                 .accessibilityLabel("Wort des Tages, \(daily.thai), \(daily.german)")
                         }
                         Text(model.quest.line)
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.white.opacity(0.85))
                             .padding(.horizontal, 20)
                         ForEach(Array(nodes.enumerated()), id: \.element.id) { index, node in
                             if let chapter = node.chapter {
                                 Text(chapter)
                                     .font(.system(.title3, design: .rounded).weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .shadow(color: .black.opacity(0.6), radius: 3, y: 1)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.horizontal, 20)
-                                    .padding(.top, 12)
+                                    .padding(.top, 18)
                                     .accessibilityAddTraits(.isHeader)
                             }
                             lane(index: index) {
@@ -98,13 +102,35 @@ private struct PathScreen: View {
                                 lessons.start(together: true, resume: false)
                             }
                             .font(.system(.body, design: .rounded).weight(.bold))
-                            .foregroundStyle(Theme.accent)
+                            .foregroundStyle(.white)
                             .padding(.top, 8)
                         }
+                        Text(ThailandRoute.credit)
+                            .font(.caption2)
+                            .foregroundStyle(.white.opacity(0.8))
+                            .padding(.horizontal, 20)
+                            .padding(.top, 16)
                     }
                     .padding(.vertical, 12)
+                    .background {
+                        Image("ThailandMap")
+                            .resizable()
+                            .scaledToFill()
+                            .overlay(Color.black.opacity(0.42))
+                            .overlay(
+                                LinearGradient(
+                                    colors: [Color.black.opacity(0.55), Color.black.opacity(0.15), Color.black.opacity(0.62)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            .allowsHitTesting(false)
+                    }
                 }
             }
+        }
+        .sheet(item: $info) { item in
+            PathInfoSheet(info: item)
         }
         .navigationBarHidden(true)
         .onAppear {
@@ -120,23 +146,33 @@ private struct PathScreen: View {
 
     private var topBar: some View {
         HStack(spacing: 14) {
-            Label("\(model.streak.length)", systemImage: "flame.fill")
-                .font(.system(.headline, design: .rounded).weight(.bold))
-                .foregroundStyle(Theme.accent)
-                .accessibilityLabel("Serie \(model.streak.length), ohne Verlust")
+            Button { info = .streak } label: {
+                Label("\(model.streak.length)", systemImage: "flame.fill")
+                    .font(.system(.headline, design: .rounded).weight(.bold))
+                    .foregroundStyle(Theme.accent)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Serie \(model.streak.length), Erklärung öffnen")
             Spacer()
-            Label("\(model.stars)", systemImage: "star.fill")
-                .font(.system(.headline, design: .rounded).weight(.bold))
-                .foregroundStyle(Theme.accent)
-                .accessibilityLabel("\(model.stars) Sterne")
-            Text(model.partner?.emoji ?? "🌷")
-                .font(.title2)
-                .padding(6)
-                .background(Theme.card, in: Circle())
-                .accessibilityLabel("Partner")
+            Button { info = .stars } label: {
+                Label("\(model.stars)", systemImage: "star.fill")
+                    .font(.system(.headline, design: .rounded).weight(.bold))
+                    .foregroundStyle(Theme.accent)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("\(model.stars) Sterne, Erklärung öffnen")
+            Button { info = .partner } label: {
+                Text(model.partner?.emoji ?? "🌷")
+                    .font(.title2)
+                    .padding(6)
+                    .background(Theme.card, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Partner, Profil öffnen")
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 10)
+        .background(.ultraThinMaterial)
     }
 
     private func lane<Content: View>(index: Int, @ViewBuilder content: () -> Content) -> some View {
@@ -182,12 +218,14 @@ private struct PathScreen: View {
                 .modifier(Pulse(on: node.state == .current))
                 Text(node.title)
                     .font(.system(.caption, design: .rounded).weight(.bold))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.7), radius: 2, y: 1)
                     .multilineTextAlignment(.center)
                     .frame(width: 110)
             }
         }
         .buttonStyle(.plain)
-        .disabled(node.state == .locked || (node.state == .done && !node.chest))
+        .disabled(node.state == .done && !node.chest)
         .accessibilityIdentifier(identifier(node, paused: paused))
         .accessibilityLabel(node.chest ? node.title : "\(node.title), \(node.state.rawValue)")
     }
@@ -206,7 +244,10 @@ private struct PathScreen: View {
     }
 
     private func open(_ node: MapNode) {
-        guard node.state != .locked else { return }
+        if node.state == .locked {
+            info = .locked(node.title)
+            return
+        }
         if node.state == .done, !node.chest { return }
         if node.chest {
             checkLevel = node.stage
@@ -216,6 +257,97 @@ private struct PathScreen: View {
         if !resume { model.clearPausedRound() }
         lessons.start(together: true, resume: resume)
         Haptics.tap()
+    }
+}
+
+enum PathInfo: Identifiable, Equatable {
+    case streak
+    case stars
+    case partner
+    case locked(String)
+
+    var id: String {
+        switch self {
+        case .streak: return "streak"
+        case .stars: return "stars"
+        case .partner: return "partner"
+        case .locked(let title): return "locked-\(title)"
+        }
+    }
+}
+
+private struct PathInfoSheet: View {
+    let info: PathInfo
+    @EnvironmentObject private var model: AppModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var duo = false
+
+    var body: some View {
+        NavigationStack {
+            ScreenBackground {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 14) {
+                        switch info {
+                        case .streak:
+                            Text("Tage in Folge, die ihr zusammen gelernt habt.")
+                                .font(.title3)
+                            Text("Die Flamme zählt nur gemeinsame Tage. Ein verpasster Tag nimmt nichts weg.")
+                                .foregroundStyle(.secondary)
+                            week
+                        case .stars:
+                            Text("\(model.stars) Sterne")
+                                .font(.title2.weight(.bold))
+                            Text("Ein Stern ist ein richtiges Wort in einer Lektion. Sie zeigen, wie viel ihr geübt habt. Es gibt keinen Wettbewerb und nichts zu kaufen.")
+                        case .partner:
+                            Text("\(model.me.emoji) \(model.me.name.isEmpty ? "Du" : model.me.name)")
+                                .font(.title3.weight(.semibold))
+                            Text(model.partner.map { "\($0.emoji) \($0.name)" } ?? "Noch kein zweites iPhone. Ihr spielt zu zweit auf diesem Gerät.")
+                            FillButton(title: "Duo / Koppeln") { duo = true }
+                        case .locked(let title):
+                            Text(ThailandRoute.unlockNote(title: title))
+                                .font(.title3)
+                        }
+                    }
+                    .padding(20)
+                }
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Schließen") { dismiss() } } }
+            .sheet(isPresented: $duo) { DuoView() }
+        }
+    }
+
+    private var title: String {
+        switch info {
+        case .streak: return "Serie"
+        case .stars: return "Sterne"
+        case .partner: return "Partner"
+        case .locked: return "Noch zu"
+        }
+    }
+
+    private var week: some View {
+        let calendar = Calendar.current
+        let today = Date()
+        let weekday = calendar.component(.weekday, from: today)
+        let delta = (weekday - calendar.firstWeekday + 7) % 7
+        let start = calendar.date(byAdding: .day, value: -delta, to: today) ?? today
+        return HStack(spacing: 8) {
+            ForEach(0..<7, id: \.self) { offset in
+                let date = calendar.date(byAdding: .day, value: offset, to: start) ?? today
+                let key = DayKey.string(from: date, calendar: calendar)
+                let symbol = calendar.shortWeekdaySymbols[calendar.component(.weekday, from: date) - 1]
+                VStack(spacing: 4) {
+                    Text(symbol).font(.caption2)
+                    Circle()
+                        .fill(model.practicedDayKeys.contains(key) ? Theme.accent : Theme.card)
+                        .frame(width: 16, height: 16)
+                }
+                .frame(maxWidth: .infinity)
+                .accessibilityLabel("\(symbol) \(model.practicedDayKeys.contains(key) ? "geübt" : "frei")")
+            }
+        }
     }
 }
 

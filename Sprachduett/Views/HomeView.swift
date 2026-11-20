@@ -210,6 +210,9 @@ struct SettingsSheet: View {
                         Text("Serie \(model.streak.length) · Punkte klein, der Alltags-Check zählt.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                        Text(ThailandRoute.credit)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                         Text("Debug")
                             .font(.headline)
                         SoftButton(title: "Mikrofon-Test") { micTest = true }

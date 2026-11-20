@@ -287,6 +287,8 @@ final class AppModel: ObservableObject {
 
     var stars: Int { pathStats.values.reduce(0) { $0 + $1.correct } }
 
+    var practicedDayKeys: Set<String> { Set(persisted.duo.stamps.map(\.day)) }
+
     var persistedChecks: [CheckRecord] { persisted.checks }
 
     var usageLine: String {

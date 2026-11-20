@@ -69,7 +69,12 @@ final class RoundTests: XCTestCase {
         let units = sampleUnits()
         let fresh = PathMap.nodes(units: units, stats: [:], checkedStages: [])
         XCTAssertEqual(fresh.first?.state, .current)
-        XCTAssertEqual(fresh.first?.chapter, "Kapitel 1: Erste Worte")
+        XCTAssertEqual(fresh.first?.chapter, "⛵ Phuket")
+        XCTAssertEqual(ThailandRoute.stop(unitID: "a0-hallo").city, "Bangkok")
+        XCTAssertEqual(ThailandRoute.stop(unitID: "a1-essen").city, "Ayutthaya")
+        XCTAssertEqual(ThailandRoute.stop(unitID: "a1-einkauf").city, "Chiang Mai")
+        XCTAssertEqual(ThailandRoute.stop(unitID: "a1-familie").city, "Krabi")
+        XCTAssertEqual(ThailandRoute.stop(unitID: "a1-unterwegs").city, "Phuket")
         XCTAssertTrue(fresh.contains { $0.chest && $0.state == .locked })
         var stats: [String: WordStat] = [:]
         for word in units[0].words {

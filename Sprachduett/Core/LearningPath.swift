@@ -222,10 +222,45 @@ public enum LearningPath {
 
     public static func chapterTitle(stage: Int) -> String {
         switch stage {
-        case 1: return "Kapitel 1: Erste Worte"
-        case 2: return "Kapitel 2: Im Restaurant"
+        case 1: return "Bangkok"
+        case 2: return "Im Süden"
         default: return "Kapitel \(stage)"
         }
+    }
+}
+
+public struct RouteStop: Equatable {
+    public let city: String
+    public let landmark: String
+
+    public init(city: String, landmark: String) {
+        self.city = city
+        self.landmark = landmark
+    }
+
+    public var heading: String { "\(landmark) \(city)" }
+}
+
+public enum ThailandRoute {
+    public static let credit = "Kartenbild: NASA Visible Earth, Blue Marble, gemeinfrei. Zuschnitt auf Thailand."
+
+    public static func stop(unitID: String) -> RouteStop {
+        switch unitID {
+        case "a0-hallo", "a0-ja", "a0-zahlen", "a0-toene":
+            return RouteStop(city: "Bangkok", landmark: "🛕")
+        case "a1-essen", "a1-trinken", "a1-bestellen":
+            return RouteStop(city: "Ayutthaya", landmark: "🏛️")
+        case "a1-einkauf", "a1-weg":
+            return RouteStop(city: "Chiang Mai", landmark: "🏔️")
+        case "a1-familie", "a1-zeit":
+            return RouteStop(city: "Krabi", landmark: "🏝️")
+        default:
+            return RouteStop(city: "Phuket", landmark: "⛵")
+        }
+    }
+
+    public static func unlockNote(title: String) -> String {
+        "\(title) ist noch zu. Die Station davor öffnet sie, wenn ungefähr 80 Prozent der Wörter sitzen."
     }
 }
 
@@ -257,10 +292,11 @@ public enum PathMap {
     public static func nodes(units: [LearnUnit], stats: [String: WordStat], checkedStages: Set<Int>) -> [MapNode] {
         let current = LearningPath.currentIndex(units: units, stats: stats)
         var nodes: [MapNode] = []
-        var lastStage = 0
+        var lastCity = ""
         for (index, unit) in units.enumerated() {
-            let chapter = unit.stage != lastStage ? LearningPath.chapterTitle(stage: unit.stage) : nil
-            lastStage = unit.stage
+            let stop = ThailandRoute.stop(unitID: unit.id)
+            let chapter = stop.city != lastCity ? stop.heading : nil
+            lastCity = stop.city
             let state = lessonState(index: index, unit: unit, current: current, units: units, stats: stats)
             nodes.append(MapNode(
                 id: unit.id,

@@ -4,7 +4,7 @@ Vor dem Release-Kandidaten gelesen. `swift test` prüft den Fachkern. Der Simula
 
 ## Navigation
 
-- [x] Der Start ist ein Pfad mit LOS, gesperrten und fertigen Knoten und einer Truhe am Kapitelende. Unten vier Reiter: Lernen, Üben, Fortschritt, Profil.
+- [x] Der Start ist ein Pfad über einem Thailand-Ausschnitt der NASA Blue Marble, mit Stationen in Bangkok, Ayutthaya, Chiang Mai, Krabi und Phuket. Flamme, Sterne und Partnerbild öffnen eine Erklärung. Eine gesperrte Station sagt, was sie öffnet.
 - [x] Die Lektion hat einen Balken, ein X mit Pause-Frage, ein Banner wer dran ist, und CHECK oder WEITER. Am Ende Konfetti und zurück auf den Pfad.
 - [x] Start, Profil, Runde, Alltags-Check, Tutorial, Duo, Feedback, Ton-Duell, Schrift, eigene Sätze, Reise, Rollenspiel und die Teilkarte haben Zurück, X oder einen Reiter.
 - [x] Die Runde fragt „Runde pausieren?“ und der Start bietet Weiterspielen.
